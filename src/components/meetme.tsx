@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+import "../../global.css"
+
 const ProfileComponent = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -30,7 +32,7 @@ const ProfileComponent = () => {
     const iconElements = ['⚙️', '🔧', '📊', '✓', '🔍', '📐', '🛠️', '📈', '🔩', '⚒️', '📏', '✅','⚙️', '🔧', '📊', '✓', '🔍', '📐', '🛠️', '📈', '🔩', '⚒️', '📏', '✅','⚙️', '🔧', '📊', '✓', '🔍', '📐', '🛠️', '📈', '🔩', '⚒️', '📏', '✅'];
 
 
-    const generateDecorativeElements = (count) => {
+    const generateDecorativeElements = (count : number) => {
         return Array(count).fill(0).map((_, i) => (
             <span
                 key={i}
@@ -142,18 +144,19 @@ const ProfileComponent = () => {
                                 key={slide.id}
                                 onClick={() => setCurrentSlide(index)}
                                 className={`h-2 rounded-full transition-all ${
-                                    index === currentSlide ? "w-6 bg-black" : "w-2 bg-gray-300"
+                                    index === currentSlide ? "rounded-full w-6 bg-black" : "w-2 bg-gray-300"
                                 }`}
+                                style={{ borderRadius: "calc(infinity * 1px)"}}
                             />
                         ))}
                     </div>
 
 
                     <div className="flex justify-center gap-4">
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition-colors">
+                        <button className="ul-meetme  text-white px-6 py-2  ">
                             Conocer más
                         </button>
-                        <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full transition-colors">
+                        <button className="ul-meetme-a  text-white px-6 py-2 rounded-full ">
                             Donar Ahora
                         </button>
                     </div>

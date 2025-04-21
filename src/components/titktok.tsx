@@ -71,9 +71,9 @@ export default function TikTokSlider() {
                                 className="tiktok-embed"
                                 cite={`https://www.tiktok.com/@pacoelmorlaco99/video/${video.embedId}`}
                                 data-video-id={video.embedId}
-                                style={{ maxWidth: '100%', minWidth: '100%' }}
+                                style={{ maxWidth: '100%', minWidth: '100%',display:"flex", flexDirection:"column",alignItems:"center" }}
                             >
-                                <section></section>
+                                <section ></section>
                             </blockquote>
                         </div>
 
