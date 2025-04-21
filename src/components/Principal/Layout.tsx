@@ -2,7 +2,7 @@ import React from 'react';
 
 const Navbar: React.FC = () => {
     return (
-        <nav className="flex items-center justify-center gap-96 px-6 py-4 bg-indigo-500 text-white">
+        <nav className="flex items-center justify-center gap-96 px-6 py-4 bg-blue-600 text-white">
             {/* Logo/Título */}
             <div className="font-bold text-xl md:text-2xl">
                 AYUDA SIN LÍMITES
