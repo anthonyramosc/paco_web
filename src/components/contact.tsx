@@ -31,7 +31,7 @@ const Contact = () => {
   return (
     <div className="relative bg-indigo-500 py-6 px-4 text-white">
       <div className="max-w-2xl mx-auto z-10">
-        <h2 className="text-3xl font-semibold text-center mb-8">CONTÁCTAME</h2>
+        <h2 className="text-3xl font-semibold text-center mb-8 text-orange-200">CONTÁCTAME</h2>
 
         <form onSubmit={handleSubmit} className="flex flex-col items-center space-y-4">
           <div className="w-full">
@@ -76,7 +76,8 @@ const Contact = () => {
 
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded transition duration-300"
+            className="bg-orange w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded transition duration-300"
+            style={{ backgroundColor: '#f54900', display: "flex", justifyContent: "center" }}
           >
             Enviar
           </button>

@@ -41,26 +41,26 @@ const DonateComponent = ({ onSubmit }: DonateProps) => {
   };
 
   return (
-    <div className="bg-blue-600 relative py-16 px-6">
+    <div className="bg-indigo-500 relative py-16 px-6">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
         {/* IZQUIERDA */}
         <div className="lg:w-1/2 w-full space-y-6">
           <h2 className="text-white text-3xl font-bold text-center lg:text-left">DONAR</h2>
-          <p className="text-white text-lg text-center lg:text-left">
+          <p className="text-white text-lg font-bold  space-y-4 text-justify">
             “Con tu Donacion puedes ser parte de este de esta ayuda para crear Prótesis. Si tu corazón te llama a donar más o menos, cada contribución es bienvenida con un profundo agradecimiento”
           </p>
 
-          <div className="rounded-full "  style={{ display:"flex", justifyContent:"center"}}>
+          <div className="rounded-full " style={{ display: "flex", justifyContent: "center" }}>
             <button
               onClick={handleAnonymousDonate}
               className=" text-white font-bold py-2 px-6 rounded transition duration-300"
-              style={{backgroundColor:'#f54900', display:"flex", justifyContent:"center"}}
+              style={{ backgroundColor: '#f54900', display: "flex", justifyContent: "center" }}
             >
               DONAR ANÓNIMAMENTE
             </button>
           </div>
 
-          <p className="text-white text-lg text-center lg:text-left">
+          <p className="text-white text-lg font-bold  space-y-4 text-justify">
             También puedes dejarnos tus datos, estos serán usados para brindarte información sobre como se usa tu donación.
           </p>
 
@@ -131,7 +131,7 @@ const DonateComponent = ({ onSubmit }: DonateProps) => {
             <button
               type="submit"
               className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-1 px-4 rounded transition duration-300 h-11"
-              style={{backgroundColor:'#f54900'}}
+              style={{ backgroundColor: '#f54900' }}
             >
               DONAR
             </button>

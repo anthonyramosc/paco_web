@@ -11,76 +11,19 @@ const TypedText: React.FC = () => {
     const phrases = ["AYUDA SIN LÍMITES", "PROYECTO SOCIAL", "PACO EL MORLACO"];
     const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
 
-    useEffect(() => {
-        if (!containerRef.current) return;
-
-
-        const containerElement = containerRef.current;
-        containerElement.style.position = 'relative';
-        containerElement.style.display = 'inline-block';
-
-        let cursor = document.createElement('div');
-        cursor.className = 'cursor-element';
-        cursor.style.display = 'block';
-        cursor.style.position = 'absolute';
-        cursor.style.height = '100%';
-        cursor.style.top = '0';
-        cursor.style.right = '-5px';
-        cursor.style.width = '2px';
-        cursor.style.backgroundColor = "#5A67F9FF";
-        cursor.style.zIndex = '1';
-
-        if (!document.getElementById('cursor-animation-style')) {
-            const style = document.createElement('style');
-            style.id = 'cursor-animation-style';
-            style.textContent = `
-        @keyframes cursorBlink {
-          0% { opacity: 1; }
-          50% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-        .cursor-element {
-          animation: cursorBlink 0.7s infinite;
-        }
-      `;
-            document.head.appendChild(style);
-        }
-
-        containerElement.appendChild(cursor);
-
-        return () => {
-            if (cursor && containerElement.contains(cursor)) {
-                containerElement.removeChild(cursor);
-            }
-
-            if (document.getElementById('cursor-animation-style')) {
-                const style = document.getElementById('cursor-animation-style');
-                if (style) document.head.removeChild(style);
-            }
-        };
-    }, []);
+    const longestPhrase = phrases.reduce((a, b) => (a.length > b.length ? a : b), "");
 
     useEffect(() => {
         const typePhrase = async (phrase: string) => {
-
             for (let i = 0; i <= phrase.length; i++) {
                 setDisplayText(phrase.substring(0, i));
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 100)); // Velocidad de escritura
             }
 
-
+            // Espera antes de pasar a la siguiente frase
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-
-            for (let i = phrase.length; i >= 0; i--) {
-                setDisplayText(phrase.substring(0, i));
-                await new Promise(resolve => setTimeout(resolve, 50));
-            }
-
-
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-
+            // Cambia a la siguiente frase
             setCurrentPhraseIndex((prevIndex) => (prevIndex + 1) % phrases.length);
         };
 
@@ -89,44 +32,55 @@ const TypedText: React.FC = () => {
         };
 
         animateText();
-
     }, [currentPhraseIndex]);
 
     return (
-        <div ref={containerRef} className="inline-block relative">
+        <div
+            ref={containerRef}
+            className="inline-block relative"
+            style={{ width: `${longestPhrase.length}ch` }} // Fija el ancho basado en la frase más larga
+        >
             <span className="text-[#5A67F9FF]">{displayText}</span>
         </div>
     );
 };
 
 const Navbar: React.FC = () => {
+    const [scrolled, setScrolled] = useState(false);
+    
+    // Add scroll event listener
+    useEffect(() => {
+        const handleScroll = () => {
+           setScrolled(window.scrollY > 50);
+        };
+        
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
+
     return (
-        <header className="ul-header">
+        <header className={`ul-header fixed top-0 left-0 w-full z-50 ${scrolled ? 'bg-white shadow-md' : 'bg-white'}`}>
             <div className="header-top-bg-wrapper">
-                <div className="ul-header-top  flex items-center justify-center gap-80">
-
-
+                <div className="ul-header-top flex items-center justify-center gap-80">
                     <div className="font-bold text-xl md:text-2xl">
                         <TypedText />
                     </div>
 
-
-                    <div className=" md:flex space-x-8 z-10 ">
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Inicio</a>
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Conoceme</a>
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Donaciones</a>
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Contactame</a>
+                    <div className="md:flex space-x-8 z-10">
+                        <a href="#inicio" className="text-[#5A67F9FF] !no-underline text-lg">Inicio</a>
+                        <a href="#conoceme" className="text-[#5A67F9FF] !no-underline text-lg">Conoceme</a>
+                        <a href="#donaciones" className="text-[#5A67F9FF] !no-underline text-lg">Donaciones</a>
+                        <a href="#contactame" className="text-[#5A67F9FF] !no-underline text-lg">Contactame</a>
                     </div>
 
-
                     <div className="flex space-x-2">
-
                         <a href="#" className="bg-white text-indigo-500 p-2 rounded-md hover:bg-indigo-100 transition-colors">
                             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
                             </svg>
                         </a>
-
 
                         <a href="#" className="bg-white text-indigo-500 p-2 rounded-md hover:bg-indigo-100 transition-colors">
                             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -134,13 +88,11 @@ const Navbar: React.FC = () => {
                             </svg>
                         </a>
 
-
                         <a href="#" className="bg-white text-indigo-500 p-2 rounded-md hover:bg-indigo-100 transition-colors">
                             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/>
                             </svg>
                         </a>
-
 
                         <a href="#" className="bg-white text-indigo-500 p-2 rounded-md hover:bg-indigo-100 transition-colors">
                             <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -149,28 +101,29 @@ const Navbar: React.FC = () => {
                         </a>
                     </div>
 
-
                     <button className="md:hidden">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
-
                 </div>
-            </div></header>
+            </div>
+        </header>
     );
 };
 
 const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
     return (
-        <div className="flex flex-col min-h-screen" >
+        <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main className="flex-grow  " style={{marginTop:"-80px" , zIndex:"100"}}>
+            {/* Added padding top to account for fixed navbar height */}
+            <main className="flex-grow ">
                 {children}
+                
             </main>
             <footer className="bg-white text-indigo-700 py-6 px-6">
-                <div className="font-bold text-xl md:text-2xl  text-center">
-                    <TypedText  />
+                <div className="font-bold text-xl md:text-2xl text-center">
+                    <TypedText />
                 </div>
                 <div className="max-w-6xl mx-auto mt-3">
                     <p className="text-center">Copyright © {new Date().getFullYear()} Toma mi mano | Developed by Anthony Ramos.</p>

@@ -9,7 +9,7 @@ const ProfileComponent = () => {
     const slides = [
         {
             id: 1,
-            text: "Hola, soy Pedro Brito, me conocen como Paco el Morlaco, un tiktoker cuencano de 25 años, quien se ha vuelto  "
+            text: "Hola, soy Pedro Brito, me conocen como Paco el Morlaco, un tiktoker cuencano de 25 años, quien se ha vuelto viral al mostrar cómo crea sus protesis.  "
         },
         {
             id: 2,
