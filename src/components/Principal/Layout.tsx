@@ -47,13 +47,13 @@ const TypedText: React.FC = () => {
 
 const Navbar: React.FC = () => {
     const [scrolled, setScrolled] = useState(false);
-    
+
     // Add scroll event listener
     useEffect(() => {
         const handleScroll = () => {
            setScrolled(window.scrollY > 50);
         };
-        
+
         window.addEventListener('scroll', handleScroll);
         return () => {
             window.removeEventListener('scroll', handleScroll);
@@ -116,10 +116,9 @@ const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
-            {/* Added padding top to account for fixed navbar height */}
-            <main className="flex-grow ">
+            <main className="flex-grow  " style={{marginTop:"-80px" , zIndex:"100"}}>
                 {children}
-                
+
             </main>
             <footer className="bg-white text-indigo-700 py-6 px-6">
                 <div className="font-bold text-xl md:text-2xl text-center">

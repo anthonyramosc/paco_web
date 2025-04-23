@@ -51,9 +51,9 @@ const ProfileComponent = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row items-center bg-white rounded-lg overflow-hidden max-w-6xl mx-auto relative">
+        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl overflow-hidden max-w-6xl mx-auto relative -mt-10 mb-20">
 
-            <div className="relative w-full md:w-1/2 aspect-square">
+            <div className="relative w-full md:w-1/2 aspect-square -mt-10">
 
                 <div className="absolute inset-0 z-0">
 
@@ -99,18 +99,63 @@ const ProfileComponent = () => {
 
 
                 <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="w-4/5 h-4/5 rounded-full overflow-hidden border-4 border-white">
-                        <img
-                            src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/328074845_907657527106548_5780452344093047139_n.jpeg"
-                            alt="Profile of a person with a prosthetic hand"
-                            className="w-full h-full object-cover"
-                        />
+                    <div className="w-4/5 h-4/5  overflow-hidden ">
+                        <div className="ul-chef-card col w-4/5 h-4/5 ml-10">
+                            <div className="ul-chef-card">
+
+                                <div className="ul-chef-card-img">
+                                    <img
+                                        src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/328074845_907657527106548_5780452344093047139_n.jpeg"
+                                        alt="chef Image"
+                                        className="w-full h-auto rounded-t-lg"
+                                    />
+                                </div>
+
+
+                                <div className="ul-chef-card-txt p-4 text-center bg-white shadow z-10">
+                                    <h4 className="ul-chef-card-title text-xl font-bold text-[#5A67F9FF]">PEDRO BRITO</h4>
+                                    <span className="ul-chef-card-subtitle text-[#5A67F9FF] font-bold">PACO EL MORLACO</span>
+                                </div>
+
+
+                                <div className="ul-chef-card-social border-t border-gray-200 py-4 z-40  shadow">
+                                    <div className="ul-chef-card-social-links flex justify-center space-x-1">
+                                        <a
+                                            href="#"
+                                            className="!no-underline bg-white"
+                                            aria-label="LinkedIn"
+                                        >
+                                            <i className="flaticon-linkedin-big-logo text-2xl text-[#5A67F9FF] "></i>
+                                        </a>
+                                        <a
+                                            href="#"
+                                            className="!no-underline bg-white"
+                                            aria-label="Instagram"
+                                        >
+                                            <i className="flaticon-instagram text-2xl text-[#5A67F9FF]"></i>
+                                        </a>
+                                        <a
+                                            href="#"
+                                            className="!no-underline bg-white"
+                                            aria-label="YouTube"
+                                        >
+                                            <i className="flaticon-youtube text-2xl text-[#5A67F9FF]"></i>
+                                        </a>
+                                    </div>
+                                    <span className="ul-chef-card-social-title block mt-2 px-2 text-sm text-gray-500 uppercase">
+          Share
+        </span>
+                                </div>
+                            </div>
+
+
+                        </div>
                     </div>
                 </div>
             </div>
 
 
-            <div className="w-full md:w-1/2 p-8 relative">
+            <div className="w-full md:w-1/2 p-8 relative -mt-20">
 
                 <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full flex justify-between px-1">
                     <button
@@ -164,16 +209,7 @@ const ProfileComponent = () => {
             </div>
 
 
-            <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                {[1, 2].map((dot) => (
-                    <div
-                        key={dot}
-                        className={`h-2 w-2 rounded-full ${
-                            dot === 1 ? "bg-black" : "bg-gray-300"
-                        }`}
-                    />
-                ))}
-            </div>
+
         </div>
     );
 };
