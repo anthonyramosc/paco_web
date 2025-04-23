@@ -21,12 +21,12 @@ const defaultSlides: Slide[] = [
   },
   {
     id: 2,
-    imageSrc: "/src/assets/images/paco-slide2.jpg",
+    imageSrc: "https://test.tryclicksolutions.com/wp-content/uploads/2024/11/328074845_907657527106548_5780452344093047139_n.jpeg",
     altText: "Paco mostrando sus creaciones"
   },
   {
     id: 3,
-    imageSrc: "/src/assets/images/paco-slide3.jpg",
+    imageSrc: "https://test.tryclicksolutions.com/wp-content/uploads/2024/11/328074845_907657527106548_5780452344093047139_n.jpeg",
     altText: "Paco inspirando a otros con su historia"
   }
 ];
@@ -72,15 +72,53 @@ const Introduction = ({ slides = defaultSlides, onDonate }: IntroductionProps) =
         <div className="flex flex-col md:flex-row items-center justify-between space-y-8 md:space-y-0 md:space-x-12">
           {/* Sección de imagen con navegación */}
           <div className="w-full md:w-2/5 relative">
-            <div className="relative overflow-hidden max-w-xs mx-auto">
-              <div className="aspect-w-4 aspect-h-3">
-                <img
-                  src={slides[currentSlide].imageSrc}
-                  alt={slides[currentSlide].altText}
-                  className="w-full object-cover"
-                  style={{ maxHeight: "250px" }}
-                />
-              </div>
+          <div className="ul-chef-card col">
+    <div className="ul-chef-card">
+      {/* Imagen con borde redondeado */}
+      <div className="ul-chef-card-img">
+        <img
+          src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/328074845_907657527106548_5780452344093047139_n.jpeg"
+          alt="chef Image"
+          className="w-full h-auto rounded-t-lg"
+        />
+      </div>
+
+      {/* Texto con espaciado y alineación */}
+      <div className="ul-chef-card-txt p-4 text-center">
+        <h4 className="ul-chef-card-title text-xl font-bold text-gray-800">PEDRO BRITO</h4>
+        <span className="ul-chef-card-subtitle text-black font-bold">PACO EL MORLACO</span>
+      </div>
+
+      {/* Redes sociales con íconos estilizados */}
+      <div className="ul-chef-card-social border-t border-gray-200 py-4">
+        <div className="ul-chef-card-social-links flex justify-center space-x-4">
+          <a
+            href="#"
+            className="text-blue-600 hover:text-blue-800 transition-colors"
+            aria-label="LinkedIn"
+          >
+            <i className="flaticon-linkedin-big-logo text-2xl"></i>
+          </a>
+          <a
+            href="#"
+            className="text-pink-500 hover:text-pink-700 transition-colors"
+            aria-label="Instagram"
+          >
+            <i className="flaticon-instagram text-2xl"></i>
+          </a>
+          <a
+            href="#"
+            className="text-red-600 hover:text-red-800 transition-colors"
+            aria-label="YouTube"
+          >
+            <i className="flaticon-youtube text-2xl"></i>
+          </a>
+        </div>
+        <span className="ul-chef-card-social-title block mt-2 text-sm text-gray-500">
+          Share
+        </span>
+      </div>
+            </div>
               
               {/* Botones de navegación */}
               <button
