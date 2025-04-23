@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import imgP from "../assets/img/banner-img-1.png";
 import imgP1 from "../assets/img/img.png";
@@ -63,8 +63,6 @@ const Introduction = ({ slides = defaultSlides }: IntroductionProps) => {
     setTimeout(() => setIsAnimating(false), 500);
   };
 
-
-
   return (
       <div className="relative w-full bg-gradient-to-br from-purple-50 to-indigo-50 overflow-hidden">
 
@@ -78,7 +76,8 @@ const Introduction = ({ slides = defaultSlides }: IntroductionProps) => {
           </svg>
         </div>
 
-        <div className="container mx-auto px-4 py-16 relative z-10">
+        {/* Adjusted container to match TikTok component width */}
+        <div className="max-w-6xl mx-auto px-4 py-16 relative z-10 ">
           <div className="flex flex-col md:flex-row items-center justify-between gap-10">
 
             <div className="w-full md:w-1/2 order-2 md:order-1">
@@ -109,14 +108,11 @@ const Introduction = ({ slides = defaultSlides }: IntroductionProps) => {
                   para miles de personas.
                 </p>
               </div>
-
-
-
             </div>
 
             <div className="w-full md:w-1/2 order-1 md:order-2">
               <div className="relative h-96 rounded-2xl overflow-hidden shadow-2xl">
-                <div className="absolute inset-0  z-10"></div>
+                <div className="absolute inset-0 z-10"></div>
 
                 <div className={`relative h-full transition-all duration-500 ease-in-out transform ${isAnimating ? 'scale-105 opacity-90' : 'scale-100 opacity-100'}`}>
                   <img
@@ -126,8 +122,8 @@ const Introduction = ({ slides = defaultSlides }: IntroductionProps) => {
                   />
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 z-20 ">
-                  <p className="text-white text-lg ">{slides[currentSlide].altText}</p>
+                <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+                  <p className="text-white text-lg">{slides[currentSlide].altText}</p>
                 </div>
 
                 <button
@@ -159,12 +155,9 @@ const Introduction = ({ slides = defaultSlides }: IntroductionProps) => {
                   ))}
                 </div>
               </div>
-
-
             </div>
           </div>
         </div>
-
 
         <div className="absolute bottom-0 left-0 w-full overflow-hidden">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" className="w-full">
@@ -175,7 +168,6 @@ const Introduction = ({ slides = defaultSlides }: IntroductionProps) => {
             ></path>
           </svg>
         </div>
-
 
         <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-indigo-500/10 animate-pulse"></div>
         <div className="absolute bottom-40 right-10 w-32 h-32 rounded-full bg-purple-500/10 animate-pulse delay-700"></div>

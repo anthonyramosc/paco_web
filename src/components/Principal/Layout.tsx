@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
     // Add scroll event listener
     useEffect(() => {
         const handleScroll = () => {
-           setScrolled(window.scrollY > 50);
+            setScrolled(window.scrollY > 50);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
     }, []);
 
     return (
-        <header className={`ul-header fixed top-0 left-0 w-full z-50 ${scrolled ? 'bg-white shadow-md' : 'bg-white'}`}>
+        <header className={`ul-header fixed top-0 left-0 w-full z-50 ${scrolled ? 'bg-white shadow-md' : 'bg-white'} sticky transition-all duration-300`}>
             <div className="header-top-bg-wrapper">
                 <div className="ul-header-top flex items-center justify-center gap-80">
                     <div className="font-bold text-xl md:text-2xl">
@@ -116,7 +116,7 @@ const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />
-            <main className="flex-grow  " style={{marginTop:"-80px" , zIndex:"100"}}>
+            <main className="flex-grow pt-20" style={{marginTop:"-80px", zIndex:"100"}}>
                 {children}
 
             </main>

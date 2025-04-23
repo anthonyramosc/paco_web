@@ -127,7 +127,7 @@ export default function TikTokSlider() {
     const displayedVideos = videos.slice(currentIndex, currentIndex + visibleVideos);
 
     return (
-        <div className="flex flex-col items-center w-full bg-gradient-to-br from-purple-50 to-indigo-50 py-12">
+        <div className="flex flex-col items-center w-full bg-gradient-to-br from-purple-50 to-indigo-50 py-12 ">
 
             <h1 className="text-4xl font-bold mb-2 text-[#5A67F9FF] tracking-wide">TikTok Highlights</h1>
             <p className="text-lg text-black mb-4">Desliza para ver todos nuestros videos</p>
@@ -159,7 +159,7 @@ export default function TikTokSlider() {
                 </div>
 
 
-                <div className="w-full overflow-hidden">
+                <div className="max-w-6xl overflow-hidden">
                     <div className="flex transition-transform duration-500" style={{ transform: `translateX(0%)` }}>
                         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4 px-8">
                             {displayedVideos.map((video) => (
@@ -197,9 +197,10 @@ export default function TikTokSlider() {
                 {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
                     <button
                         key={`dot-${idx}`}
-                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                        className={`w-3 h-3 rounded transition-all flex gap-3 duration-300 ${
                             idx === currentIndex ? "bg-pink-500 w-6" : "bg-blue-300"
                         }`}
+                        style={{backgroundColor:"#5A67F9FF"}}
                         onClick={() => jumpToIndex(idx)}
                         aria-label={`Go to slide ${idx + 1}`}
                     />
