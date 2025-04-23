@@ -1,155 +1,311 @@
-import { useState, FormEvent } from 'react';
+import React, { useState, FormEvent } from 'react';
 
-interface DonateFormData {
-  fullName: string;
-  idNumber: string;
-  email: string;
-  phone: string;
-  amount: string;
-  acceptTerms: boolean;
+interface DonationData {
+  isAnonymous: boolean;
+  nombre_completo: string;
+  cedula: string;
+  correo_electronico: string;
+  cantidad_donar: string;
 }
 
-interface DonateProps {
-  onSubmit: (formData: DonateFormData) => void;
+interface CardData {
+  cardName: string;
+  cardNumber: string;
+  expiryDate: string;
+  cvv: string;
 }
 
-const DonateComponent = ({ onSubmit }: DonateProps) => {
-  const [formData, setFormData] = useState<DonateFormData>({
-    fullName: '',
-    idNumber: '',
-    email: '',
-    phone: '',
-    amount: '',
-    acceptTerms: false,
+type FormMessage = {
+  type: 'success' | 'error' | null;
+  text: string | null;
+};
+
+const DonationForm: React.FC = () => {
+  const [formData, setFormData] = useState<DonationData>({
+    isAnonymous: false,
+    nombre_completo: '',
+    cedula: '',
+    correo_electronico: '',
+    cantidad_donar: '',
   });
+  const [cardData, setCardData] = useState<CardData>({
+    cardName: '',
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+  });
+  const [formMessage, setFormMessage] = useState<FormMessage>({ type: null, text: null });
+  const [showCard, setShowCard] = useState<boolean>(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+
+    if (name in formData) {
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+
+      if (name === 'isAnonymous' && checked) {
+        setFormData(prevData => ({
+          ...prevData,
+          nombre_completo: '',
+          cedula: '',
+          correo_electronico: '',
+        }));
+      }
+    } else if (name in cardData) {
+      setCardData(prevData => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    onSubmit(formData);
-  };
 
-  const handleAnonymousDonate = () => {
-    console.log('Donación anónima iniciada');
+    if (showCard) {
+      if (!cardData.cardName || !cardData.cardNumber || !cardData.expiryDate || !cardData.cvv) {
+        setFormMessage({ type: 'error', text: 'Por favor, complete todos los datos de la tarjeta.' });
+        return;
+      }
+
+      console.log('Donation Data:', formData);
+      console.log('Card Data:', cardData);
+
+      setFormMessage({
+        type: 'success',
+        text: `¡Gracias por tu generosa donación de $${parseFloat(formData.cantidad_donar).toFixed(2)}! Tu apoyo hace la diferencia.`,
+      });
+
+      setShowCard(false);
+      setCardData({
+        cardName: '',
+        cardNumber: '',
+        expiryDate: '',
+        cvv: '',
+      });
+    } else {
+      setFormMessage({ type: null, text: null });
+
+      if (!formData.isAnonymous) {
+        if (!formData.nombre_completo || !formData.correo_electronico) {
+          setFormMessage({ type: 'error', text: 'Por favor, complete todos los campos requeridos (Nombre y Correo).' });
+          return;
+        }
+      }
+      if (!formData.cantidad_donar || parseFloat(formData.cantidad_donar) <= 0) {
+        setFormMessage({ type: 'error', text: 'Por favor, ingrese una cantidad válida para donar.' });
+        return;
+      }
+
+      setShowCard(true);
+    }
   };
 
   return (
-    <div className="bg-indigo-500 relative py-16 px-6">
-      <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
-        {/* IZQUIERDA */}
-        <div className="lg:w-1/2 w-full space-y-6">
-          <h2 className="text-white text-3xl font-bold text-center lg:text-left">DONAR</h2>
-          <p className="text-white text-lg font-bold  space-y-4 text-justify">
-            “Con tu Donacion puedes ser parte de este de esta ayuda para crear Prótesis. Si tu corazón te llama a donar más o menos, cada contribución es bienvenida con un profundo agradecimiento”
+      <section id="donar" className="py-16 bg-blue-100 text-center">
+
+        <div className="container mx-auto px-4" style={{ paddingLeft: '220px', paddingRight: '220px' }}>
+          <h3 className="text-3xl font-bold mb-4 text-blue-800">Realiza tu Donación</h3>
+          <p className="text-lg mb-8 max-w-3xl mx-auto text-gray-700">
+            Cada contribución, grande o pequeña, nos acerca a nuestro objetivo. Tu apoyo es fundamental.
           </p>
 
-          <div className="rounded-full " style={{ display: "flex", justifyContent: "center" }}>
-            <button
-              onClick={handleAnonymousDonate}
-              className=" text-white font-bold py-2 px-6 rounded transition duration-300"
-              style={{ backgroundColor: '#f54900', display: "flex", justifyContent: "center" }}
-            >
-              DONAR ANÓNIMAMENTE
-            </button>
-          </div>
+          <div className="flex flex-col lg:flex-row justify-center items-start gap-8">
+            <div className="lg:w-1/2">
+              <form
+                  id="donation-form"
+                  className="bg-white p-8 sm:p-10 rounded-lg shadow-xl inline-block text-left max-w-lg w-full mx-auto mt-4"
+                  onSubmit={handleSubmit}
+                  noValidate
+              >
+                {!showCard ? (
+                    <>
+                      <div className="mb-6 flex items-center">
+                        <input
+                            type="checkbox"
+                            id="donar_anonimamente"
+                            name="isAnonymous"
+                            checked={formData.isAnonymous}
+                            onChange={handleInputChange}
+                            className="mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                        />
+                        <label htmlFor="donar_anonimamente" className="text-gray-600 cursor-pointer">
+                          Quiero donar anónimamente
+                        </label>
+                      </div>
 
-          <p className="text-white text-lg font-bold  space-y-4 text-justify">
-            También puedes dejarnos tus datos, estos serán usados para brindarte información sobre como se usa tu donación.
-          </p>
+                      <div className={`transition-opacity duration-300 ease-in-out ${formData.isAnonymous ? 'opacity-50 pointer-events-none' : 'opacity-100'}`}>
+                        <div className="mb-5">
+                          <label htmlFor="nombre_completo" className="block mb-2 font-semibold text-gray-700">
+                            Nombre Completo:
+                          </label>
+                          <input
+                              type="text"
+                              id="nombre_completo"
+                              name="nombre_completo"
+                              value={formData.nombre_completo}
+                              onChange={handleInputChange}
+                              required={!formData.isAnonymous}
+                              disabled={formData.isAnonymous}
+                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                          />
+                        </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3 flex flex-col gap-3">
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder="Nombres completos"
-              className="w-full h-10 p-3 bg-white rounded focus:outline-none"
-              required
-            />
+                        <div className="mb-5">
+                          <label htmlFor="cedula" className="block mb-2 font-semibold text-gray-700">
+                            Cédula (Opcional):
+                          </label>
+                          <input
+                              type="text"
+                              id="cedula"
+                              name="cedula"
+                              value={formData.cedula}
+                              onChange={handleInputChange}
+                              disabled={formData.isAnonymous}
+                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                          />
+                        </div>
 
-            <input
-              type="text"
-              name="idNumber"
-              value={formData.idNumber}
-              onChange={handleChange}
-              placeholder="Número de cédula"
-              className="w-full h-10 p-3 bg-white rounded focus:outline-none"
-              required
-            />
+                        <div className="mb-5">
+                          <label htmlFor="correo_electronico" className="block mb-2 font-semibold text-gray-700">
+                            Correo Electrónico:
+                          </label>
+                          <input
+                              type="email"
+                              id="correo_electronico"
+                              name="correo_electronico"
+                              value={formData.correo_electronico}
+                              onChange={handleInputChange}
+                              required={!formData.isAnonymous}
+                              disabled={formData.isAnonymous}
+                              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
+                          />
+                        </div>
+                      </div>
 
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Correo electrónico"
-              className="w-full h-10 p-3 bg-white rounded focus:outline-none"
-              required
-            />
+                      <div className="mb-6">
+                        <label htmlFor="cantidad_donar" className="block mb-2 font-semibold text-gray-700">
+                          Cantidad a Donar (USD):
+                        </label>
+                        <input
+                            type="number"
+                            id="cantidad_donar"
+                            name="cantidad_donar"
+                            value={formData.cantidad_donar}
+                            onChange={handleInputChange}
+                            min="1"
+                            step="any"
+                            required
+                            placeholder="Ej: 25.00"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                      </div>
+                    </>
+                ) : (
+                    <div className="flex flex-col justify-around bg-gray-800 p-4 border border-white border-opacity-30 rounded-lg shadow-md mb-6">
+                      <div className="flex flex-row items-center justify-between mb-3">
+                        <input
+                            className="w-full h-10 border-none outline-none text-sm bg-gray-800 text-white font-semibold caret-orange-500 pl-2 mb-3 flex-grow"
+                            type="text"
+                            name="cardName"
+                            id="cardName"
+                            placeholder="Full Name"
+                            value={cardData.cardName}
+                            onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="flex flex-col space-y-3">
+                        <input
+                            className="w-full h-10 border-none outline-none text-sm bg-gray-800 text-white font-semibold caret-orange-500 pl-2"
+                            type="text"
+                            name="cardNumber"
+                            id="cardNumber"
+                            placeholder="0000 0000 0000 0000"
+                            value={cardData.cardNumber}
+                            onChange={handleInputChange}
+                        />
+                        <div className="flex flex-row justify-between">
+                          <input
+                              className="w-full h-10 border-none outline-none text-sm bg-gray-800 text-white font-semibold caret-orange-500 pl-2"
+                              type="text"
+                              name="expiryDate"
+                              id="expiryDate"
+                              placeholder="MM/AA"
+                              value={cardData.expiryDate}
+                              onChange={handleInputChange}
+                          />
+                          <input
+                              className="w-full h-10 border-none outline-none text-sm bg-gray-800 text-white font-semibold caret-orange-500 pl-2"
+                              type="text"
+                              name="cvv"
+                              id="cvv"
+                              placeholder="CVV"
+                              value={cardData.cvv}
+                              onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                )}
 
-            <input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Número de teléfono"
-              className="w-full h-10 p-3 bg-white rounded focus:outline-none"
-              required
-            />
+                <button
+                    type="submit"
+                    style={{
+                      backgroundColor: "#1e3a8a",
+                      color: "white",
+                      borderRadius: "4px",
+                      padding: "12px",
+                      width: "100%",
+                      fontWeight: "bold",
+                      border: "1px solid #16a34a",
+                      boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+                    }}
+                    className="w-full bg-cyan-500 text-white font-bold py-3 rounded-md border border-cyan-600 transition-transform duration-150 active:scale-95 shadow-md"
+                >
+                  {showCard ? "Confirmar Donación" : "Donar Ahora"}
+                </button>
 
-            <input
-              type="text"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              placeholder="Cantidad a donar"
-              className="w-full h-10 p-3 bg-white rounded focus:outline-none"
-              required
-            />
+                {showCard && (
+                    <button
+                        type="button"
+                        onClick={() => setShowCard(false)}
+                        className="w-full mt-4 bg-gray-300 text-gray-700 font-bold py-2 rounded-md border border-gray-400 transition-transform duration-150 active:scale-95 shadow-md"
+                    >
+                      Cancelar
+                    </button>
+                )}
+              </form>
 
-            <div className="flex items-center text-white text-sm">
-              <input
-                type="checkbox"
-                id="terms"
-                name="acceptTerms"
-                checked={formData.acceptTerms}
-                onChange={handleChange}
-                className="mr-2"
-                required
-              />
-              <label htmlFor="terms">Aceptar términos y condiciones</label>
+              {formMessage.text && (
+                  <div
+                      id="form-message"
+                      className={`mt-6 p-3 rounded-md text-sm max-w-lg mx-auto ${
+                          formMessage.type === 'success' ? 'bg-green-100 border border-green-300 text-green-800' : ''
+                      } ${
+                          formMessage.type === 'error' ? 'bg-red-100 border border-red-300 text-red-800' : ''
+                      }`}
+                      role="alert"
+                  >
+                    {formMessage.text}
+                  </div>
+              )}
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-1 px-4 rounded transition duration-300 h-11"
-              style={{ backgroundColor: '#f54900' }}
-            >
-              DONAR
-            </button>
-          </form>
-        </div>
-
-        {/* DERECHA: VIDEO */}
-        <div className="lg:w-1/2 w-full flex justify-center">
-          <div className="rounded-xl overflow-hidden shadow-lg max-w-xs w-full aspect-[9/16]">
-            <video controls className="w-full h-full object-cover rounded-xl">
-              <source src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/cuento-contigo-59395984-4484compartir-es-una-ayuda-sin-limites-protesis-pacoel_mwnUaka0.mp4" type="video/mp4" />
-              Tu navegador no soporta videos.
-            </video>
+            <div className="lg:w-1/2 w-full flex justify-center">
+              <div className="rounded-xl overflow-hidden shadow-lg max-w-xs w-full aspect-[9/18]">
+                <video controls className="w-full h-full object-cover rounded-xl">
+                  <source src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/cuento-contigo-59395984-4484compartir-es-una-ayuda-sin-limites-protesis-pacoel_mwnUaka0.mp4" type="video/mp4" />
+                  Tu navegador no soporta videos.
+                </video>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
   );
 };
 
-export default DonateComponent;
+export default DonationForm;
