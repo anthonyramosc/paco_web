@@ -62,10 +62,10 @@ export default function TikTokSlider() {
     const timerRef = useRef<number | null>(null);
     const sliderRef = useRef<HTMLDivElement>(null);
 
-    const visibleVideos = 2;
+    const visibleVideos = 3;
     const maxIndex = Math.max(0, videos.length - visibleVideos);
 
-    // Auto-rotation effect
+
     useEffect(() => {
         if (timerRef.current) {
             window.clearInterval(timerRef.current);
@@ -87,23 +87,23 @@ export default function TikTokSlider() {
         };
     }, [isPaused, maxIndex]);
 
-    // TikTok embed script loading effect
+
     useEffect(() => {
         setIsLoading(true);
 
-        // Remove previous script to force reload
+
         const existingScript = document.getElementById('tiktok-embed-script');
         if (existingScript) {
             existingScript.remove();
         }
 
-        // Add the TikTok embed script
+
         const script = document.createElement('script');
         script.id = 'tiktok-embed-script';
         script.src = 'https://www.tiktok.com/embed.js';
         script.async = true;
 
-        // Handle script load completion
+
         script.onload = () => {
             setIsLoading(false);
         };
@@ -117,7 +117,7 @@ export default function TikTokSlider() {
         };
     }, [currentIndex]);
 
-    // Navigation handlers
+
     const handlePrevious = () => {
         setCurrentIndex((prevIndex) => {
             const newIndex = prevIndex - 1;
@@ -136,7 +136,7 @@ export default function TikTokSlider() {
         setCurrentIndex(index);
     };
 
-    // Touch and swipe handling
+
     const touchStartX = useRef<number | null>(null);
 
     const handleTouchStart = (e: React.TouchEvent) => {
@@ -149,13 +149,13 @@ export default function TikTokSlider() {
         const touchEndX = e.changedTouches[0].clientX;
         const difference = touchStartX.current - touchEndX;
 
-        // If swipe is significant enough (more than 50px)
+
         if (Math.abs(difference) > 50) {
             if (difference > 0) {
-                // Swipe left, go next
+
                 handleNext();
             } else {
-                // Swipe right, go previous
+
                 handlePrevious();
             }
         }
@@ -163,12 +163,12 @@ export default function TikTokSlider() {
         touchStartX.current = null;
     };
 
-    // Get currently displayed videos
+
     const displayedVideos = videos.slice(currentIndex, currentIndex + visibleVideos);
 
     return (
         <div className="flex flex-col items-center w-full py-12 relative">
-            {/* Top wave SVG - properly positioned */}
+
             <div className="absolute top-0 left-0 w-full overflow-hidden z-0">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" className="w-full h-48">
                     <path
@@ -183,7 +183,7 @@ export default function TikTokSlider() {
                 <h1 className="text-4xl font-bold mb-2 text-indigo-600 tracking-wide">TikTok Highlights</h1>
                 <p className="text-lg text-gray-700 mb-6">Desliza para ver todos nuestros videos</p>
 
-                {/* Pause/Play button */}
+
                 <button
                     className="flex items-center space-x-2 bg-white rounded-full py-2 px-4 mb-8 shadow-md hover:shadow-lg transition-all duration-300"
                     onClick={() => setIsPaused(!isPaused)}
@@ -195,14 +195,14 @@ export default function TikTokSlider() {
                     <span className="text-gray-700 font-medium">{isPaused ? "Reanudar" : "Pausar"} reproducción</span>
                 </button>
 
-                {/* Main slider container */}
+
                 <div
                     className="w-full max-w-6xl relative px-6"
                     ref={sliderRef}
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {/* Navigation arrows */}
+
                     <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full flex justify-between px-2 z-10 pointer-events-none">
                         <button
                             onClick={handlePrevious}
@@ -220,16 +220,14 @@ export default function TikTokSlider() {
                         </button>
                     </div>
 
-                    {/* Videos container */}
-                    <div className="max-w-6xl overflow-hidden rounded-xl shadow-lg bg-white/50 backdrop-blur-sm p-4 relative">
-                        {/* Loading indicator */}
+
                         {isLoading && (
                             <div className="absolute inset-0 bg-white/70 z-10 flex items-center justify-center">
                                 <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
                             </div>
                         )}
 
-                        <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-8">
                             {displayedVideos.map((video) => (
                                 <div
                                     key={video.id}
@@ -256,7 +254,7 @@ export default function TikTokSlider() {
                                 </div>
                             ))}
                         </div>
-                    </div>
+
                 </div>
 
                 <div className="flex justify-center mt-8 mb-2">
@@ -272,13 +270,13 @@ export default function TikTokSlider() {
                     ))}
                 </div>
 
-                {/* Page indicator */}
+
                 <div className="mt-4 text-indigo-600 font-medium">
                     <span>{currentIndex + 1}</span> de <span>{maxIndex + 1}</span>
                 </div>
             </div>
 
-            {/* Bottom wave SVG - properly positioned */}
+
             <div className="absolute bottom-0 left-0 w-full overflow-hidden z-0">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" className="w-full h-48">
                     <path
@@ -289,7 +287,7 @@ export default function TikTokSlider() {
                 </svg>
             </div>
 
-            {/* Decorative elements */}
+
             <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-indigo-500/10 animate-pulse z-0"></div>
             <div className="absolute bottom-40 right-10 w-32 h-32 rounded-full bg-purple-500/10 animate-pulse delay-700 z-0"></div>
             <div className="absolute top-40 right-20 w-16 h-16 rounded-full bg-indigo-300/20 animate-pulse delay-1000 z-0"></div>
