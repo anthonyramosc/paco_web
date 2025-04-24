@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
+import DonationMetrics from "./donationmetrics";
 interface Slide {
   id: number;
   imageSrc: string;
@@ -145,6 +145,7 @@ const Introduction = ({ slides = defaultSlides, onDonate }: IntroductionProps) =
             </div>
           </div>
         </div>
+        <DonationMetrics/> 
       </div>
       
       {/* Onda inferior - color blanco */}
@@ -156,8 +157,9 @@ const Introduction = ({ slides = defaultSlides, onDonate }: IntroductionProps) =
             d="M0,96L48,128C96,160,192,224,288,245.3C384,267,480,245,576,213.3C672,181,768,139,864,117.3C960,96,1056,96,1152,112C1248,128,1344,160,1392,176L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
           ></path>
         </svg>
-      </div>
+      </div>  
     </div>
+    
   );
 };
 

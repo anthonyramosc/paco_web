@@ -11,76 +11,19 @@ const TypedText: React.FC = () => {
     const phrases = ["AYUDA SIN LÍMITES", "PROYECTO SOCIAL", "PACO EL MORLACO"];
     const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
 
-    useEffect(() => {
-        if (!containerRef.current) return;
-
-
-        const containerElement = containerRef.current;
-        containerElement.style.position = 'relative';
-        containerElement.style.display = 'inline-block';
-
-        let cursor = document.createElement('div');
-        cursor.className = 'cursor-element';
-        cursor.style.display = 'block';
-        cursor.style.position = 'absolute';
-        cursor.style.height = '100%';
-        cursor.style.top = '0';
-        cursor.style.right = '-5px';
-        cursor.style.width = '2px';
-        cursor.style.backgroundColor = "#5A67F9FF";
-        cursor.style.zIndex = '1';
-
-        if (!document.getElementById('cursor-animation-style')) {
-            const style = document.createElement('style');
-            style.id = 'cursor-animation-style';
-            style.textContent = `
-        @keyframes cursorBlink {
-          0% { opacity: 1; }
-          50% { opacity: 0; }
-          100% { opacity: 1; }
-        }
-        .cursor-element {
-          animation: cursorBlink 0.7s infinite;
-        }
-      `;
-            document.head.appendChild(style);
-        }
-
-        containerElement.appendChild(cursor);
-
-        return () => {
-            if (cursor && containerElement.contains(cursor)) {
-                containerElement.removeChild(cursor);
-            }
-
-            if (document.getElementById('cursor-animation-style')) {
-                const style = document.getElementById('cursor-animation-style');
-                if (style) document.head.removeChild(style);
-            }
-        };
-    }, []);
+    const longestPhrase = phrases.reduce((a, b) => (a.length > b.length ? a : b), "");
 
     useEffect(() => {
         const typePhrase = async (phrase: string) => {
-
             for (let i = 0; i <= phrase.length; i++) {
                 setDisplayText(phrase.substring(0, i));
-                await new Promise(resolve => setTimeout(resolve, 100));
+                await new Promise(resolve => setTimeout(resolve, 100)); // Velocidad de escritura
             }
 
-
+            // Espera antes de pasar a la siguiente frase
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-
-            for (let i = phrase.length; i >= 0; i--) {
-                setDisplayText(phrase.substring(0, i));
-                await new Promise(resolve => setTimeout(resolve, 50));
-            }
-
-
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-
+            // Cambia a la siguiente frase
             setCurrentPhraseIndex((prevIndex) => (prevIndex + 1) % phrases.length);
         };
 
@@ -89,11 +32,14 @@ const TypedText: React.FC = () => {
         };
 
         animateText();
-
     }, [currentPhraseIndex]);
 
     return (
-        <div ref={containerRef} className="inline-block relative">
+        <div
+            ref={containerRef}
+            className="inline-block relative"
+            style={{ width: `${longestPhrase.length}ch` }} // Fija el ancho basado en la frase más larga
+        >
             <span className="text-[#5A67F9FF]">{displayText}</span>
         </div>
     );
@@ -111,12 +57,13 @@ const Navbar: React.FC = () => {
                     </div>
 
 
-                    <div className=" md:flex space-x-8 z-10 ">
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Inicio</a>
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Conoceme</a>
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Donaciones</a>
-                        <a href="#" className="text-[#5A67F9FF] text-lg">Contactame</a>
+                    <div className="md:flex space-x-8 z-10">
+                        <a href="#inicio" className="text-[#5A67F9FF] !no-underline text-lg">Inicio</a>
+                        <a href="#conoceme" className="text-[#5A67F9FF] !no-underline text-lg">Conoceme</a>
+                        <a href="#donaciones" className="text-[#5A67F9FF] !no-underline text-lg">Donaciones</a>
+                        <a href="#contactame" className="text-[#5A67F9FF] !no-underline text-lg">Contactame</a>
                     </div>
+
 
 
                     <div className="flex space-x-2">
@@ -155,29 +102,33 @@ const Navbar: React.FC = () => {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
                         </svg>
                     </button>
+                    
 
                 </div>
             </div></header>
     );
 };
 
-const Layout: React.FC<{children: React.ReactNode}> = ({ children }) => {
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
-        <div className="flex flex-col min-h-screen" >
-            <Navbar />
-            <main className="flex-grow  " style={{marginTop:"-80px" , zIndex:"100"}}>
-                {children}
-            </main>
-            <footer className="bg-white text-indigo-700 py-6 px-6">
-                <div className="font-bold text-xl md:text-2xl  text-center">
-                    <TypedText  />
-                </div>
-                <div className="max-w-6xl mx-auto mt-3">
-                    <p className="text-center">Copyright © {new Date().getFullYear()} Toma mi mano | Developed by Anthony Ramos.</p>
-                </div>
-            </footer>
-        </div>
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow" style={{ marginTop: "-80px", zIndex: "100" }}>
+          {children}
+
+        </main>
+        <footer className="bg-white text-indigo-700 py-6 px-6">
+          <div className="font-bold text-xl md:text-2xl text-center">
+            <TypedText />
+          </div>
+          <div className="max-w-6xl mx-auto mt-3">
+            <p className="text-center">
+              Copyright © {new Date().getFullYear()} Toma mi mano | Developed by Anthony Ramos.
+            </p>
+          </div>
+        </footer>
+      </div>
     );
-};
+  };
 
 export default Layout;

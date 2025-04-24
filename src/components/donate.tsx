@@ -41,7 +41,7 @@ const DonateComponent = ({ onSubmit }: DonateProps) => {
   };
 
   return (
-    <div className="bg-blue-600 relative py-16 px-6">
+    <div className="bg-indigo-500 relative py-16 px-6">
       <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-10">
         {/* IZQUIERDA */}
         <div className="lg:w-1/2 w-full space-y-6">
