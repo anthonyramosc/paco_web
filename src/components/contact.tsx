@@ -174,8 +174,8 @@ const ContactForm = () => {
 
   return (
       <div className="w-full max-w-6xl mx-auto px-4 py-12 font-sans">
-        <div className="flex flex-col md:flex-row md:gap-16 items-start">
-          {/* Columna de Formulario */}
+        <div className="flex flex-col md:flex-row md:gap-8 items-start">
+
           <div className="w-full md:w-1/2 mb-8 md:mb-0">
             <h2 className="text-2xl font-bold text-blue-700 mb-2">
               Contáctame
@@ -290,8 +290,7 @@ const ContactForm = () => {
             </form>
           </div>
 
-          {/* Columna de Subida de Imagen */}
-          <div className="w-full md:w-1/2 flex justify-center">
+          <div className="w-full md:w-1/2 flex justify-start">
             <input
                 type="file"
                 accept="image/*"

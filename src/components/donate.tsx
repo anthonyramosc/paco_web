@@ -269,7 +269,40 @@ const DonationForm: React.FC = () => {
           </div>
 
           <div className="flex flex-col lg:flex-row justify-center items-start gap-8">
-            <div className="lg:w-1/2 w-full">
+            <div className="lg:w-3/7 md:w- w-full ml-21">
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <h4 className="text-xl font-semibold mb-4 text-gray-800">Tu Donación Marca la Diferencia</h4>
+
+                <div className="rounded-xl overflow-hidden shadow-md mb-6">
+                  <video
+                      controls
+                      className="w-full aspect-video object-cover"
+                      poster="/api/placeholder/640/360"
+                  >
+                    <source src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/cuento-contigo-59395984-4484compartir-es-una-ayuda-sin-limites-protesis-pacoel_mwnUaka0.mp4" type="video/mp4" />
+                    Tu navegador no soporta videos.
+                  </video>
+                </div>
+
+                <div className="space-y-4 text-gray-700">
+                  <p>
+                    Con tu donativo apoyas programas que brindan ayuda directa a quienes más lo necesitan.
+                  </p>
+                  <p>
+                    Cada contribución nos permite:
+                  </p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Desarrollar proyectos comunitarios sostenibles</li>
+                    <li>Ofrecer educación y capacitación</li>
+                    <li>Responder rápidamente ante emergencias</li>
+                  </ul>
+                  <p className="text-sm italic text-gray-500 mt-4">
+                    Tu donación puede ser deducible de impuestos. Consulta con tu asesor fiscal.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="lg:w-3/6 w-full">
               <form
                   id="donation-form"
                   className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full mx-auto"
@@ -284,16 +317,16 @@ const DonationForm: React.FC = () => {
                 {!showCard ? (
                     <>
                       <div className="mb-6">
-                        <label className="flex items-center cursor-pointer">
+                        <label className="flex items-center cursor-pointer gap-2">
                           <input
                               type="checkbox"
                               id="donar_anonimamente"
                               name="isAnonymous"
                               checked={formData.isAnonymous}
                               onChange={handleInputChange}
-                              className="mr-3 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
+                              className=" mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
                           />
-                          <span className="text-gray-600">Quiero donar anónimamente</span>
+                          <span className="ml-3  text-gray-600 text-lg">Quiero donar anónimamente</span>
                         </label>
                       </div>
 
@@ -428,8 +461,10 @@ const DonationForm: React.FC = () => {
                         <ChevronLeft size={16} className="mr-1" /> Volver
                       </button>
 
-                      <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                        <p className="text-blue-800 flex items-center text-sm">
+                      <div className="mb-4 p-3 bg-blue-50 rounded-md"
+                           style={{border: "2px solid blue"}}>
+                        <p className="flex items-center text-sm"
+                           style={{color: "blue"}}>
                           <CreditCard size={16} className="mr-2" />
                           Realizando donación de <span className="font-bold ml-1">${parseFloat(formData.cantidad_donar).toFixed(2)} USD</span>
                         </p>
@@ -542,16 +577,26 @@ const DonationForm: React.FC = () => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-blue-800 text-white font-bold py-3 rounded-md border border-blue-900 transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
+                    className="w-full font-bold py-3 rounded-md transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center"
+                    style={{
+                      border: "2px solid blue",
+                      borderRadius: "20px",
+                      backgroundColor: "white",
+                      color: "blue"
+                    }}
                 >
                   {isSubmitting ? (
                       <span className="flex items-center">
-                    <svg className="animate-spin mr-2 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Procesando...
-                  </span>
+        <svg className="animate-spin mr-2 h-5 w-5"
+             style={{color: "blue"}}
+             xmlns="http://www.w3.org/2000/svg"
+             fill="none"
+             viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Procesando...
+      </span>
                   ) : (
                       showCard ? "Completar Donación" : "Continuar"
                   )}
@@ -577,40 +622,7 @@ const DonationForm: React.FC = () => {
               )}
             </div>
 
-            <div className="lg:w-1/2 w-full">
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <h4 className="text-xl font-semibold mb-4 text-gray-800">Tu Donación Marca la Diferencia</h4>
 
-                <div className="rounded-xl overflow-hidden shadow-md mb-6">
-                  <video
-                      controls
-                      className="w-full aspect-video object-cover"
-                      poster="/api/placeholder/640/360"
-                  >
-                    <source src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/cuento-contigo-59395984-4484compartir-es-una-ayuda-sin-limites-protesis-pacoel_mwnUaka0.mp4" type="video/mp4" />
-                    Tu navegador no soporta videos.
-                  </video>
-                </div>
-
-                <div className="space-y-4 text-gray-700">
-                  <p>
-                    Con tu donativo apoyas programas que brindan ayuda directa a quienes más lo necesitan.
-                  </p>
-                  <p>
-                    Cada contribución nos permite:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-2">
-                    <li>Proporcionar asistencia médica esencial</li>
-                    <li>Desarrollar proyectos comunitarios sostenibles</li>
-                    <li>Ofrecer educación y capacitación</li>
-                    <li>Responder rápidamente ante emergencias</li>
-                  </ul>
-                  <p className="text-sm italic text-gray-500 mt-4">
-                    Tu donación puede ser deducible de impuestos. Consulta con tu asesor fiscal.
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
