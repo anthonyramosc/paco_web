@@ -257,7 +257,7 @@ const DonationForm: React.FC = () => {
 
   return (
       <section id="donar" className="py-16 bg-blue-100">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="container mx-auto px-4 ">
           <div className="text-center mb-10">
             <h3 className="text-3xl font-bold mb-4 text-blue-800">Realiza tu Donación</h3>
             <p className="text-lg mb-2 max-w-3xl mx-auto text-gray-700">
@@ -268,16 +268,15 @@ const DonationForm: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex flex-col lg:flex-row justify-center items-start gap-8">
-            <div className="lg:w-3/7 md:w- w-full ml-21">
+          <div className="flex flex-col lg:flex-row justify-center w-6/6 items-start gap-8">
+            <div className="w-1/2 ml-21">
               <div className="bg-white p-6 rounded-lg shadow-lg">
-                <h4 className="text-xl font-semibold mb-4 text-gray-800">Tu Donación Marca la Diferencia</h4>
 
-                <div className="rounded-xl overflow-hidden shadow-md mb-6">
+                <div className="rounded-xl  overflow-hidden shadow-md mb-6" style={{height:"550px"}}>
                   <video
                       controls
-                      className="w-full aspect-video object-cover"
-                      poster="/api/placeholder/640/360"
+                      className="w-full  aspect-video object-cover"
+                      style={{height:"550px"}}
                   >
                     <source src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/cuento-contigo-59395984-4484compartir-es-una-ayuda-sin-limites-protesis-pacoel_mwnUaka0.mp4" type="video/mp4" />
                     Tu navegador no soporta videos.
@@ -285,24 +284,13 @@ const DonationForm: React.FC = () => {
                 </div>
 
                 <div className="space-y-4 text-gray-700">
-                  <p>
-                    Con tu donativo apoyas programas que brindan ayuda directa a quienes más lo necesitan.
-                  </p>
-                  <p>
-                    Cada contribución nos permite:
-                  </p>
-                  <ul className="list-disc pl-5 space-y-1">
-                    <li>Desarrollar proyectos comunitarios sostenibles</li>
-                    <li>Ofrecer educación y capacitación</li>
-                    <li>Responder rápidamente ante emergencias</li>
-                  </ul>
                   <p className="text-sm italic text-gray-500 mt-4">
                     Tu donación puede ser deducible de impuestos. Consulta con tu asesor fiscal.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="lg:w-3/6 w-full">
+            <div className=" w-1/2">
               <form
                   id="donation-form"
                   className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full mx-auto"

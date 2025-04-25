@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import imgP from "../assets/img/banner-img-1.png";
-import imgP1 from "../assets/img/img.png";
-import imgP2 from "../assets/img/img_1.png";
 
 
 interface Slide {

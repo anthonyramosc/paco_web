@@ -4,7 +4,7 @@ import React from 'react';
 
 const HeroBanner: React.FC = () => {
     return (
-        <div className="relative overflow-hidden ">
+        <div className="relative overflow-hidden z-50">
 
             <div className="pt-6 pb-10 relative">
                 <div className="w-full md:w-full relative z-10">
