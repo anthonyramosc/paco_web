@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 
 const NewsSection = () => {
-    const [activeNewsFilter, setActiveNewsFilter] = useState('TESTIMONIOS');
+    const [activeNewsFilter, setActiveNewsFilter] = useState<string | null>('TESTIMONIOS');
     const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
     const [visibleNewsCount, setVisibleNewsCount] = useState(3);
-    const [expandedArticle, setExpandedArticle] = useState(null);
+    const [expandedArticle, setExpandedArticle] = useState<number | null>(null);
 
     // News data array
     const newsItems = [
@@ -109,7 +109,7 @@ const NewsSection = () => {
 
     const visibleNews = getVisibleNews();
 
-    const toggleExpandArticle = (id) => {
+    const toggleExpandArticle = (id: number) => {
         setExpandedArticle(expandedArticle === id ? null : id);
     };
 
@@ -152,12 +152,12 @@ const NewsSection = () => {
                                 }}
                                 onMouseEnter={(e) => {
                                     if (activeNewsFilter !== filter) {
-                                        e.target.style.backgroundColor = '#f3f4f6';
+                                        (e.target as HTMLButtonElement).style.backgroundColor = '#f3f4f6';
                                     }
                                 }}
                                 onMouseLeave={(e) => {
                                     if (activeNewsFilter !== filter) {
-                                        e.target.style.backgroundColor = '#ffffff';
+                                        (e.target as HTMLButtonElement).style.backgroundColor = '#ffffff';
                                     }
                                 }}
 
