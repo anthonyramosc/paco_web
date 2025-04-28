@@ -1,305 +1,231 @@
-import React, { useState, useEffect } from "react";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import { useState, useEffect } from "react";
 
-
-interface DonationData {
-    name: string;
-    value: number;
-    icon: string;
-    description: string;
-}
-
-interface CustomTooltipProps {
-    active?: boolean;
-    payload?: Array<{
-        payload: DonationData;
-    }>;
-}
-
-interface CustomizedLabelProps {
-    cx: number;
-    cy: number;
-    midAngle: number;
-    innerRadius: number;
-    outerRadius: number;
-    percent: number;
-    index: number;
-    value: number;
-    name: string;
-}
-
-interface ChartSectionProps {
-    title: string;
-    data: DonationData[];
-    colorMap: string[];
-    totalLabel: string;
-    isMoney?: boolean;
-    icon: string;
-}
-
-const SegmentacionDashboard: React.FC = () => {
-    const [isVisible, setIsVisible] = useState<boolean>(false);
-    const [animationKey, setAnimationKey] = useState<number>(0);
+const CampaignInterface = () => {
+    const [isVisible, setIsVisible] = useState(false);
+    const [isQrExpanded, setIsQrExpanded] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsVisible(true);
-            setAnimationKey(1); // Trigger animations
         }, 300);
         return () => clearTimeout(timer);
     }, []);
 
-    // Datos de ejemplo mejorados
-    const datosDonaciones: DonationData[] = [
-        { name: "Total de Donaciones", value: 150, icon: "👤", description: "Número de donantes" },
-        { name: "Donaciones Únicas", value: 95, icon: "🔄", description: "Donaciones no recurrentes" },
-        { name: "Donaciones Recurrentes", value: 55, icon: "♻️", description: "Donaciones mensuales" },
-    ];
-
-    const datosRecaudacion: DonationData[] = [
-        { name: "Monto Recaudado", value: 5000, icon: "💰", description: "Total recaudado hasta hoy" },
-        { name: "Pendiente", value: 5000, icon: "⏳", description: "Falta para alcanzar la meta" },
-    ];
-
-    const colorMapDonaciones: string[] = [
-        "#3b82f6", // Azul
-        "#8b5cf6", // Púrpura
-        "#06b6d4", // Cian
-    ];
-
-    const colorMapRecaudacion: string[] = [
-        "#ec4899", // Rosa
-        "#f59e0b", // Naranja
-    ];
-
-    const valueFormatter = (number: number): string => `${Intl.NumberFormat("es-MX").format(number)}`;
-
-    const CustomTooltip: React.FC<CustomTooltipProps> = ({ active, payload }) => {
-        if (active && payload && payload.length) {
-            const data = payload[0].payload;
-            return (
-                <div className="bg-white p-1  shadow-lg rounded-lg border border-gray-200">
-                    <p className="font-bold flex items-center gap-2">
-                        <span>{data.icon}</span>
-                        <span>{data.name}</span>
-                    </p>
-                    <p className="text-gray-600 text-sm">{data.description}</p>
-                    <p className="font-bold text-lg mt-1">
-                        {data.name.includes("Monto") || data.name.includes("Pendiente")
-                            ? `$${valueFormatter(data.value)}`
-                            : valueFormatter(data.value)}
-                    </p>
-                </div>
-            );
-        }
-        return null;
+    // User data
+    const userData = {
+        name: "Paco",
+        id: "#0035000000",
+        balance: "$0.00",
+        balanceLabel: "Disponible",
+        avatar: "🐱"
     };
 
-    const CustomizedLabel: React.FC<CustomizedLabelProps> = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-        const RADIAN = Math.PI / 180;
-        const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-        const x = cx + radius * Math.cos(-midAngle * RADIAN);
-        const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-        return (
-            <text
-                x={x}
-                y={y}
-                fill="#fff"
-                textAnchor={x > cx ? 'start' : 'end'}
-                dominantBaseline="central"
-                className="font-bold"
-            >
-                {`${(percent * 100).toFixed(0)}%`}
-            </text>
-        );
+    // Campaign data
+    const campaignData = {
+        totalRecaudado: 5000,
+        progreso: 50,
+        promedioDonacion: 33333,
+        donacionMasAlta: 500,
     };
 
-    const ChartSection: React.FC<ChartSectionProps> = ({ title, data, colorMap, totalLabel, isMoney = false, icon }) => {
-        const total = data.reduce((sum, item) => sum + item.value, 0);
+    const valueFormatter = (number: number) =>
+        `${Intl.NumberFormat("es-MX").format(number)}`;
 
-        return (
-            <div className={`bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-lg overflow-hidden  w-4/6
-                transition-all duration-500 transform hover:shadow-xl mb-6
-                ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-
-                <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center">
-                            <div className="h-12 w-12 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 mr-4">
-                                <span className="text-2xl">{icon}</span>
-                            </div>
-                            <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">{title}</h3>
-                        </div>
-                        <div className="bg-indigo-50 px-4 py-2 rounded-full hidden md:flex items-center">
-                            <span className="text-indigo-700 font-medium">{totalLabel}: </span>
-                            <span className="font-bold ml-2 text-indigo-800">
-                                {isMoney ? `$${valueFormatter(total)}` : valueFormatter(total)}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="w-full md:w-1/2 h-64">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <PieChart key={animationKey}>
-                                    <Pie
-                                        data={data}
-                                        cx="50%"
-                                        cy="50%"
-                                        labelLine={false}
-                                        label={CustomizedLabel}
-                                        outerRadius={80}
-                                        fill="#8884d8"
-                                        dataKey="value"
-                                        animationBegin={300}
-                                        animationDuration={1500}
-                                        isAnimationActive={isVisible}
-                                        className="cursor-pointer"
-                                    >
-                                        {data.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={colorMap[index % colorMap.length]} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Legend
-                                        formatter={(value) => <span className="text-gray-800">{value}</span>}
-                                        iconType="circle"
-                                        layout="vertical"
-                                        verticalAlign="middle"
-                                        align="right"
-                                    />
-                                </PieChart>
-                            </ResponsiveContainer>
-                        </div>
-
-                        <div className="w-full md:w-1/2">
-                            <div className="bg-gray-50 rounded-lg p-4 shadow-inner">
-                                <h4 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2 flex items-center">
-                                    <span className="mr-2">{icon}</span> Detalles
-                                </h4>
-                                {data.map((item, index) => (
-                                    <div
-                                        key={item.name}
-                                        className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 rounded-md px-2 transition-all duration-200"
-                                        style={{
-                                            animation: isVisible ? `fadeInUp ${0.3 + index * 0.1}s ease-out forwards` : 'none',
-                                        }}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <div
-                                                className="w-10 h-10 rounded-full flex items-center justify-center text-white"
-                                                style={{ backgroundColor: colorMap[index % colorMap.length] }}
-                                            >
-                                                <span className="text-xl">{item.icon}</span>
-                                            </div>
-                                            <div>
-                                                <div className="font-medium">{item.name}</div>
-                                                <div className="text-xs text-gray-500">{item.description}</div>
-                                            </div>
-                                        </div>
-                                        <div
-                                            className="text-lg font-bold"
-                                            style={{ color: colorMap[index % colorMap.length] }}
-                                        >
-                                            {isMoney ? `$${valueFormatter(item.value)}` : valueFormatter(item.value)}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
+    const toggleQrCode = () => {
+        setIsQrExpanded(!isQrExpanded);
     };
 
-    // Componente de Barra de Progreso
-    const ProgressBar: React.FC = () => {
-        const totalRecaudado: number = 5000;
-        const meta: number = 10000;
-        const progreso: number = (totalRecaudado / meta) * 100;
+    // QR Code renderer - simplified SVG version
+    const QrCode = () => (
+        <div className="bg-white p-4 rounded-lg">
+            <svg width="100%" height="100%" viewBox="0 0 29 29" fill="none">
+                <rect width="29" height="29" fill="white" />
+                {/* QR Code pattern - simplified version */}
+                <rect x="2" y="2" width="3" height="3" fill="black" />
+                <rect x="5" y="2" width="3" height="3" fill="black" />
+                <rect x="8" y="2" width="3" height="3" fill="black" />
+                <rect x="2" y="5" width="3" height="3" fill="black" />
+                <rect x="8" y="5" width="3" height="3" fill="black" />
+                <rect x="2" y="8" width="3" height="3" fill="black" />
+                <rect x="5" y="8" width="3" height="3" fill="black" />
+                <rect x="8" y="8" width="3" height="3" fill="black" />
 
-        const getProgressColor = (): string => {
-            if (progreso < 30) return "bg-red-500";
-            if (progreso < 60) return "bg-yellow-500";
-            if (progreso < 90) return "bg-blue-500";
-            return "bg-green-500";
-        };
+                <rect x="18" y="2" width="3" height="3" fill="black" />
+                <rect x="21" y="2" width="3" height="3" fill="black" />
+                <rect x="24" y="2" width="3" height="3" fill="black" />
+                <rect x="18" y="5" width="3" height="3" fill="black" />
+                <rect x="24" y="5" width="3" height="3" fill="black" />
+                <rect x="18" y="8" width="3" height="3" fill="black" />
+                <rect x="21" y="8" width="3" height="3" fill="black" />
+                <rect x="24" y="8" width="3" height="3" fill="black" />
 
-        const progressColorClass: string = getProgressColor();
+                <rect x="2" y="18" width="3" height="3" fill="black" />
+                <rect x="5" y="18" width="3" height="3" fill="black" />
+                <rect x="8" y="18" width="3" height="3" fill="black" />
+                <rect x="2" y="21" width="3" height="3" fill="black" />
+                <rect x="8" y="21" width="3" height="3" fill="black" />
+                <rect x="2" y="24" width="3" height="3" fill="black" />
+                <rect x="5" y="24" width="3" height="3" fill="black" />
+                <rect x="8" y="24" width="3" height="3" fill="black" />
 
-        return (
-            <div className={`bg-white rounded-xl shadow-lg overflow-hidden  w-4/6
-                transition-all duration-500 transform hover:shadow-xl mb-6
-                ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-                <div className="p-6">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center">
-                            <div className="h-12 w-12 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-600 mr-4">
-                                <span className="text-2xl">🎯</span>
-                            </div>
-                            <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600">
-                                Progreso de la Campaña
-                            </h3>
-                        </div>
-                    </div>
+                <rect x="13" y="5" width="3" height="3" fill="black" />
+                <rect x="13" y="11" width="3" height="3" fill="black" />
+                <rect x="5" y="13" width="3" height="3" fill="black" />
+                <rect x="11" y="13" width="3" height="3" fill="black" />
+                <rect x="21" y="13" width="3" height="3" fill="black" />
+                <rect x="16" y="16" width="3" height="3" fill="black" />
+                <rect x="24" y="16" width="3" height="3" fill="black" />
+                <rect x="13" y="21" width="3" height="3" fill="black" />
+                <rect x="16" y="24" width="3" height="3" fill="black" />
+                <rect x="21" y="21" width="3" height="3" fill="black" />
 
-                    <div className="w-full">
-                        <div className="relative">
-                            <div className="w-full bg-gray-200 rounded-full h-10 overflow-hidden shadow-inner">
-                                <div
-                                    className={`${progressColorClass} h-10 rounded-full transition-all duration-1000 ease-out relative`}
-                                    style={{ width: `${progreso}%` }}
-                                >
-                                    <div className="absolute inset-0 flex items-center justify-center text-white text-sm font-medium">
-                                        {Math.round(progreso)}%
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="flex justify-between text-sm text-gray-600 mt-2">
-                                <span className="font-medium">Recaudado: <span className="text-pink-600">${valueFormatter(totalRecaudado)}</span></span>
-                                <span className="font-medium">Meta: <span className="text-green-600">${valueFormatter(meta)}</span></span>
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-                            <div className="bg-indigo-50 rounded-lg p-4 flex flex-col items-center">
-                                <div className="text-indigo-700 text-sm">Promedio por donación</div>
-                                <div className="text-indigo-900 font-bold text-xl">${valueFormatter(totalRecaudado / 150)}</div>
-                            </div>
-
-                            <div className="bg-pink-50 rounded-lg p-4 flex flex-col items-center">
-                                <div className="text-pink-700 text-sm">Donación más alta</div>
-                                <div className="text-pink-900 font-bold text-xl">${valueFormatter(500)}</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        );
-    };
+                {/* Center logo */}
+                <rect x="12" y="12" width="5" height="5" fill="indigo" rx="1" />
+                <text x="14.5" y="15.5" fontSize="3" fill="white" textAnchor="middle" dominantBaseline="middle">P</text>
+            </svg>
+            {isQrExpanded &&
+                <p className="text-center text-xs mt-2 text-gray-600">Escanea para donar a la campaña</p>
+            }
+        </div>
+    );
 
     return (
-        <div className={`space-y-6 px-4 transition-all duration-500 flex flex-col justify-center items-center ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-            <ProgressBar />
-            <ChartSection
-                title="Tipos de Donantes"
-                data={datosDonaciones}
-                colorMap={colorMapDonaciones}
-                totalLabel="Total de Donantes"
-                icon="👥"
-            />
-            <ChartSection
-                title="Estado de Recaudación"
-                data={datosRecaudacion}
-                colorMap={colorMapRecaudacion}
-                totalLabel="Meta Total"
-                isMoney={true}
-                icon="💰"
-            />
+        <div className="flex px-6 flex-col mb-6 w-full mx-auto" style={{ maxWidth: "1140px" }}>
+            <div className={`flex flex-col w-full bg-gradient-to-br from-indigo-600 to-indigo-500 text-white shadow-2xl overflow-hidden rounded-xl transition-all duration-500 border-2 border-indigo-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-8'}`}>
+                <div className="relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-12 opacity-20">
+                        {[...Array(8)].map((_, i) => (
+                            <div
+                                key={i}
+                                className="absolute w-1 h-1 bg-white rounded-full animate-pulse"
+                                style={{
+                                    top: `${Math.random() * 100}%`,
+                                    left: `${Math.random() * 100}%`,
+                                    animationDelay: `${Math.random() * 2}s`,
+                                    animationDuration: `${2 + Math.random() * 3}s`
+                                }}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                {/* User profile section */}
+                <div className="p-6 pt-8">
+                    <div className="flex justify-between items-center mb-6">
+                        <div className="flex items-center">
+                            <div className="relative">
+                                <div className="h-32 w-32 rounded-full bg-gradient-to-br from-indigo-400 to-pink-500 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg transform hover:scale-105 transition-transform duration-300">
+                                    <img
+                                        src="https://scontent.fuio5-1.fna.fbcdn.net/v/t39.30808-6/348554621_651965240127256_3590768635837703934_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=fxRtwnnqD7oQ7kNvwGnKeVP&_nc_oc=Adm_pz3J0p_myCaTIFb41XCyLqMDC-_EkUhzx1ee6gYkU2ee7V8whPoQF9pCo3IyNDk&_nc_zt=23&_nc_ht=scontent.fuio5-1.fna&_nc_gid=46c3JzoQlXD6o1sRE_PRxw&oh=00_AfGX-70TEYkioF_eLyRHjgnt_OH8Bx7XWUhvo5O1pjkCqw&oe=6815B71A"
+                                        alt="Avatar"
+                                        className="h-full w-full object-cover"
+                                    />
+                                </div>
+                                <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full border-2 border-white flex items-center justify-center">
+                                    <span className="text-lg">✓</span>
+                                </div>
+                            </div>
+                            <div className="ml-4">
+                                <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-indigo-200 drop-shadow-md">{userData.name}</h2>
+                                <p className="text-indigo-200 text-lg">{userData.id}</p>
+                            </div>
+                        </div>
+
+                        <div className="text-right bg-indigo-800 bg-opacity-50 p-3 rounded-lg shadow-inner border-2 border-indigo-400">
+                            <h3 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-indigo-200">{userData.balance}</h3>
+                            <p className="text-indigo-200 text-xs">{userData.balanceLabel}</p>
+                        </div>
+                    </div>
+
+                  
+                    <div className="flex justify-end gap-4 mb-6">
+                        <button className="bg-gradient-to-r from-indigo-600 to-indigo-600 rounded-lg px-4 py-3 text-center text-base font-medium hover:from-indigo-700 hover:to-indigo-700 transition duration-300 shadow-lg transform hover:-translate-y-1 border-4 border-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 relative overflow-hidden">
+                            <span className="relative z-10 text-lg font-bold">Compartir</span>
+                            <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-blue-300 to-indigo-300 animate-pulse"></div>
+                        </button>
+                        <button
+                            className={`bg-gradient-to-r from-indigo-600 to-infigo-600 rounded-lg p-3 w-14 h-14 flex items-center justify-center hover:from-indigo-700 hover:to-indigo-700 transition duration-300 shadow-lg transform ${isQrExpanded ? 'rotate-45' : 'hover:-translate-y-1'} border-4 border-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 relative`}
+                            onClick={toggleQrCode}
+                        >
+                            <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-blue-300 to-indigo-300 animate-pulse rounded-lg"></div>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="relative z-10">
+                                <rect x="4" y="4" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
+                                <rect x="14" y="4" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
+                                <rect x="4" y="14" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
+                                <rect x="14" y="14" width="6" height="6" rx="1" stroke="white" strokeWidth="2" />
+                                <rect x="7" y="7" width="2" height="2" fill="white" />
+                                <rect x="17" y="7" width="2" height="2" fill="white" />
+                                <rect x="7" y="17" width="2" height="2" fill="white" />
+                                <rect x="17" y="17" width="2" height="2" fill="white" />
+                            </svg>
+                        </button>
+                    </div>
+                    {/* Expandable QR code */}
+                    {isQrExpanded && (
+                        <div className="bg-white bg-opacity-10 p-4 rounded-xl mb-6 backdrop-filter backdrop-blur-sm shadow-lg transition-all duration-300 animate-fadeIn border-2 border-white">
+                            <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-lg font-semibold text-white">Código QR de la campaña</h4>
+                                <div className="bg-indigo-700 bg-opacity-70 text-white text-xs px-3 py-1 rounded-full border-2 border-white">
+                                    Exclusivo
+                                </div>
+                            </div>
+                            <div className="w-full max-w-xs mx-auto">
+                                <QrCode />
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Campaign progress section */}
+                <div className="bg-white text-black p-6 w-full rounded-t-3xl shadow-inner border-t-4 border-indigo-500">
+                    <div className="flex items-center mb-6">
+                        <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-pink-100 text-indigo-600 mr-4 shadow-md border-2 border-indigo-200">
+                            <span className="text-xl">🎯</span>
+                        </div>
+                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-pink-600">
+                            Progreso de la Campaña
+                        </h3>
+                    </div>
+
+                    {/* Progress bar with improved animation */}
+                    <div className="w-full mb-4 relative">
+                        <div className="w-full bg-gray-200 h-8 overflow-hidden shadow-inner rounded-lg border-2 border-gray-300">
+                            <div
+                                className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 h-8 transition-all duration-1500 ease-out rounded-lg relative"
+                                style={{ width: `${campaignData.progreso}%` }}
+                            >
+                                {/* Shimmer effect */}
+                                <div className="absolute inset-0 overflow-hidden">
+                                    <div className="absolute inset-0 transform -skew-x-12 bg-white opacity-20"></div>
+                                    <div className="absolute inset-0 animate-shimmer"></div>
+                                </div>
+                            </div>
+                            <div className="absolute inset-0 flex items-center justify-center text-sm font-bold text-gray-700">
+                                {campaignData.progreso}% Completado
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="text-base text-gray-600 mb-6 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded-lg shadow-sm border-l-4 border-yellow-400">
+                        <span className="font-bold">Recaudado: <span className="text-pink-600 font-bold text-lg">${valueFormatter(campaignData.totalRecaudado)}</span></span>
+                    </div>
+
+                    {/* Stats boxes with improved design */}
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 flex flex-col items-center shadow-md rounded-lg hover:shadow-lg transition duration-300 transform hover:-translate-y-1 border-t-4 border-blue-500">
+                            <div className="text-blue-700 text-sm mb-1 font-semibold">Promedio por donación</div>
+                            <div className="text-blue-900 font-bold text-xl">${valueFormatter(campaignData.promedioDonacion)}</div>
+                        </div>
+
+                        <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-4 flex flex-col items-center shadow-md rounded-lg hover:shadow-lg transition duration-300 transform hover:-translate-y-1 border-t-4 border-pink-500">
+                            <div className="text-pink-700 text-sm mb-1 font-semibold">Donación más alta</div>
+                            <div className="text-pink-900 font-bold text-xl">${valueFormatter(campaignData.donacionMasAlta)}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };
 
-export default SegmentacionDashboard;
+export default CampaignInterface;
