@@ -91,7 +91,7 @@ const CampaignInterface = () => {
 
     return (
         <div className="flex px-6 flex-col mb-6 w-full mx-auto" style={{ maxWidth: "1140px" }}>
-            <div className={`flex flex-col w-full bg-gradient-to-br from-indigo-600 to-indigo-500 text-white shadow-2xl overflow-hidden rounded-xl transition-all duration-500 border-2 border-indigo-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-8'}`}>
+            <div className={`flex flex-col w-full bg-gradient-to-br from-[#785D99] to-[#785D99] text-white shadow-2xl overflow-hidden rounded-xl transition-all duration-500 border-2 border-indigo-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-8'}`}>
                 <div className="relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-12 opacity-20">
                         {[...Array(8)].map((_, i) => (
@@ -114,7 +114,7 @@ const CampaignInterface = () => {
                     <div className="flex justify-between items-center mb-6">
                         <div className="flex items-center">
                             <div className="relative">
-                                <div className="h-32 w-32 rounded-full bg-gradient-to-br from-indigo-400 to-pink-500 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg transform hover:scale-105 transition-transform duration-300">
+                                <div className="h-32 w-32 rounded-full bg-gradient-to-br from-[#785D99] to-pink-500 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg transform hover:scale-105 transition-transform duration-300">
                                     <img
                                         src="https://scontent.fuio5-1.fna.fbcdn.net/v/t39.30808-6/348554621_651965240127256_3590768635837703934_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=fxRtwnnqD7oQ7kNvwGnKeVP&_nc_oc=Adm_pz3J0p_myCaTIFb41XCyLqMDC-_EkUhzx1ee6gYkU2ee7V8whPoQF9pCo3IyNDk&_nc_zt=23&_nc_ht=scontent.fuio5-1.fna&_nc_gid=46c3JzoQlXD6o1sRE_PRxw&oh=00_AfGX-70TEYkioF_eLyRHjgnt_OH8Bx7XWUhvo5O1pjkCqw&oe=6815B71A"
                                         alt="Avatar"
@@ -182,7 +182,7 @@ const CampaignInterface = () => {
                         <div className="h-12 w-12 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-pink-100 text-indigo-600 mr-4 shadow-md border-2 border-indigo-200">
                             <span className="text-xl">🎯</span>
                         </div>
-                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-pink-600">
+                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#785D99] to-[#785D99]">
                             Progreso de la Campaña
                         </h3>
                     </div>
@@ -191,7 +191,7 @@ const CampaignInterface = () => {
                     <div className="w-full mb-4 relative">
                         <div className="w-full bg-gray-200 h-8 overflow-hidden shadow-inner rounded-lg border-2 border-gray-300">
                             <div
-                                className="bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 h-8 transition-all duration-1500 ease-out rounded-lg relative"
+                                className="bg-gradient-to-r from-purple-400 via-purple-500 to-purple-400 h-8 transition-all duration-1500 ease-out rounded-lg relative"
                                 style={{ width: `${campaignData.progreso}%` }}
                             >
                                 {/* Shimmer effect */}
@@ -206,20 +206,20 @@ const CampaignInterface = () => {
                         </div>
                     </div>
 
-                    <div className="text-base text-gray-600 mb-6 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded-lg shadow-sm border-l-4 border-yellow-400">
-                        <span className="font-bold">Recaudado: <span className="text-pink-600 font-bold text-lg">${valueFormatter(campaignData.totalRecaudado)}</span></span>
+                    <div className="text-base text-gray-600 mb-6 bg-gradient-to-r from-gray-50 to-gray-100 p-3 rounded-lg shadow-sm border-l-4 border-[#785D99]">
+                        <span className="font-bold">Recaudado: <span className="text-[#785D99] font-bold text-lg">${valueFormatter(campaignData.totalRecaudado)}</span></span>
                     </div>
 
                     {/* Stats boxes with improved design */}
                     <div className="grid grid-cols-2 gap-4">
-                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 flex flex-col items-center shadow-md rounded-lg hover:shadow-lg transition duration-300 transform hover:-translate-y-1 border-t-4 border-blue-500">
-                            <div className="text-blue-700 text-sm mb-1 font-semibold">Promedio por donación</div>
-                            <div className="text-blue-900 font-bold text-xl">${valueFormatter(campaignData.promedioDonacion)}</div>
+                        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 flex flex-col items-center shadow-md rounded-lg hover:shadow-lg transition duration-300 transform hover:-translate-y-1 border-t-4 border-[#785D99]">
+                            <div className="text-[#785D99] text-sm mb-1 font-semibold">Promedio por donación</div>
+                            <div className="text-[#785D99] font-bold text-xl">${valueFormatter(campaignData.promedioDonacion)}</div>
                         </div>
 
-                        <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-4 flex flex-col items-center shadow-md rounded-lg hover:shadow-lg transition duration-300 transform hover:-translate-y-1 border-t-4 border-pink-500">
-                            <div className="text-pink-700 text-sm mb-1 font-semibold">Donación más alta</div>
-                            <div className="text-pink-900 font-bold text-xl">${valueFormatter(campaignData.donacionMasAlta)}</div>
+                        <div className="bg-gradient-to-br from-pink-50 to-rose-50 p-4 flex flex-col items-center shadow-md rounded-lg hover:shadow-lg transition duration-300 transform hover:-translate-y-1 border-t-4 border-[#785D99]">
+                            <div className="text-[#785D99]">Donación más alta</div>
+                            <div className="text-[#785D99] font-bold text-xl">${valueFormatter(campaignData.donacionMasAlta)}</div>
                         </div>
                     </div>
                 </div>

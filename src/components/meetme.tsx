@@ -114,7 +114,7 @@ const ProfileComponent = () => {
 
                                 <div className="ul-chef-card-txt p-4 text-center bg-white shadow z-10">
                                     <h4 className="ul-chef-card-title text-xl font-bold text-[#785D99]">PEDRO BRITO</h4>
-                                    <span className="ul-chef-card-subtitle text-[#785D99] font-bold">PACO EL MORLACO</span>
+                                    <span className="ul-chef-card-subtitle  font-bold">PACO EL MORLACO</span>
                                 </div>
 
 
@@ -174,7 +174,7 @@ const ProfileComponent = () => {
 
 
                 <div className="text-center">
-                    <h2 className="text-blue-600 text-3xl font-bold mb-8">CONÓCEME</h2>
+                    <h2 className="text-[#785D99] text-3xl font-bold mb-8">CONÓCEME</h2>
 
                     <div className="min-h-32 flex items-center justify-center">
                         <p className="text-gray-600 italic text-lg">

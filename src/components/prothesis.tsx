@@ -117,18 +117,18 @@ const NewsSection = () => {
         <div className="bg-white py-8 ">
             <div className="container mx-auto px-4 flex  flex-col">
                 <div className="flex  px-22 flex-col mb-6 w-6/7">
-                    <h2 className="text-2xl  font-bold text-blue-700 mb-2">
+                    <h2 className="text-2xl  font-bold  text-[#785D99]">
                         Superando Limites
                     </h2>
-                    <div className="w-full h-1 bg-blue-500 mb-6" style={{backgroundColor:"#5A67F9FF"}}></div>
+                    <div className="w-full h-1 bg-purple-500 mb-6" style={{backgroundColor:"#785D9"}}></div>
 
 
                     <div className="mb-8">
                     <div className="flex items-center mb-4">
-                        <svg className="w-5 h-5 text-[#5A67F9FF] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="w-5 h-5  text-[#785D99] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                         </svg>
-                        <span className="text-gray-600">Filtrar por:</span>
+                        <span className=" text-[#785D99]">Filtrar por:</span>
                     </div>
 
                     <div className="flex flex-wrap gap-2 ">
@@ -143,7 +143,7 @@ const NewsSection = () => {
                                     paddingRight: '1rem',
                                     borderRadius: '9999px',
                                     fontSize: '0.875rem',
-                                    backgroundColor: activeNewsFilter === filter ? '#5A67F9FF' : '#ffffff',
+                                    backgroundColor: activeNewsFilter === filter ? '#59277A' : '#ffffff',
                                     color: activeNewsFilter === filter ? '#ffffff' : '#374151',
                                     fontWeight: activeNewsFilter === filter ? 500 : 'normal',
                                     border: activeNewsFilter === filter ? 'none' : '1px solid #e5e7eb',
@@ -182,7 +182,7 @@ const NewsSection = () => {
                                             className="w-full h-80 object-cover"
                                         />
                                         <div className="absolute top-2 left-2">
-                      <span className="bg-green-500 text-white text-xs px-3 py-1 rounded-full uppercase font-medium">
+                      <span className="bg-[#785D99] text-white text-xs px-3 py-1 rounded-full uppercase font-medium">
                         {newsItem.tags[0]}
                       </span>
                                         </div>
@@ -195,7 +195,7 @@ const NewsSection = () => {
                                         </p>
 
                                         {/* Date and read time */}
-                                        <div className="flex items-center text-gray-500 text-xs mb-4">
+                                        <div className="flex items-center  text-[#785D99]">
                                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                             </svg>
@@ -225,9 +225,9 @@ const NewsSection = () => {
                                             </button>
 
                                             <button
-                                                className={`${expandedArticle === newsItem.id ? 'bg-[#5A67F9FF]' : 'bg-[#5A67F9FF]'} text-white px-4 py-1 rounded-full text-sm flex items-center`}
+                                                className={`${expandedArticle === newsItem.id ? 'bg-[#785D99]' : 'bg-[#785D99]'} text-white px-4 py-1 rounded-full text-sm flex items-center`}
                                                 onClick={() => toggleExpandArticle(newsItem.id)}
-                                                style={{backgroundColor: "#5A67F9FF", borderRadius:"20px"}}
+                                                style={{backgroundColor: "#785D99", borderRadius:"20px"}}
                                             >
                                                 {expandedArticle === newsItem.id ? 'Colapsar' : 'Seguir leyendo'}
                                                 <svg
@@ -266,7 +266,7 @@ const NewsSection = () => {
                                             <div
                                                 key={index}
                                                 className={`h-3 rounded-full transition-all ${
-                                                    isActive ? 'bg-[#5A67F9FF] w-6' : 'bg-gray-300 w-3'
+                                                    isActive ? 'bg-[#785D99] w-6' : 'bg-[#785D99]'
                                                 }`}
 
                                             />
@@ -276,7 +276,7 @@ const NewsSection = () => {
 
                                 <button
                                     onClick={nextNews}
-                                    className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-2 rounded-full"
+                                    className="bg-[#785D99] hover:bg-[#785D99] text-gray-700 p-2 rounded-full"
                                 >
                                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
