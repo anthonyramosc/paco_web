@@ -36,7 +36,7 @@ const ProfileComponent = () => {
         return Array(count).fill(0).map((_, i) => (
             <span
                 key={i}
-                className="absolute text-blue-500"
+                className="absolute text-[#785D99]"
                 style={{
                     top: `${Math.random() * 100}%`,
                     right: `${Math.random() * 100}%`,
@@ -113,8 +113,8 @@ const ProfileComponent = () => {
 
 
                                 <div className="ul-chef-card-txt p-4 text-center bg-white shadow z-10">
-                                    <h4 className="ul-chef-card-title text-xl font-bold text-[#5A67F9FF]">PEDRO BRITO</h4>
-                                    <span className="ul-chef-card-subtitle text-[#5A67F9FF] font-bold">PACO EL MORLACO</span>
+                                    <h4 className="ul-chef-card-title text-xl font-bold text-[#785D99]">PEDRO BRITO</h4>
+                                    <span className="ul-chef-card-subtitle text-[#785D99] font-bold">PACO EL MORLACO</span>
                                 </div>
 
 
@@ -125,24 +125,24 @@ const ProfileComponent = () => {
                                             className="!no-underline bg-white"
                                             aria-label="LinkedIn"
                                         >
-                                            <i className="flaticon-linkedin-big-logo text-2xl text-[#5A67F9FF] "></i>
+                                            <i className="flaticon-linkedin-big-logo text-2xl text-[#785D99] "></i>
                                         </a>
                                         <a
                                             href="#"
                                             className="!no-underline bg-white"
                                             aria-label="Instagram"
                                         >
-                                            <i className="flaticon-instagram text-2xl text-[#5A67F9FF]"></i>
+                                            <i className="flaticon-instagram text-2xl text-[#785D99]"></i>
                                         </a>
                                         <a
                                             href="#"
                                             className="!no-underline bg-white"
                                             aria-label="YouTube"
                                         >
-                                            <i className="flaticon-youtube text-2xl text-[#5A67F9FF]"></i>
+                                            <i className="flaticon-youtube text-2xl text-[#785D99]"></i>
                                         </a>
                                     </div>
-                                    <span className="ul-chef-card-social-title block mt-2 px-2 text-sm text-gray-500 uppercase">
+                                    <span className="ul-chef-card-social-title block mt-2 px-2 text-sm text-[#785D99] uppercase">
           Share
         </span>
                                 </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import video from '../assets/final.png'
 
 
 
@@ -9,7 +10,7 @@ const HeroBanner: React.FC = () => {
             <div className="pt-6 pb-10 relative">
                 <div className="w-full md:w-full relative z-10">
                     <img
-                        src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/banner-paco-2048x559.webp"
+                        src={video}
                         alt="Prótesis con mancuerna"
                         className="max-w-full "
                     />

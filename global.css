@@ -8,3 +8,6 @@ html, body {
     padding: 0;
 }
 
+body {
+    width: 100%;
+}

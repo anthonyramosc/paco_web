@@ -43,10 +43,10 @@ CSS INDEX
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Vibes&display=swap");
 :root {
   --black: #000;
-  --white: #5a67f9;
+  --white: #785d99;
   --ul-primary: #ffffff;
   --ul-secondary: #FAA019;
-  --ul-c3: rgb(90, 103, 249);
+  --ul-c3: rgb(120, 93, 153);
   --ul-c4: #FFF9F4;
   --ul-c5: #FC791A;
   --ul-black: #1199a4;
