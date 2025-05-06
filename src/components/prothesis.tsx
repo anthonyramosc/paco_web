@@ -15,20 +15,11 @@ const NewsSection = () => {
 
     // News data array
     const newsItems = [
-        {
-            id: 1,
-            title: "Embajadores de VisitaEcuador revelan rutas secretas de la Amazonía",
-            content: "Tres destacados aventureros comparten experiencias transformadoras en destinos poco explorados del oriente ecuatoriano, destacando el turismo sostenible y el contacto directo con comunidades indígenas como experiencias imperdibles.",
-            fullContent: "Los guías profesionales Andrés Córdova, Lucía Vega y Santiago Pinos, presentaron sus experiencias en la Amazonía ecuatoriana durante el evento 'Rutas del Profundo' en el Centro de Convenciones Metropolitano. Los tres aventureros documentaron durante tres meses rutas poco conocidas en Sucumbíos, Cuyabeno y Pastaza, interactuando con guías locales y comunidades indígenas. 'Lo que descubrimos es mucho más allá del turismo tradicional de la selva. Son experiencias que conectan al visitante con saberes ancestrales y una biodiversidad asombrosa'. Entre los hallazgos destacan la 'Ruta de las Cascadas Sagradas' en Timbián Alto, el avistamiento de fauna nocturna de jaguares en la Reserva Limoncocha, y las expediciones río abajo por los tributarios menos explorados del río Napo. Vega destaca que compartieron más de 300 especies de aves, algunas raramente vistas por turistas convencionales.",
-            date: "26 de febrero de 2024",
-            readTime: "5 min",
-            tags: ["TESTIMONIOS"],
-            image: img3
-        },
+      
         {
             id: 2,
-            title: "Descubre los senderos ocultos de la Sierra ecuatoriana",
-            content: "Nuevas rutas de montaña revelan paisajes impresionantes en los Andes ecuatorianos, con opciones para diversos niveles de experiencia.",
+            title: "Pedaleando con propósito: la libertad no tiene límites",
+            content: "Salir a recorrer el mundo en bicicleta es una experiencia liberadora, y con una prótesis adecuada, también es posible.",
             fullContent: "Un grupo de montañistas ha documentado más de 15 nuevas rutas en la Sierra ecuatoriana que no aparecen en las guías turísticas tradicionales. Estas rutas ofrecen vistas panorámicas excepcionales, contacto con comunidades locales y experiencias auténticas alejadas del turismo masivo. Desde caminatas sencillas hasta ascensos técnicos, hay opciones para todos los niveles.",
             date: "22 de febrero de 2024",
             readTime: "4 min",
@@ -37,9 +28,9 @@ const NewsSection = () => {
         },
         {
             id: 3,
-            title: "Comunidades costeras preservan manglares centenarios",
-            content: "Iniciativas locales en Esmeraldas y Manabí están recuperando extensas áreas de manglar, vitales para el ecosistema costero y la economía local.",
-            fullContent: "Las comunidades pesqueras de San Lorenzo y Pedernales han logrado recuperar más de 2,000 hectáreas de manglar en los últimos cinco años. Este ecosistema no solo protege la costa de la erosión y los efectos del cambio climático, sino que también es fundamental para la reproducción de especies marinas comerciales. El proyecto ha incrementado en un 40% la captura sostenible de cangrejo rojo y conchas, mejorando significativamente la economía local.",
+            title: "Un nuevo impulso: la prótesis que acompaña cada kilómetro",
+            content: " La prótesis no solo apoya el movimiento, también sostiene una actitud firme de no renunciar al placer de rodar libremente. Disfrutar del camino nunca fue cuestión de limitaciones, sino de determinación.",
+            fullContent: "El disfrute al aire libre no tiene por qué detenerse. La prótesis se convierte en aliada para continuar pedaleando, para levantar la bicicleta con orgullo, y para celebrar la vida sin restricciones. Un símbolo de resiliencia, autonomía y amor por el deporte.",
             date: "18 de febrero de 2024",
             readTime: "6 min",
             tags: ["TESTIMONIOS", "CONSERVACIÓN"],
@@ -47,8 +38,8 @@ const NewsSection = () => {
         },
         {
             id: 4,
-            title: "Festival de las Orquídeas celebra su décima edición",
-            content: "Cuenca se engalana con la exhibición de más de 500 especies de orquídeas nativas, atrayendo a botánicos y turistas de todo el mundo.",
+            title: "Tecnología con propósito: historias que inspiran",
+            content: "No es solo un artefacto mecánico, es parte del viaje de una persona que ha decidido no rendirse. Desde la movilidad hasta las actividades más simples, cada uso es una victoria.",
             fullContent: "La décima edición del Festival Internacional de las Orquídeas reúne este año a especialistas de 12 países y exhibe más de 500 especies nativas ecuatorianas, varias de ellas en peligro de extinción. El evento incluye talleres de conservación, exposiciones fotográficas y recorridos guiados por los viveros más importantes de la región. Ecuador, que alberga más de 4,200 especies de orquídeas, refuerza con este festival su posición como uno de los países con mayor diversidad de estas plantas en el mundo.",
             date: "10 de febrero de 2024",
             readTime: "3 min",
@@ -57,9 +48,8 @@ const NewsSection = () => {
         },
         {
             id: 5,
-            title: "Nuevas tendencias en ecoturismo transforman la industria",
-            content: "El turismo regenerativo gana terreno en Ecuador, con propuestas que no solo minimizan el impacto ambiental sino que contribuyen activamente a la restauración de ecosistemas.",
-            fullContent: "Operadores turísticos ecuatorianos están adoptando el modelo de turismo regenerativo, que va más allá del ecoturismo tradicional al incluir actividades que contribuyen a la restauración de ecosistemas degradados. Los visitantes participan en proyectos de reforestación, monitoreo de especies amenazadas y apoyo a iniciativas comunitarias sostenibles. Esta tendencia, que está creciendo un 25% anualmente, está transformando la forma en que los viajeros experimentan destinos como Galápagos, la Amazonía y los páramos andinos.",
+            title: "Fuerza y superación: una nueva forma de vivir al máximo",
+            content: "Gracias al uso de una prótesis de brazo, ha transformado los límites en oportunidades. Desde levantar una bicicleta en la playa hasta disfrutar de actividades cotidianas como beber agua, demuestra que la tecnología y la determinación humana pueden cambiar vidas. Un recordatorio de que una prótesis no solo reemplaza, sino que empodera.",
             date: "5 de febrero de 2024",
             readTime: "5 min",
             tags: ["TENDENCIAS", "CONSERVACIÓN"],
@@ -67,8 +57,8 @@ const NewsSection = () => {
         },
         {
             id: 6,
-            title: "Gastronomía ancestral gana reconocimiento internacional",
-            content: "Técnicas de cocina indígena y productos nativos ecuatorianos captan la atención de chefs internacionales y revistas especializadas.",
+            title: "Vivir sin barreras",
+            content: "El esfuerzo, la adaptabilidad y una herramienta bien diseñada pueden transformar lo imposible en cotidiano. ",
             fullContent: "La gastronomía ancestral ecuatoriana, especialmente las técnicas de fermentación, ahumado y conservación de las nacionalidades amazónicas y andinas, está siendo adoptada por reconocidos chefs internacionales. Ingredientes como el ishpingo, el paico y diversas variedades de tubérculos andinos están apareciendo en menús de restaurantes premiados en Europa y Norteamérica. Este fenómeno ha impulsado el turismo gastronómico en Ecuador, con un aumento del 30% en rutas culinarias durante el último año.",
             date: "1 de febrero de 2024",
             readTime: "4 min",
