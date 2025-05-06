@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import avatarImage from "../assets/img/123.jpg";
 const CampaignInterface = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isQrExpanded, setIsQrExpanded] = useState(false);
@@ -116,7 +116,7 @@ const CampaignInterface = () => {
                             <div className="relative">
                                 <div className="h-32 w-32 rounded-full bg-gradient-to-br from-[#785D99] to-pink-500 flex items-center justify-center overflow-hidden border-4 border-white shadow-lg transform hover:scale-105 transition-transform duration-300">
                                     <img
-                                        src="https://scontent.fuio5-1.fna.fbcdn.net/v/t39.30808-6/348554621_651965240127256_3590768635837703934_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=fxRtwnnqD7oQ7kNvwGnKeVP&_nc_oc=Adm_pz3J0p_myCaTIFb41XCyLqMDC-_EkUhzx1ee6gYkU2ee7V8whPoQF9pCo3IyNDk&_nc_zt=23&_nc_ht=scontent.fuio5-1.fna&_nc_gid=46c3JzoQlXD6o1sRE_PRxw&oh=00_AfGX-70TEYkioF_eLyRHjgnt_OH8Bx7XWUhvo5O1pjkCqw&oe=6815B71A"
+                                        src= {avatarImage}
                                         alt="Avatar"
                                         className="h-full w-full object-cover"
                                     />

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import img1 from '../assets/img/paco1.jpg'
+import img2 from '../assets/img/paco2.jpg'
 
 import "../../global.css"
 
@@ -105,7 +107,7 @@ const ProfileComponent = () => {
 
                                 <div className="ul-chef-card-img">
                                     <img
-                                        src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/328074845_907657527106548_5780452344093047139_n.jpeg"
+                                        src={img2}
                                         alt="chef Image"
                                         className="w-full h-auto rounded-t-lg"
                                     />
