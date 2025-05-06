@@ -180,7 +180,7 @@ export default function TikTokSlider() {
             </div>
 
             <div className="z-10 relative flex flex-col items-center w-full">
-                <h1 className="text-4xl font-bold mb-2 text-indigo-600 tracking-wide">TikTok Highlights</h1>
+                <h1 className="text-4xl font-bold mb-2 text-[#785D99]">TikTok Highlights</h1>
                 <p className="text-lg text-gray-700 mb-6">Desliza para ver todos nuestros videos</p>
 
 
@@ -189,10 +189,10 @@ export default function TikTokSlider() {
                     onClick={() => setIsPaused(!isPaused)}
                 >
                     {isPaused ?
-                        <Play size={18} className="text-indigo-600" /> :
-                        <Pause size={18} className="text-indigo-600" />
+                        <Play size={18} className="text-[#785D99]" /> :
+                        <Pause size={18} className="text-[#785D99]" />
                     }
-                    <span className="text-gray-700 font-medium">{isPaused ? "Reanudar" : "Pausar"} reproducción</span>
+                    <span className="text-[#785D99]">{isPaused ? "Reanudar" : "Pausar"} reproducción</span>
                 </button>
 
 
@@ -209,21 +209,21 @@ export default function TikTokSlider() {
                             className="bg-white/90 shadow-lg rounded-full p-3 hover:bg-indigo-100 transition-colors pointer-events-auto transform hover:-translate-x-1 transition-transform duration-300"
                             aria-label="Previous videos"
                         >
-                            <ChevronLeft className="text-indigo-600" size={24} />
+                            <ChevronLeft className="text-[#785D99]" size={24} />
                         </button>
                         <button
                             onClick={handleNext}
                             className="bg-white/90 shadow-lg rounded-full p-3 hover:bg-indigo-100 transition-colors pointer-events-auto transform hover:translate-x-1 transition-transform duration-300"
                             aria-label="Next videos"
                         >
-                            <ChevronRight className="text-indigo-600" size={24} />
+                            <ChevronRight className="text-[#785D99]" size={24} />
                         </button>
                     </div>
 
 
                         {isLoading && (
                             <div className="absolute inset-0 bg-white/70 z-10 flex items-center justify-center">
-                                <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+                                <div className="w-12 h-12 border-4 border-[#785D99] border-t-transparent rounded-full animate-spin"></div>
                             </div>
                         )}
 
@@ -236,7 +236,7 @@ export default function TikTokSlider() {
                                     onMouseLeave={() => setIsPaused(false)}
                                 >
                                     {/* Video header */}
-                                    <div className="bg-indigo-600 py-2 px-4 flex justify-between items-center">
+                                    <div className="bg-[#785D99] py-2 px-4 flex justify-between items-center">
                                         <div className="text-white font-medium">{video.author}</div>
                                     </div>
 

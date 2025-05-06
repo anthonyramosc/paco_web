@@ -256,10 +256,10 @@ const DonationForm: React.FC = () => {
   };
 
   return (
-      <section id="donar" className="py-16 bg-blue-100">
+      <section id="donar" className="py-16 bg-[#B19CC3]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <h3 className="text-3xl font-bold mb-4 text-blue-800">Realiza tu Donación</h3>
+            <h3 className="text-3xl font-bold mb-4 text-[#59277A]">Realiza tu Donación</h3>
             <p className="text-lg mb-2 max-w-3xl mx-auto text-gray-700">
               Cada contribución, grande o pequeña, nos acerca a nuestro objetivo.
             </p>
@@ -284,8 +284,8 @@ const DonationForm: React.FC = () => {
                     </video>
                   </div>
 
-                  <div className="space-y-4 text-gray-700">
-                    <p className="text-sm italic text-gray-500 mt-4">
+                  <div className="space-y-4 text-[#785D99]">
+                    <p className="text-sm italic text-[#785D99]">
                       Tu donación puede ser deducible de impuestos. Consulta con tu asesor fiscal.
                     </p>
                   </div>
@@ -402,8 +402,8 @@ const DonationForm: React.FC = () => {
                                     onClick={() => selectDonationAmount(amount)}
                                     className={`px-4 py-2 border rounded-md transition-all ${
                                         formData.cantidad_donar === amount.toString() && !customAmountSelected
-                                            ? 'bg-blue-500 text-white border-blue-600'
-                                            : 'bg-gray-50 text-gray-700 border-gray-300 hover:bg-gray-100'
+                                            ? 'bg-[#785D99] text-white border-[#785D99]'
+                                            : 'bg-[#785D99] text-gray-700 border-[#785D99] hover:bg-[#785D99]'
                                     }`}
                                 >
                                   ${amount}
@@ -569,7 +569,7 @@ const DonationForm: React.FC = () => {
                   >
                     {isSubmitting ? (
                         <span className="flex items-center">
-                      <svg className="animate-spin mr-2 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin mr-2 h-5 w-5  text-[#785D99]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>

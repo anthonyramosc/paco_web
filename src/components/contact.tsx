@@ -177,10 +177,10 @@ const ContactForm = () => {
         <div className="flex flex-col md:flex-row md:gap-8 items-start">
 
           <div className="w-full md:w-1/2 mb-8 md:mb-0">
-            <h2 className="text-2xl font-bold text-blue-700 mb-2">
+            <h2 className="text-2xl font-bold text-[#785D99] mb-2">
               Contáctame
             </h2>
-            <div className="w-full h-1 bg-blue-500 mb-6"></div>
+            <div className="w-full h-1 bg-purple-400 mb-6"></div>
 
             <p className="text-gray-600 mb-6">
               ¿Tienes alguna pregunta o quieres colaborar? Déjanos tu mensaje:
@@ -274,8 +274,8 @@ const ContactForm = () => {
               <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition duration-300 flex justify-center items-center ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
-                  style={{backgroundColor:"#5A67F9FF"}}
+                  className={`w-full bg-[#785D99] hover:bg-[#785D99] text-white font-medium py-2 px-4 rounded transition duration-300 flex justify-center items-center ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
+                  style={{backgroundColor:"#785D99"}}
               >
                 {isSubmitting ? (
                     <>
@@ -301,13 +301,13 @@ const ContactForm = () => {
 
             <div
                 ref={dragAreaRef}
-                className="w-full max-w-sm h-64 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-blue-500 hover:bg-blue-50 transition-all duration-300"
+                className="w-full max-w-sm h-64 border-2 border-dashed border-gray-300 rounded-md flex flex-col items-center justify-center cursor-pointer hover:border-[#785D99] hover:bg-blue-50 transition-all duration-300"
                 onClick={handleUploadClick}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
             >
-              <svg className="h-12 w-12 text-blue-500 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-12 w-12 text-[#785D99]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
               </svg>
               <p className="text-gray-600 text-center mb-1">
