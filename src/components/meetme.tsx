@@ -120,34 +120,7 @@ const ProfileComponent = () => {
                                 </div>
 
 
-                                <div className="ul-chef-card-social border-t border-gray-200 py-4 z-40  shadow">
-                                    <div className="ul-chef-card-social-links flex justify-center space-x-1">
-                                        <a
-                                            href="#"
-                                            className="!no-underline bg-white"
-                                            aria-label="LinkedIn"
-                                        >
-                                            <i className="flaticon-linkedin-big-logo text-2xl text-[#785D99] "></i>
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="!no-underline bg-white"
-                                            aria-label="Instagram"
-                                        >
-                                            <i className="flaticon-instagram text-2xl text-[#785D99]"></i>
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="!no-underline bg-white"
-                                            aria-label="YouTube"
-                                        >
-                                            <i className="flaticon-youtube text-2xl text-[#785D99]"></i>
-                                        </a>
-                                    </div>
-                                    <span className="ul-chef-card-social-title block mt-2 px-2 text-sm text-[#785D99] uppercase">
-          Share
-        </span>
-                                </div>
+
                             </div>
 
 
