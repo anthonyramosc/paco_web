@@ -53,7 +53,7 @@ const ProfileComponent = () => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl overflow-hidden max-w-6xl mx-auto relative -mt-10 mb-20">
+        <div className="flex flex-col md:flex-row items-center bg-white rounded-xl overflow-hidden max-w-6xl mx-auto relative mt-26 mb-20">
 
             <div className="relative w-full md:w-1/2 aspect-square -mt-10">
 
@@ -172,14 +172,7 @@ const ProfileComponent = () => {
                     </div>
 
 
-                    <div className="flex justify-center gap-4">
-                        <button className="ul-meetme  text-white px-6 py-2  ">
-                            Conocer más
-                        </button>
-                        <button className="ul-meetme-a  text-white px-6 py-2 rounded-full ">
-                            Donar Ahora
-                        </button>
-                    </div>
+
                 </div>
             </div>
 

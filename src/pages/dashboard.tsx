@@ -19,9 +19,7 @@ const Dashboard: FC = () => {
                 <ProfileComponent />
             </div>
             <TikTokSlider />
-            <div id="donateComponent">
-                <DonateComponent onSubmit={handleDonationSubmit} />
-            </div>
+
             <div id="prothesisComponent">
                 <Prothesis />
             </div>

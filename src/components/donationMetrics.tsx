@@ -3,6 +3,7 @@ import avatarImage from "../assets/img/123.jpg";
 const CampaignInterface = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isQrExpanded, setIsQrExpanded] = useState(false);
+    const [shareResult, setShareResult] = useState('');
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -22,17 +23,60 @@ const CampaignInterface = () => {
 
     // Campaign data
     const campaignData = {
-        totalRecaudado: 5000,
-        progreso: 50,
-        promedioDonacion: 33333,
-        donacionMasAlta: 500,
+        totalRecaudado: 0,
+        progreso: 0,
+        promedioDonacion: 0,
+        donacionMasAlta: 0,
     };
 
-    const valueFormatter = (number: number) =>
+    const valueFormatter = (number) =>
         `${Intl.NumberFormat("es-MX").format(number)}`;
 
     const toggleQrCode = () => {
         setIsQrExpanded(!isQrExpanded);
+    };
+
+    // Share functionality
+    const handleShare = async () => {
+        // Campaign details to share
+        const shareData = {
+            title: `Campaña de ${userData.name}`,
+            text: `¡Apoya mi campaña! He recaudado $${valueFormatter(campaignData.totalRecaudado)} hasta ahora.`,
+            url: window.location.href
+        };
+
+        try {
+            // Check if Web Share API is available
+            if (navigator.share) {
+                await navigator.share(shareData);
+                setShareResult('¡Compartido exitosamente!');
+
+                // Clear the success message after 3 seconds
+                setTimeout(() => {
+                    setShareResult('');
+                }, 3000);
+            } else {
+                // Fallback for browsers that don't support the Web Share API
+                setShareResult('Tu navegador no soporta compartir. Intenta copiar el enlace manualmente.');
+
+                // Copy to clipboard as fallback
+                await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+                setShareResult('¡Enlace copiado al portapapeles!');
+
+                // Clear the message after 3 seconds
+                setTimeout(() => {
+                    setShareResult('');
+                }, 3000);
+            }
+        } catch (error) {
+            console.error('Error sharing:', error);
+            setShareResult('Error al compartir. Intenta de nuevo.');
+
+            // Clear the error message after 3 seconds
+            setTimeout(() => {
+                setShareResult('');
+            }, 3000);
+        }
     };
 
     // QR Code renderer - simplified SVG version
@@ -127,7 +171,6 @@ const CampaignInterface = () => {
                             </div>
                             <div className="ml-4">
                                 <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-indigo-200 drop-shadow-md">{userData.name}</h2>
-                                <p className="text-indigo-200 text-lg">{userData.id}</p>
                             </div>
                         </div>
 
@@ -137,14 +180,28 @@ const CampaignInterface = () => {
                         </div>
                     </div>
 
-                  
+                    {/* Share result message */}
+                    {shareResult && (
+                        <div className="mb-4 bg-indigo-900 bg-opacity-50 text-white px-4 py-2 rounded-lg animate-fadeIn border border-indigo-400 text-center">
+                            {shareResult}
+                        </div>
+                    )}
+
                     <div className="flex justify-end gap-4 mb-6">
-                        <button className="bg-gradient-to-r from-indigo-600 to-indigo-600 rounded-lg px-4 py-3 text-center text-base font-medium hover:from-indigo-700 hover:to-indigo-700 transition duration-300 shadow-lg transform hover:-translate-y-1 border-4 border-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 relative overflow-hidden">
-                            <span className="relative z-10 text-lg font-bold">Compartir</span>
+                        <button
+                            className="bg-gradient-to-r from-indigo-600 to-indigo-600 rounded-lg px-4 py-3 text-center text-base font-medium hover:from-indigo-700 hover:to-indigo-700 transition duration-300 shadow-lg transform hover:-translate-y-1 border-4 border-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 relative overflow-hidden"
+                            onClick={handleShare}
+                        >
+                            <span className="relative z-10 text-lg font-bold flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                </svg>
+                                Compartir
+                            </span>
                             <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-blue-300 to-indigo-300 animate-pulse"></div>
                         </button>
                         <button
-                            className={`bg-gradient-to-r from-indigo-600 to-infigo-600 rounded-lg p-3 w-14 h-14 flex items-center justify-center hover:from-indigo-700 hover:to-indigo-700 transition duration-300 shadow-lg transform ${isQrExpanded ? 'rotate-45' : 'hover:-translate-y-1'} border-4 border-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 relative`}
+                            className={`bg-gradient-to-r from-indigo-600 to-indigo-600 rounded-lg p-3 w-14 h-14 flex items-center justify-center hover:from-indigo-700 hover:to-indigo-700 transition duration-300 shadow-lg transform ${isQrExpanded ? 'rotate-45' : 'hover:-translate-y-1'} border-4 border-white focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50 relative`}
                             onClick={toggleQrCode}
                         >
                             <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-blue-300 to-indigo-300 animate-pulse rounded-lg"></div>
@@ -222,6 +279,30 @@ const CampaignInterface = () => {
                             <div className="text-[#785D99] font-bold text-xl">${valueFormatter(campaignData.donacionMasAlta)}</div>
                         </div>
                     </div>
+
+                    {/* Add CSS animation for notification fadeIn */}
+                    <style jsx>{`
+                        @keyframes fadeIn {
+                            from { opacity: 0; transform: translateY(-10px); }
+                            to { opacity: 1; transform: translateY(0); }
+                        }
+                        .animate-fadeIn {
+                            animation: fadeIn 0.3s ease-in-out;
+                        }
+                        @keyframes shimmer {
+                            0% { transform: translateX(-100%); }
+                            100% { transform: translateX(100%); }
+                        }
+                        .animate-shimmer {
+                            background: linear-gradient(
+                                90deg,
+                                rgba(255, 255, 255, 0) 0%,
+                                rgba(255, 255, 255, 0.2) 50%,
+                                rgba(255, 255, 255, 0) 100%
+                            );
+                            animation: shimmer 2s infinite;
+                        }
+                    `}</style>
                 </div>
             </div>
         </div>

@@ -143,7 +143,7 @@ const ContactForm = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
 
       const whatsappMessage = `Hola, mi nombre es ${formData.nombre}. Mi correo es ${formData.correo}. ${formData.mensaje}`;
-      const whatsappURL = `https://wa.me/1234567890?text=${encodeURIComponent(whatsappMessage)}`;
+      const whatsappURL = `https://wa.me/593959854484?text=${encodeURIComponent(whatsappMessage)}`;
 
       window.open(whatsappURL, '_blank');
 
@@ -183,7 +183,7 @@ const ContactForm = () => {
             <div className="w-full h-1 bg-purple-400 mb-6"></div>
 
             <p className="text-gray-600 mb-6">
-              ¿Tienes alguna pregunta o quieres colaborar? Déjanos tu mensaje:
+              ¿Necesitas una protesis? Cuentame tu historia :
             </p>
 
             {submitSuccess && (
