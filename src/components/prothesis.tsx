@@ -1,4 +1,11 @@
 import { useState, useEffect } from 'react';
+import img1 from '../assets/img/paco1.jpg'
+import img3 from '../assets/img/paco4.jpg'
+import img4 from '../assets/img/paco5.jpg'
+import img5 from '../assets/img/paco6.jpg'
+import img7 from '../assets/img/paco7.jpg'
+import img8 from '../assets/img/paco8.jpg'
+import img9 from '../assets/img/paco9.jpg'
 
 const NewsSection = () => {
     const [activeNewsFilter, setActiveNewsFilter] = useState<string | null>('TESTIMONIOS');
@@ -16,7 +23,7 @@ const NewsSection = () => {
             date: "26 de febrero de 2024",
             readTime: "5 min",
             tags: ["TESTIMONIOS"],
-            image: "https://test.tryclicksolutions.com/wp-content/uploads/2024/11/328074845_907657527106548_5780452344093047139_n.jpeg"
+            image: img3
         },
         {
             id: 2,
@@ -26,7 +33,7 @@ const NewsSection = () => {
             date: "22 de febrero de 2024",
             readTime: "4 min",
             tags: ["TESTIMONIOS", "EXPERIENCIAS"],
-            image: "/api/placeholder/400/250?text=Sierra"
+            image: img9
         },
         {
             id: 3,
@@ -36,7 +43,7 @@ const NewsSection = () => {
             date: "18 de febrero de 2024",
             readTime: "6 min",
             tags: ["TESTIMONIOS", "CONSERVACIÓN"],
-            image: "/api/placeholder/400/250?text=Manglares"
+            image: img7
         },
         {
             id: 4,
@@ -46,7 +53,7 @@ const NewsSection = () => {
             date: "10 de febrero de 2024",
             readTime: "3 min",
             tags: ["EVENTOS", "EXPERIENCIAS"],
-            image: "/api/placeholder/400/250?text=Orquídeas"
+            image: img1
         },
         {
             id: 5,
@@ -56,7 +63,7 @@ const NewsSection = () => {
             date: "5 de febrero de 2024",
             readTime: "5 min",
             tags: ["TENDENCIAS", "CONSERVACIÓN"],
-            image: "/api/placeholder/400/250?text=Ecoturismo"
+            image: img4
         },
         {
             id: 6,
@@ -66,7 +73,7 @@ const NewsSection = () => {
             date: "1 de febrero de 2024",
             readTime: "4 min",
             tags: ["TENDENCIAS", "EXPERIENCIAS"],
-            image: "/api/placeholder/400/250?text=Gastronomía"
+            image: img5
         }
     ];
 
