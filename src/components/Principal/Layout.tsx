@@ -202,7 +202,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                     <TypedText />
                 </div>
                 <div className="max-w-6xl mx-auto mt-3">
-                    <p className="text-center">Copyright © {new Date().getFullYear()} Toma mi mano | Developed by Anthony Ramos.</p>
+                    <p className="text-center">Copyright © {new Date().getFullYear()} Toma mi mano </p>
                 </div>
             </footer>
         </div>
