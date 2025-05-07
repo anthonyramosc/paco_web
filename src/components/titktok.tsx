@@ -69,18 +69,17 @@ export default function TikTokSlider() {
         const handleResize = () => {
             const width = window.innerWidth;
             if (width >= 1024) {
-                setVisibleVideos(3); // Large screens
+                setVisibleVideos(3);
             } else if (width >= 640) {
-                setVisibleVideos(2); // Medium screens
+                setVisibleVideos(2);
             } else {
-                setVisibleVideos(1); // Small screens
+                setVisibleVideos(1);
             }
         };
 
-        // Initial setup
+
         handleResize();
 
-        // Listen for window resize
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
@@ -156,7 +155,7 @@ export default function TikTokSlider() {
 
     return (
         <div className="flex flex-col items-center w-full py-8 sm:py-10 md:py-12 relative">
-            {/* Top wave */}
+
             <div className="absolute top-0 left-0 w-full overflow-hidden z-0">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" className="w-full h-32 sm:h-40 md:h-48">
                     <path
@@ -177,7 +176,7 @@ export default function TikTokSlider() {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {/* Navigation buttons */}
+
                     <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full flex justify-between px-2 z-10 pointer-events-none">
                         <button
                             onClick={handlePrevious}
@@ -197,14 +196,14 @@ export default function TikTokSlider() {
                         </button>
                     </div>
 
-                    {/* Loading indicator */}
+
                     {isLoading && (
                         <div className="absolute inset-0 bg-white/70 z-10 flex items-center justify-center">
                             <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-[#785D99] border-t-transparent rounded-full animate-spin"></div>
                         </div>
                     )}
 
-                    {/* Video grid - responsive to screen size */}
+
                     <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                         {displayedVideos.map((video) => (
                             <div
@@ -216,7 +215,7 @@ export default function TikTokSlider() {
                                     <div className="text-white font-medium text-sm sm:text-base">{video.author}</div>
                                 </div>
 
-                                {/* TikTok embed container */}
+
                                 <div className="tiktok-embed-container w-full relative bg-white p-2 sm:p-4">
                                     <blockquote
                                         className="tiktok-embed"
@@ -232,7 +231,7 @@ export default function TikTokSlider() {
                     </div>
                 </div>
 
-                {/* Pagination dots */}
+
                 <div className="flex justify-center mt-6 sm:mt-8 mb-2">
                     {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
                         <button
@@ -246,13 +245,13 @@ export default function TikTokSlider() {
                     ))}
                 </div>
 
-                {/* Page indicator */}
+
                 <div className="mt-2 sm:mt-4 text-indigo-600 font-medium text-sm sm:text-base">
                     <span>{currentIndex + 1}</span> de <span>{maxIndex + 1}</span>
                 </div>
             </div>
 
-            {/* Bottom wave */}
+
             <div className="absolute bottom-0 left-0 w-full overflow-hidden z-0">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none" className="w-full h-32 sm:h-40 md:h-48">
                     <path
@@ -263,7 +262,7 @@ export default function TikTokSlider() {
                 </svg>
             </div>
 
-            {/* Decorative elements - hidden on smallest screens */}
+
             <div className="absolute top-20 left-10 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full bg-indigo-500/10 animate-pulse z-0 hidden sm:block"></div>
             <div className="absolute bottom-40 right-10 w-16 h-16 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-purple-500/10 animate-pulse delay-700 z-0 hidden sm:block"></div>
             <div className="absolute top-40 right-20 w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full bg-indigo-300/20 animate-pulse delay-1000 z-0 hidden sm:block"></div>

@@ -14,16 +14,16 @@ const TypedText = () => {
     const longestPhrase = phrases.reduce((a, b) => (a.length > b.length ? a : b), "");
 
     useEffect(() => {
-        const typePhrase = async (phrase) => {
+        const typePhrase = async (phrase :string) => {
             for (let i = 0; i <= phrase.length; i++) {
                 setDisplayText(phrase.substring(0, i));
-                await new Promise(resolve => setTimeout(resolve, 100)); // Velocidad de escritura
+                await new Promise(resolve => setTimeout(resolve, 100));
             }
 
-            // Espera antes de pasar a la siguiente frase
+
             await new Promise(resolve => setTimeout(resolve, 2000));
 
-            // Cambia a la siguiente frase
+
             setCurrentPhraseIndex((prevIndex) => (prevIndex + 1) % phrases.length);
         };
 
@@ -69,7 +69,7 @@ const Navbar = () => {
     }, []);
 
     // Scroll to component function
-    const scrollToComponent = (id) => {
+    const scrollToComponent = (id :string) => {
         const element = document.getElementById(id);
         if (element) {
             element.scrollIntoView({ behavior: 'smooth' });
@@ -94,13 +94,13 @@ const Navbar = () => {
             <header className="ul-header">
                 <div className="header-top-bg-wrapper">
                     <div className="ul-header-top px-4 flex flex-col sm:flex-row items-center justify-between sm:justify-between md:justify-around">
-                        {/* Logo/Text Section */}
+
                         <div className="flex items-center justify-between w-full sm:w-auto py-0">
                             <div className="font-bold text-xl md:text-2xl">
                                 <TypedText />
                             </div>
 
-                            {/* Mobile menu button */}
+
                             <button
                                 className="sm:hidden text-white"
                                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -111,7 +111,7 @@ const Navbar = () => {
                             </button>
                         </div>
 
-                        {/* Desktop Navigation */}
+
                         <div className="hidden sm:flex flex-wrap justify-center gap-4 md:gap-6 lg:gap-8">
                             {navLinks.map((link) => (
                                 <button
@@ -124,9 +124,9 @@ const Navbar = () => {
                             ))}
                         </div>
 
-                        {/* Social Media Icons - Desktop */}
+
                         <div className="hidden sm:flex space-x-2">
-                            {/* Facebook */}
+
                             <a
                                 href={socialLinks.facebook}
                                 target="_blank"
@@ -138,7 +138,7 @@ const Navbar = () => {
                                 </svg>
                             </a>
 
-                            {/* Instagram */}
+
                             <a
                                 href={socialLinks.instagram}
                                 target="_blank"
@@ -150,7 +150,7 @@ const Navbar = () => {
                                 </svg>
                             </a>
 
-                            {/* TikTok */}
+
                             <a
                                 href={socialLinks.tiktok}
                                 target="_blank"
@@ -162,7 +162,6 @@ const Navbar = () => {
                                 </svg>
                             </a>
 
-                            {/* Share button */}
                             <a
                                 href={socialLinks.share}
                                 target="_blank"
@@ -175,7 +174,7 @@ const Navbar = () => {
                             </a>
                         </div>
 
-                        {/* Mobile Navigation Menu */}
+
                         {mobileMenuOpen && (
                             <div className="sm:hidden w-full bg-[#785D99] p-4 mt-4 rounded-md">
                                 <div className="flex flex-col space-y-4">
@@ -189,9 +188,9 @@ const Navbar = () => {
                                         </button>
                                     ))}
 
-                                    {/* Social Media Icons for Mobile */}
+
                                     <div className="flex space-x-4 justify-center pt-4">
-                                        {/* Facebook */}
+
                                         <a
                                             href={socialLinks.facebook}
                                             target="_blank"
@@ -203,7 +202,7 @@ const Navbar = () => {
                                             </svg>
                                         </a>
 
-                                        {/* Instagram */}
+
                                         <a
                                             href={socialLinks.instagram}
                                             target="_blank"
@@ -215,7 +214,7 @@ const Navbar = () => {
                                             </svg>
                                         </a>
 
-                                        {/* TikTok */}
+
                                         <a
                                             href={socialLinks.tiktok}
                                             target="_blank"
@@ -227,7 +226,7 @@ const Navbar = () => {
                                             </svg>
                                         </a>
 
-                                        {/* Share button */}
+
                                         <a
                                             href={socialLinks.share}
                                             target="_blank"
@@ -249,7 +248,7 @@ const Navbar = () => {
     );
 };
 
-const Layout = ({ children }) => {
+const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return (
         <div className="flex flex-col min-h-screen">
             <Navbar />

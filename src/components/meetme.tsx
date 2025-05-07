@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import img1 from '../assets/img/paco1.jpg'
 import img2 from '../assets/img/paco2.jpg'
 
 import "../../global.css"
@@ -33,7 +32,7 @@ const ProfileComponent = () => {
 
     const iconElements = ['⚙️', '🔧', '📊', '✓', '🔍', '📐', '🛠️', '📈', '🔩', '⚒️', '📏', '✅','⚙️', '🔧', '📊', '✓', '🔍', '📐', '🛠️', '📈', '🔩', '⚒️', '📏', '✅','⚙️', '🔧', '📊', '✓', '🔍', '📐', '🛠️', '📈', '🔩', '⚒️', '📏', '✅'];
 
-    const generateDecorativeElements = (count) => {
+    const generateDecorativeElements = (count :number) => {
         return Array(count).fill(0).map((_, i) => (
             <span
                 key={i}
@@ -53,17 +52,17 @@ const ProfileComponent = () => {
 
     return (
         <div className="flex flex-col md:flex-row items-center bg-white rounded-xl overflow-hidden mx-auto relative px-4 sm:px-6 py-8 max-w-6xl">
-            {/* Profile Image Side */}
+
             <div className="relative w-full md:w-1/2 aspect-square mb-8 md:mb-0">
                 <div className="absolute inset-0 z-0">
-                    {/* Decorative Background */}
+
                     <div className="absolute inset-0 flex items-center justify-center">
                         <div className="absolute w-full h-full">
-                            {generateDecorativeElements(20)}
+                            {generateDecorativeElements(40)}
                         </div>
                     </div>
 
-                    {/* Circular shapes */}
+
                     <div className="absolute inset-0">
                         {Array(10).fill(0).map((_, i) => (
                             <div
@@ -79,7 +78,7 @@ const ProfileComponent = () => {
                         ))}
                     </div>
 
-                    {/* Line shapes */}
+
                     <div className="absolute inset-0">
                         {Array(8).fill(0).map((_, i) => (
                             <div
@@ -97,7 +96,7 @@ const ProfileComponent = () => {
                     </div>
                 </div>
 
-                {/* Profile Card */}
+
                 <div className="absolute inset-0 flex items-center justify-center z-10">
                     <div className="w-full max-w-xs sm:max-w-sm md:max-w-md overflow-hidden">
                         <div className="ul-chef-card">
@@ -113,14 +112,15 @@ const ProfileComponent = () => {
                                 <h4 className="ul-chef-card-title text-lg sm:text-xl font-bold text-[#785D99]">PEDRO BRITO</h4>
                                 <span className="ul-chef-card-subtitle text-sm sm:text-base font-bold">PACO EL MORLACO</span>
                             </div>
+
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Content Side */}
+
             <div className="w-full md:w-1/2 p-4 sm:p-6 md:p-8 relative">
-                {/* Navigation Buttons */}
+
                 <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full flex justify-between px-1">
                     <button
                         onClick={prevSlide}
@@ -138,7 +138,7 @@ const ProfileComponent = () => {
                     </button>
                 </div>
 
-                {/* Content */}
+
                 <div className="text-center">
                     <h2 className="text-[#785D99] text-2xl sm:text-3xl font-bold mb-4 sm:mb-8">CONÓCEME</h2>
 
@@ -148,15 +148,15 @@ const ProfileComponent = () => {
                         </p>
                     </div>
 
-                    {/* Slide Indicators */}
+
                     <div className="flex justify-center mt-4 md:mt-6 mb-4 md:mb-8 gap-1 sm:gap-2">
                         {slides.map((slide, index) => (
                             <button
                                 key={slide.id}
                                 onClick={() => setCurrentSlide(index)}
                                 className={`h-2 rounded-full transition-all ${
-                                    index === currentSlide ? "w-6 bg-black" : "w-2 bg-gray-300"
-                                }`}
+                                    index === currentSlide ? "rounded-full w-6 bg-black" : "w-2 bg-gray-300"
+                                }`} style={{ borderRadius: "calc(infinity * 1px)"}}
                                 aria-label={`Go to slide ${index + 1}`}
                             />
                         ))}

@@ -12,7 +12,7 @@ const CampaignInterface = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    // User data
+
     const userData = {
         name: "Paco",
         id: "#0035000000",
@@ -21,7 +21,7 @@ const CampaignInterface = () => {
 
     };
 
-    // Campaign data
+
     const campaignData = {
         totalRecaudado: 0,
         progreso: 0,
@@ -36,9 +36,9 @@ const CampaignInterface = () => {
         setIsQrExpanded(!isQrExpanded);
     };
 
-    // Share functionality
+
     const handleShare = async () => {
-        // Campaign details to share
+
         const shareData = {
             title: `Campaña de ${userData.name}`,
             text: `¡Apoya mi campaña! He recaudado $${valueFormatter(campaignData.totalRecaudado)} hasta ahora.`,
@@ -46,24 +46,24 @@ const CampaignInterface = () => {
         };
 
         try {
-            // Check if Web Share API is available
+
             if (navigator.share) {
                 await navigator.share(shareData);
                 setShareResult('¡Compartido exitosamente!');
 
-                // Clear the success message after 3 seconds
+
                 setTimeout(() => {
                     setShareResult('');
                 }, 3000);
             } else {
-                // Fallback for browsers that don't support the Web Share API
+
                 setShareResult('Tu navegador no soporta compartir. Intenta copiar el enlace manualmente.');
 
-                // Copy to clipboard as fallback
+
                 await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
                 setShareResult('¡Enlace copiado al portapapeles!');
 
-                // Clear the message after 3 seconds
+
                 setTimeout(() => {
                     setShareResult('');
                 }, 3000);
@@ -72,19 +72,19 @@ const CampaignInterface = () => {
             console.error('Error sharing:', error);
             setShareResult('Error al compartir. Intenta de nuevo.');
 
-            // Clear the error message after 3 seconds
+
             setTimeout(() => {
                 setShareResult('');
             }, 3000);
         }
     };
 
-    // QR Code renderer - simplified SVG version
+
     const QrCode = () => (
         <div className="bg-white p-4 rounded-lg">
             <svg width="100%" height="100%" viewBox="0 0 29 29" fill="none">
                 <rect width="29" height="29" fill="white" />
-                {/* QR Code pattern - simplified version */}
+
                 <rect x="2" y="2" width="3" height="3" fill="black" />
                 <rect x="5" y="2" width="3" height="3" fill="black" />
                 <rect x="8" y="2" width="3" height="3" fill="black" />
@@ -123,7 +123,6 @@ const CampaignInterface = () => {
                 <rect x="16" y="24" width="3" height="3" fill="black" />
                 <rect x="21" y="21" width="3" height="3" fill="black" />
 
-                {/* Center logo */}
                 <rect x="12" y="12" width="5" height="5" fill="indigo" rx="1" />
                 <text x="14.5" y="15.5" fontSize="3" fill="white" textAnchor="middle" dominantBaseline="middle">P</text>
             </svg>
@@ -134,7 +133,7 @@ const CampaignInterface = () => {
     );
 
     return (
-        // Main container - responsive with max-width preserved on desktop
+
         <div className="flex px-3 sm:px-6 flex-col mb-6 w-full mx-auto" style={{ maxWidth: "1140px" }}>
             <div className={`flex flex-col w-full bg-gradient-to-br from-[#785D99] to-[#785D99] text-white shadow-2xl overflow-hidden rounded-xl transition-all duration-500 border-2 border-indigo-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-8'}`}>
                 <div className="relative overflow-hidden">
@@ -154,7 +153,7 @@ const CampaignInterface = () => {
                     </div>
                 </div>
 
-                {/* User profile section - responsive adjustments */}
+
                 <div className="p-4 sm:p-6 pt-6 sm:pt-8">
                     <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
                         <div className="flex flex-col sm:flex-row items-center mb-4 sm:mb-0">
@@ -182,7 +181,7 @@ const CampaignInterface = () => {
                         </div>
                     </div>
 
-                    {/* Share result message */}
+
                     {shareResult && (
                         <div className="mb-4 bg-indigo-900 bg-opacity-50 text-white px-4 py-2 rounded-lg animate-fadeIn border border-indigo-400 text-center">
                             {shareResult}
@@ -219,7 +218,7 @@ const CampaignInterface = () => {
                             </svg>
                         </button>
                     </div>
-                    {/* Expandable QR code */}
+
                     {isQrExpanded && (
                         <div className="bg-white bg-opacity-10 p-3 sm:p-4 rounded-xl mb-4 sm:mb-6 backdrop-filter backdrop-blur-sm shadow-lg transition-all duration-300 animate-fadeIn border-2 border-white">
                             <div className="flex items-center justify-between mb-2 sm:mb-3">
@@ -235,7 +234,7 @@ const CampaignInterface = () => {
                     )}
                 </div>
 
-                {/* Campaign progress section */}
+
                 <div className="bg-white text-black p-4 sm:p-6 w-full rounded-t-3xl shadow-inner border-t-4 border-indigo-500">
                     <div className="flex items-center mb-4 sm:mb-6">
                         <div className="h-10 w-10 sm:h-12 sm:w-12 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-pink-100 text-indigo-600 mr-3 sm:mr-4 shadow-md border-2 border-indigo-200">
@@ -246,14 +245,14 @@ const CampaignInterface = () => {
                         </h3>
                     </div>
 
-                    {/* Progress bar with improved animation */}
+
                     <div className="w-full mb-3 sm:mb-4 relative">
                         <div className="w-full bg-gray-200 h-6 sm:h-8 overflow-hidden shadow-inner rounded-lg border-2 border-gray-300">
                             <div
                                 className="bg-gradient-to-r from-purple-400 via-purple-500 to-purple-400 h-6 sm:h-8 transition-all duration-1500 ease-out rounded-lg relative"
                                 style={{ width: `${campaignData.progreso}%` }}
                             >
-                                {/* Shimmer effect */}
+
                                 <div className="absolute inset-0 overflow-hidden">
                                     <div className="absolute inset-0 transform -skew-x-12 bg-white opacity-20"></div>
                                     <div className="absolute inset-0 animate-shimmer"></div>
@@ -269,7 +268,7 @@ const CampaignInterface = () => {
                         <span className="font-bold">Recaudado: <span className="text-[#785D99] font-bold text-base sm:text-lg">${valueFormatter(campaignData.totalRecaudado)}</span></span>
                     </div>
 
-                    {/* Stats boxes with improved design */}
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-3 sm:p-4 flex flex-col items-center shadow-md rounded-lg hover:shadow-lg transition duration-300 transform hover:-translate-y-1 border-t-4 border-[#785D99]">
                             <div className="text-[#785D99] text-xs sm:text-sm mb-1 font-semibold">Promedio por donación</div>
@@ -282,7 +281,7 @@ const CampaignInterface = () => {
                         </div>
                     </div>
 
-                    {/* Add CSS animation for notification fadeIn */}
+
                     <style jsx>{`
                         @keyframes fadeIn {
                             from { opacity: 0; transform: translateY(-10px); }

@@ -13,7 +13,7 @@ const NewsSection = () => {
     const [visibleNewsCount, setVisibleNewsCount] = useState(3);
     const [expandedArticle, setExpandedArticle] = useState(null);
 
-    // News data array - updated content to relate to images and PacoElMorlaco's prosthetics
+
     const newsItems = [
         {
             id: 2,
@@ -67,7 +67,7 @@ const NewsSection = () => {
         }
     ];
 
-    // Available filters
+
     const filters = ["TENDENCIAS", "EVENTOS", "TESTIMONIOS", "CONSERVACIÓN", "EXPERIENCIAS"];
 
     const filteredNews = activeNewsFilter
@@ -76,13 +76,13 @@ const NewsSection = () => {
 
     useEffect(() => {
         setCurrentNewsIndex(0);
-        // Ajustar el número de artículos visibles según el tamaño de pantalla
+
         const handleResize = () => {
             const isMobile = window.innerWidth < 768;
             setVisibleNewsCount(isMobile ? 1 : Math.min(2, filteredNews.length));
         };
 
-        handleResize(); // Configuración inicial
+        handleResize();
         window.addEventListener('resize', handleResize);
 
         return () => {
@@ -124,14 +124,14 @@ const NewsSection = () => {
     return (
         <div className="bg-white py-8">
             <div className="container mx-auto px-4 md:px-6 flex flex-col">
-                {/* Header section */}
+
                 <div className="flex flex-col mb-6 w-full md:w-6/7 px-2 md:px-22">
                     <h2 className="text-xl md:text-2xl font-bold text-[#785D99]">
                         Superando Limites
                     </h2>
                     <div className="w-full h-1 bg-purple-500 mb-4 md:mb-6" style={{backgroundColor:"#785D99"}}></div>
 
-                    {/* Filters section */}
+
                     <div className="mb-6 md:mb-8">
                         <div className="flex items-center mb-3 md:mb-4">
                             <svg className="w-4 h-4 md:w-5 md:h-5 text-[#785D99] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -140,7 +140,7 @@ const NewsSection = () => {
                             <span className="text-sm md:text-base text-[#785D99]">Filtrar por:</span>
                         </div>
 
-                        {/* Responsive filter buttons */}
+
                         <div className="flex flex-wrap gap-2">
                             {filters.map((filter) => (
                                 <button
@@ -179,11 +179,11 @@ const NewsSection = () => {
                     </div>
                 </div>
 
-                {/* News content section */}
+
                 <div className="flex justify-center items-center">
                     {filteredNews.length > 0 ? (
                         <div className="w-full md:w-6/7 flex flex-col justify-center items-center">
-                            {/* News grid - responsive */}
+
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
                                 {visibleNews.map((newsItem) => (
                                     <div key={newsItem.id} className="bg-white rounded-lg overflow-hidden shadow border border-gray-200">
@@ -206,7 +206,7 @@ const NewsSection = () => {
                                                 {expandedArticle === newsItem.id ? newsItem.fullContent : newsItem.content}
                                             </p>
 
-                                            {/* Date and read time */}
+
                                             <div className="flex items-center text-[#785D99] text-xs md:text-sm">
                                                 <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
@@ -216,7 +216,7 @@ const NewsSection = () => {
                                                 <span>{newsItem.readTime}</span>
                                             </div>
 
-                                            {/* Actions */}
+
                                             <div className="flex justify-between items-center mt-3">
                                                 <button
                                                     className="text-gray-500 hover:text-gray-700 text-xs md:text-sm flex items-center"
@@ -258,7 +258,6 @@ const NewsSection = () => {
                                 ))}
                             </div>
 
-                            {/* Navigation controls - adjusted for responsiveness */}
                             {filteredNews.length > (window.innerWidth < 768 ? 1 : 2) && (
                                 <div className="flex justify-center mt-4 md:mt-6 space-x-3 md:space-x-4">
                                     <button
@@ -271,7 +270,8 @@ const NewsSection = () => {
                                         </svg>
                                     </button>
 
-                                    {/* Progress indicator */}
+
+
                                     <div className="flex items-center space-x-1 md:space-x-2">
                                         {Array.from({ length: Math.ceil(filteredNews.length / visibleNewsCount) }).map((_, index) => {
                                             const isActive = Math.floor(currentNewsIndex / visibleNewsCount) === index;
