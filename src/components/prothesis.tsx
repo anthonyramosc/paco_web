@@ -76,7 +76,18 @@ const NewsSection = () => {
 
     useEffect(() => {
         setCurrentNewsIndex(0);
-        setVisibleNewsCount(Math.min(2, filteredNews.length));
+        // Ajustar el número de artículos visibles según el tamaño de pantalla
+        const handleResize = () => {
+            const isMobile = window.innerWidth < 768;
+            setVisibleNewsCount(isMobile ? 1 : Math.min(2, filteredNews.length));
+        };
+
+        handleResize(); // Configuración inicial
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, [activeNewsFilter, filteredNews.length]);
 
     const nextNews = () => {
@@ -112,21 +123,24 @@ const NewsSection = () => {
 
     return (
         <div className="bg-white py-8">
-            <div className="container mx-auto px-4 flex flex-col">
-                <div className="flex px-22 flex-col mb-6 w-6/7">
-                    <h2 className="text-2xl font-bold text-[#785D99]">
+            <div className="container mx-auto px-4 md:px-6 flex flex-col">
+                {/* Header section */}
+                <div className="flex flex-col mb-6 w-full md:w-6/7 px-2 md:px-22">
+                    <h2 className="text-xl md:text-2xl font-bold text-[#785D99]">
                         Superando Limites
                     </h2>
-                    <div className="w-full h-1 bg-purple-500 mb-6" style={{backgroundColor:"#785D99"}}></div>
+                    <div className="w-full h-1 bg-purple-500 mb-4 md:mb-6" style={{backgroundColor:"#785D99"}}></div>
 
-                    <div className="mb-8">
-                        <div className="flex items-center mb-4">
-                            <svg className="w-5 h-5 text-[#785D99] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    {/* Filters section */}
+                    <div className="mb-6 md:mb-8">
+                        <div className="flex items-center mb-3 md:mb-4">
+                            <svg className="w-4 h-4 md:w-5 md:h-5 text-[#785D99] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
                             </svg>
-                            <span className="text-[#785D99]">Filtrar por:</span>
+                            <span className="text-sm md:text-base text-[#785D99]">Filtrar por:</span>
                         </div>
 
+                        {/* Responsive filter buttons */}
                         <div className="flex flex-wrap gap-2">
                             {filters.map((filter) => (
                                 <button
@@ -135,10 +149,10 @@ const NewsSection = () => {
                                     style={{
                                         paddingTop: '0.25rem',
                                         paddingBottom: '0.25rem',
-                                        paddingLeft: '1rem',
-                                        paddingRight: '1rem',
+                                        paddingLeft: '0.75rem',
+                                        paddingRight: '0.75rem',
                                         borderRadius: '9999px',
-                                        fontSize: '0.875rem',
+                                        fontSize: '0.75rem',
                                         backgroundColor: activeNewsFilter === filter ? '#59277A' : '#ffffff',
                                         color: activeNewsFilter === filter ? '#ffffff' : '#374151',
                                         fontWeight: activeNewsFilter === filter ? 500 : 'normal',
@@ -146,6 +160,7 @@ const NewsSection = () => {
                                         cursor: 'pointer',
                                         transition: 'background-color 0.2s ease'
                                     }}
+                                    className="text-xs md:text-sm"
                                     onMouseEnter={(e) => {
                                         if (activeNewsFilter !== filter) {
                                             e.target.style.backgroundColor = '#f3f4f6';
@@ -164,34 +179,36 @@ const NewsSection = () => {
                     </div>
                 </div>
 
+                {/* News content section */}
                 <div className="flex justify-center items-center">
                     {filteredNews.length > 0 ? (
-                        <div className="w-6/7 flex justify-center items-center">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="w-full md:w-6/7 flex flex-col justify-center items-center">
+                            {/* News grid - responsive */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
                                 {visibleNews.map((newsItem) => (
                                     <div key={newsItem.id} className="bg-white rounded-lg overflow-hidden shadow border border-gray-200">
                                         <div className="relative">
                                             <img
                                                 src={newsItem.image}
                                                 alt={newsItem.title}
-                                                className="w-full h-80 object-cover"
+                                                className="w-full h-48 md:h-80 object-cover"
                                             />
                                             <div className="absolute top-2 left-2">
-                                                <span className="bg-[#785D99] text-white text-xs px-3 py-1 rounded-full uppercase font-medium">
+                                                <span className="bg-[#785D99] text-white text-xs px-2 py-1 md:px-3 md:py-1 rounded-full uppercase font-medium">
                                                     {newsItem.tags[0]}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <div className="p-4">
-                                            <h3 className="text-lg font-bold mb-2">{newsItem.title}</h3>
-                                            <p className="text-gray-600 text-sm mb-4">
+                                        <div className="p-3 md:p-4">
+                                            <h3 className="text-base md:text-lg font-bold mb-2">{newsItem.title}</h3>
+                                            <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4">
                                                 {expandedArticle === newsItem.id ? newsItem.fullContent : newsItem.content}
                                             </p>
 
                                             {/* Date and read time */}
-                                            <div className="flex items-center text-[#785D99]">
-                                                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <div className="flex items-center text-[#785D99] text-xs md:text-sm">
+                                                <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                                 </svg>
                                                 <span>{newsItem.date}</span>
@@ -200,9 +217,9 @@ const NewsSection = () => {
                                             </div>
 
                                             {/* Actions */}
-                                            <div className="flex justify-between items-center">
+                                            <div className="flex justify-between items-center mt-3">
                                                 <button
-                                                    className="text-gray-500 hover:text-gray-700 text-sm flex items-center"
+                                                    className="text-gray-500 hover:text-gray-700 text-xs md:text-sm flex items-center"
                                                     onClick={() => {
                                                         if (navigator.share) {
                                                             navigator.share({
@@ -213,20 +230,20 @@ const NewsSection = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                    <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
                                                     </svg>
                                                     Compartir
                                                 </button>
 
                                                 <button
-                                                    className="bg-[] text-white px-4 py-1 rounded-full text-sm flex items-center"
+                                                    className="bg-[] text-white px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm flex items-center"
                                                     style={{backgroundColor:"#785D99", borderRadius:"9999px"}}
                                                     onClick={() => toggleExpandArticle(newsItem.id)}
                                                 >
                                                     {expandedArticle === newsItem.id ? 'Colapsar' : 'Seguir leyendo'}
                                                     <svg
-                                                        className={`w-4 h-4 ml-1 transform ${expandedArticle === newsItem.id ? 'rotate-90' : ''}`}
+                                                        className={`w-3 h-3 md:w-4 md:h-4 ml-1 transform ${expandedArticle === newsItem.id ? 'rotate-90' : ''}`}
                                                         fill="none"
                                                         stroke="currentColor"
                                                         viewBox="0 0 24 24"
@@ -241,27 +258,28 @@ const NewsSection = () => {
                                 ))}
                             </div>
 
-                            {/* Navigation controls */}
-                            {filteredNews.length > 2 && (
-                                <div className="flex justify-center mt-6 space-x-4">
+                            {/* Navigation controls - adjusted for responsiveness */}
+                            {filteredNews.length > (window.innerWidth < 768 ? 1 : 2) && (
+                                <div className="flex justify-center mt-4 md:mt-6 space-x-3 md:space-x-4">
                                     <button
                                         onClick={prevNews}
-                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-2 rounded-full"
+                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 md:p-2 rounded-full"
+                                        aria-label="Anterior"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
                                         </svg>
                                     </button>
 
                                     {/* Progress indicator */}
-                                    <div className="flex items-center space-x-2">
+                                    <div className="flex items-center space-x-1 md:space-x-2">
                                         {Array.from({ length: Math.ceil(filteredNews.length / visibleNewsCount) }).map((_, index) => {
                                             const isActive = Math.floor(currentNewsIndex / visibleNewsCount) === index;
                                             return (
                                                 <div
                                                     key={index}
-                                                    className={`h-3 rounded-full transition-all ${
-                                                        isActive ? 'bg-[#785D99] w-6' : 'bg-gray-300 w-3'
+                                                    className={`h-2 md:h-3 rounded-full transition-all ${
+                                                        isActive ? 'bg-[#785D99] w-4 md:w-6' : 'bg-gray-300 w-2 md:w-3'
                                                     }`}
                                                 />
                                             );
@@ -270,9 +288,10 @@ const NewsSection = () => {
 
                                     <button
                                         onClick={nextNews}
-                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-2 rounded-full"
+                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 md:p-2 rounded-full"
+                                        aria-label="Siguiente"
                                     >
-                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
                                         </svg>
                                     </button>
@@ -280,14 +299,14 @@ const NewsSection = () => {
                             )}
                         </div>
                     ) : (
-                        <div className="bg-white rounded-xl shadow-lg p-8 text-center border border-red-200">
-                            <svg className="w-16 h-16 text-red-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <div className="bg-white rounded-xl shadow-lg p-4 md:p-8 text-center border border-red-200 w-full md:w-auto">
+                            <svg className="w-12 h-12 md:w-16 md:h-16 text-red-400 mx-auto mb-3 md:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <p className="text-gray-500 text-lg">No hay noticias disponibles con el filtro seleccionado.</p>
+                            <p className="text-gray-500 text-base md:text-lg">No hay noticias disponibles con el filtro seleccionado.</p>
                             <button
                                 onClick={() => setActiveNewsFilter(null)}
-                                className="mt-4 text-red-600 font-medium hover:text-red-700 border-b-2 border-red-600 pb-1"
+                                className="mt-3 md:mt-4 text-red-600 font-medium hover:text-red-700 border-b-2 border-red-600 pb-1 text-sm md:text-base"
                             >
                                 Ver todas las noticias
                             </button>
