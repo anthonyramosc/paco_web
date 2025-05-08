@@ -1,11 +1,20 @@
-import { FC } from "react";
-import HeroBanner from "../components/banner.tsx";
-import ProfileComponent from "../components/meetme.tsx";
-import TikTokSlider from "../components/titktok.tsx";
-import DonateComponent from "../components/donate.tsx";
-import Contact from "../components/contact.tsx";
-import Prothesis from "../components/prothesis.tsx";
-import SegmentacionDashboard from "../components/donationMetrics.tsx";
+import { FC, lazy, Suspense } from "react";
+
+
+const HeroBanner = lazy(() => import("../components/banner.tsx"));
+const ProfileComponent = lazy(() => import("../components/meetme.tsx"));
+const TikTokSlider = lazy(() => import("../components/titktok.tsx"));
+const DonateComponent = lazy(() => import("../components/donate.tsx"));
+const Contact = lazy(() => import("../components/contact.tsx"));
+const Prothesis = lazy(() => import("../components/prothesis.tsx"));
+const SegmentacionDashboard = lazy(() => import("../components/donationMetrics.tsx"));
+
+
+const LoadingFallback: FC = () => (
+    <div className="flex items-center justify-center w-full h-24">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+);
 
 const Dashboard: FC = () => {
     const handleDonationSubmit = (formData: any) => {
@@ -14,20 +23,36 @@ const Dashboard: FC = () => {
 
     return (
         <div className="flex flex-col align-top">
-            <HeroBanner />
+            <Suspense fallback={<LoadingFallback />}>
+                <HeroBanner />
+            </Suspense>
+
             <div id="profileComponent">
-                <ProfileComponent />
+                <Suspense fallback={<LoadingFallback />}>
+                    <ProfileComponent />
+                </Suspense>
             </div>
-            <TikTokSlider />
+
+            <Suspense fallback={<LoadingFallback />}>
+                <TikTokSlider />
+            </Suspense>
 
             <div id="prothesisComponent">
-                <Prothesis />
+                <Suspense fallback={<LoadingFallback />}>
+                    <Prothesis />
+                </Suspense>
             </div>
-            <div id="segmentationComponent" >
-                <SegmentacionDashboard />
+
+            <div id="segmentationComponent">
+                <Suspense fallback={<LoadingFallback />}>
+                    <SegmentacionDashboard />
+                </Suspense>
             </div>
+
             <div id="contactComponent">
-                <Contact />
+                <Suspense fallback={<LoadingFallback />}>
+                    <Contact />
+                </Suspense>
             </div>
         </div>
     );
