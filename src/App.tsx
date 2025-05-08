@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+/* import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 // Importa los componentes utilizando lazy
@@ -21,6 +21,31 @@ const App: React.FC = () => {
            
             </Routes>
 
+        </BrowserRouter>
+    );
+};
+
+export default App; */
+
+import { FC } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Layout from "./components/Principal/Layout.tsx";
+import Dashboard from "./pages/dashboard.tsx";
+
+const App: FC = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <Layout>
+                            <Dashboard />
+                        </Layout>
+                    }
+                />
+            </Routes>
         </BrowserRouter>
     );
 };
