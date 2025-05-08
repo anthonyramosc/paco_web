@@ -1,51 +1,36 @@
-/* import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
-// Importa los componentes utilizando lazy
+
 const Layout = lazy(() => import("./components/Principal/Layout"));
 const Dashboard = lazy(() => import("./pages/dashboard"));
+
+const LoadingFallback = () => (
+    <div className="flex items-center justify-center w-full h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <p className="ml-3 text-lg">Cargando...</p>
+    </div>
+);
 
 const App: React.FC = () => {
     return (
         <BrowserRouter>
-            <Routes>
-            <Route path="/" element={<Suspense fallback={<div>Cargando...</div>}><Dashboard /></Suspense>} />
-                <Route path="/dashboard" element={<Suspense fallback={<div>Cargando...</div>}><Dashboard /></Suspense>} />
-                <Route path="/layout" element={<Suspense fallback={<div>Cargando...</div>}><Layout>{null}</Layout></Suspense>} />
-                <Route path="*" element={<Navigate to="/" />} /> 
-
-
-
-
-        
-           
-            </Routes>
-
-        </BrowserRouter>
-    );
-};
-
-export default App; */
-
-import { FC } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import Layout from "./components/Principal/Layout.tsx";
-import Dashboard from "./pages/dashboard.tsx";
-
-const App: FC = () => {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<Navigate to="/dashboard" />} />
-                <Route
-                    path="/dashboard"
-                    element={
+            <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                    <Route path="/" element={
                         <Layout>
                             <Dashboard />
                         </Layout>
-                    }
-                />
-            </Routes>
+                    } />
+                    <Route path="/dashboard" element={
+                        <Layout>
+                            <Dashboard />
+                        </Layout>
+                    } />
+
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </Suspense>
         </BrowserRouter>
     );
 };

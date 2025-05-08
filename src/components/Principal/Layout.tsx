@@ -5,7 +5,7 @@ import "../../assets/icon/flaticon_restics.css";
 import "../../assets/vendor/bootstrap/bootstrap.min.css";
 import "../../../global.css"
 
-const TypedText = ({ inMobile }: { inMobile: boolean }) => {
+const TypedText = () => {
     const containerRef = useRef(null);
     const [displayText, setDisplayText] = useState("");
     const phrases = ["AYUDA SIN LÍMITES", "PROYECTO SOCIAL", "PACO EL MORLACO"];
@@ -37,8 +37,44 @@ const TypedText = ({ inMobile }: { inMobile: boolean }) => {
             className={`inline-block relative`}
             style={{ width: `${longestPhrase.length}ch` }}
         >
-            {/* Aplica el color basado en inMobile */}
-            <span style={{ color: inMobile ? "purple" : "white" }}>{displayText}</span>
+            <span className="text-white">{displayText}</span>
+        </div>
+    );
+};
+
+const TypedTexts = () => {
+    const containerRef = useRef(null);
+    const [displayText, setDisplayText] = useState("");
+    const phrases = ["AYUDA SIN LÍMITES", "PROYECTO SOCIAL", "PACO EL MORLACO"];
+    const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+
+    const longestPhrase = phrases.reduce((a, b) => (a.length > b.length ? a : b), "");
+
+    useEffect(() => {
+        const typePhrase = async (phrase: string) => {
+            for (let i = 0; i <= phrase.length; i++) {
+                setDisplayText(phrase.substring(0, i));
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            setCurrentPhraseIndex((prevIndex) => (prevIndex + 1) % phrases.length);
+        };
+
+        const animateText = async () => {
+            await typePhrase(phrases[currentPhraseIndex]);
+        };
+
+        animateText();
+    }, [currentPhraseIndex]);
+    return (
+        <div
+            ref={containerRef}
+            className={`inline-block relative`}
+            style={{ width: `${longestPhrase.length}ch` }}
+        >
+            <span className="text-[#785D99]">{displayText}</span>
         </div>
     );
 };
@@ -55,7 +91,7 @@ const Navbar = () => {
         share: `https://wa.me/?text=Visita%20nuestro%20proyecto%20social:%20https://pacoelmorlaco.com`
     };
 
-    // Add scroll event listener
+
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 50);
@@ -67,7 +103,6 @@ const Navbar = () => {
         };
     }, []);
 
-    // Handle click outside of sidebar to close it
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -120,14 +155,14 @@ const Navbar = () => {
                             <div className="flex items-center justify-between w-full sm:w-auto py-0">
                                 <div className="font-bold text-xl md:text-2xl sm:block hidden">
                                     {/* Frases en el encabezado de escritorio */}
-                                    <TypedText inMobile={false} 
+                                    <TypedText
                                     />
                                     
                                 </div>
 
                                 {/* Mobile Logo/Title - Frases en el encabezado móvil */}
                                 <div className="font-bold text-xl md:text-2xl sm:hidden">
-                                    <TypedText inMobile={true} />
+                                    <TypedText  />
                                 </div>
 
                                 <button
@@ -229,7 +264,7 @@ const Navbar = () => {
 
                             {/* Typed Text in Sidebar */}
                             <div className="p-4 border-b text-center">
-                                <TypedText inMobile={true} />
+                                <TypedTexts  />
                             </div>
 
                             {/* Menu Items */}
@@ -312,8 +347,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
                 {children}
             </main>
             <footer className="bg-white text-indigo-700 py-6 px-4 sm:px-6">
+
                 <div className="font-bold text-xl md:text-2xl text-center">
-                    <TypedText inMobile={false} />
+                    <TypedTexts />
                 </div>
                 <div className="max-w-6xl mx-auto mt-3">
                     <p className="text-center">Copyright © {new Date().getFullYear()} Toma mi mano </p>
