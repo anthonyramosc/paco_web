@@ -1,5 +1,4 @@
-import { FC, lazy, Suspense } from "react";
-
+import { lazy, Suspense, useEffect } from "react";
 
 const HeroBanner = lazy(() => import("../components/banner.tsx"));
 const ProfileComponent = lazy(() => import("../components/meetme.tsx"));
@@ -9,17 +8,52 @@ const Contact = lazy(() => import("../components/contact.tsx"));
 const Prothesis = lazy(() => import("../components/prothesis.tsx"));
 const SegmentacionDashboard = lazy(() => import("../components/donationMetrics.tsx"));
 
-
-const LoadingFallback: FC = () => (
+const LoadingFallback = () => (
     <div className="flex items-center justify-center w-full h-24">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
     </div>
 );
 
-const Dashboard: FC = () => {
-    const handleDonationSubmit = (formData: any) => {
-        console.log("Datos de donación recibidos:", formData);
-    };
+// Component wrapper to handle scroll offset
+const ScrollTarget = ({ id, children, className = "" }) => {
+    return (
+        <div id={id} className={`scroll-mt-28 ${className}`}>
+            {children}
+        </div>
+    );
+};
+
+const Dashboard = () => {
+    useEffect(() => {
+        // This effect will handle any hash changes in the URL
+        const handleHashChange = () => {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+
+                setTimeout(() => {
+                    const element = document.getElementById(hash);
+                    if (element) {
+
+                        const navHeight = 112;
+                        const elementPosition = element.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo({
+                            top: elementPosition - navHeight,
+                            behavior: "smooth"
+                        });
+                    }
+                }, 100);
+            }
+        };
+
+
+        if (window.location.hash) {
+            handleHashChange();
+        }
+
+
+        window.addEventListener("hashchange", handleHashChange);
+        return () => window.removeEventListener("hashchange", handleHashChange);
+    }, []);
 
     return (
         <div className="flex flex-col align-top">
@@ -27,33 +61,34 @@ const Dashboard: FC = () => {
                 <HeroBanner />
             </Suspense>
 
-            <div id="profileComponent">
+            <ScrollTarget id="profileComponent">
                 <Suspense fallback={<LoadingFallback />}>
                     <ProfileComponent />
                 </Suspense>
-            </div>
+            </ScrollTarget>
 
             <Suspense fallback={<LoadingFallback />}>
                 <TikTokSlider />
             </Suspense>
 
-            <div id="prothesisComponent">
+
+            <ScrollTarget id="prothesisComponent">
                 <Suspense fallback={<LoadingFallback />}>
                     <Prothesis />
                 </Suspense>
-            </div>
+            </ScrollTarget>
 
-            <div id="segmentationComponent">
+            <ScrollTarget id="segmentationComponent">
                 <Suspense fallback={<LoadingFallback />}>
                     <SegmentacionDashboard />
                 </Suspense>
-            </div>
+            </ScrollTarget>
 
-            <div id="contactComponent">
+            <ScrollTarget id="contactComponent">
                 <Suspense fallback={<LoadingFallback />}>
                     <Contact />
                 </Suspense>
-            </div>
+            </ScrollTarget>
         </div>
     );
 };

@@ -22,7 +22,7 @@ const App: React.FC = () => {
                             <Dashboard />
                         </Layout>
                     } />
-                    <Route path="/dashboard" element={
+                    <Route path="/Paquito" element={
                         <Layout>
                             <Dashboard />
                         </Layout>
