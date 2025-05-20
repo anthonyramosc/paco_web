@@ -134,7 +134,7 @@ const CampaignInterface = () => {
 
     return (
 
-        <div className="flex px-3 sm:px-6 flex-col mb-6 w-full mx-auto" style={{ maxWidth: "1140px" }}>
+        <div className="flex px-3 sm:px-6 flex-col mb-6 w-full mx-auto" style={{ maxWidth: "1140px", marginTop:"100px" }}>
             <div className={`flex flex-col w-full bg-gradient-to-br from-[#785D99] to-[#785D99] text-white shadow-2xl overflow-hidden rounded-xl transition-all duration-500 border-2 border-indigo-300 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-50 translate-y-8'}`}>
                 <div className="relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-full h-12 opacity-20">

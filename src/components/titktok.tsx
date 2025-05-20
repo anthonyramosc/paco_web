@@ -64,7 +64,7 @@ export default function TikTokSlider() {
     const [visibleVideos, setVisibleVideos] = useState(1);
     const maxIndex = Math.max(0, videos.length - visibleVideos);
 
-    // Handle responsive layout
+
     useEffect(() => {
         const handleResize = () => {
             const width = window.innerWidth;

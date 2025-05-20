@@ -66,15 +66,20 @@ const Dashboard = () => {
                     <ProfileComponent />
                 </Suspense>
             </ScrollTarget>
-
+            {/*
             <Suspense fallback={<LoadingFallback />}>
                 <TikTokSlider />
             </Suspense>
-
+*/}
 
             <ScrollTarget id="prothesisComponent">
                 <Suspense fallback={<LoadingFallback />}>
                     <Prothesis />
+                </Suspense>
+            </ScrollTarget>
+            <ScrollTarget id="segmentationComponent">
+                <Suspense fallback={<LoadingFallback />}>
+                    <DonateComponent />
                 </Suspense>
             </ScrollTarget>
 

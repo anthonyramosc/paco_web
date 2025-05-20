@@ -1,609 +1,242 @@
-import React, { useState, FormEvent, useEffect } from 'react';
-import { CreditCard, AlertCircle, Check, ChevronLeft } from 'lucide-react';
+import { useState } from 'react';
+import { DollarSign, Heart, ExternalLink, ThumbsUp, Video } from 'lucide-react';
 
-interface DonationData {
-  isAnonymous: boolean;
-  nombre_completo: string;
-  cedula: string;
-  correo_electronico: string;
-  cantidad_donar: string;
-}
+const DONATION_OPTIONS = [
+  { amount: 5, link: 'https://payp.page.link/jJrQa' },
+  { amount: 10, link: 'https://payp.page.link/TrD8p' },
+  { amount: 15, link: 'https://payp.page.link/A8nyK' },
+  { amount: 20, link: 'https://payp.page.link/hkULM' },
+  { amount: 50, link: 'https://payp.page.link/ysYCM' }
+];
 
-interface CardData {
-  cardName: string;
-  cardNumber: string;
-  expiryDate: string;
-  cvv: string;
-}
-
-type FormMessage = {
-  type: 'success' | 'error' | null;
-  text: string | null;
-};
-
-// Predefined donation amounts
-const DONATION_AMOUNTS = [10, 25, 50, 100];
-
-const DonationForm: React.FC = () => {
-  const [formData, setFormData] = useState<DonationData>({
-    isAnonymous: false,
-    nombre_completo: '',
-    cedula: '',
-    correo_electronico: '',
-    cantidad_donar: '',
+export default function DonationComponent() {
+  const [selectedAmount, setSelectedAmount] = useState(null);
+  const [showThankYou, setShowThankYou] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    idNumber: '',
+    email: '',
+    phone: '',
+    customAmount: '',
+    acceptTerms: false
   });
+  const [anonymousDonation, setAnonymousDonation] = useState(false);
 
-  const [cardData, setCardData] = useState<CardData>({
-    cardName: '',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-  });
-
-  const [formMessage, setFormMessage] = useState<FormMessage>({ type: null, text: null });
-  const [showCard, setShowCard] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-  const [customAmountSelected, setCustomAmountSelected] = useState<boolean>(true);
-
-  // Format card number with spaces
-  useEffect(() => {
-    if (cardData.cardNumber) {
-      const formatted = cardData.cardNumber.replace(/\s/g, '').replace(/(.{4})/g, '$1 ').trim();
-      if (formatted !== cardData.cardNumber) {
-        setCardData(prev => ({ ...prev, cardNumber: formatted }));
-      }
-    }
-  }, [cardData.cardNumber]);
-
-  // Format expiry date with slash
-  useEffect(() => {
-    if (cardData.expiryDate && !cardData.expiryDate.includes('/')) {
-      if (cardData.expiryDate.length === 2) {
-        setCardData(prev => ({ ...prev, expiryDate: cardData.expiryDate + '/' }));
-      }
-    }
-  }, [cardData.expiryDate]);
-
-  const validateEmail = (email: string): boolean => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+  const handleDonationClick = (amount) => {
+    setSelectedAmount(amount);
   };
 
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.isAnonymous) {
-      if (!formData.nombre_completo.trim()) {
-        newErrors.nombre_completo = 'El nombre es requerido';
-      }
-
-      if (!formData.correo_electronico.trim()) {
-        newErrors.correo_electronico = 'El correo electrónico es requerido';
-      } else if (!validateEmail(formData.correo_electronico)) {
-        newErrors.correo_electronico = 'Ingrese un correo electrónico válido';
+  const handleDonateClick = () => {
+    if (selectedAmount !== null) {
+      const donationOption = DONATION_OPTIONS.find(option => option.amount === selectedAmount);
+      if (donationOption) {
+        // Open payment URL in a new tab
+        window.open(donationOption.link, '_blank');
+        // Show thank you message
+        setShowThankYou(true);
+        // Hide the message after 5 seconds
+        setTimeout(() => {
+          setShowThankYou(false);
+        }, 5000);
       }
     }
-
-    if (!formData.cantidad_donar || parseFloat(formData.cantidad_donar) <= 0) {
-      newErrors.cantidad_donar = 'Ingrese una cantidad válida';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  const validateCardData = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!cardData.cardName.trim()) {
-      newErrors.cardName = 'El nombre en la tarjeta es requerido';
-    }
-
-    if (!cardData.cardNumber.trim()) {
-      newErrors.cardNumber = 'El número de tarjeta es requerido';
-    } else if (cardData.cardNumber.replace(/\s/g, '').length !== 16) {
-      newErrors.cardNumber = 'El número debe tener 16 dígitos';
-    }
-
-    if (!cardData.expiryDate.trim()) {
-      newErrors.expiryDate = 'La fecha de expiración es requerida';
-    } else if (!/^\d{2}\/\d{2}$/.test(cardData.expiryDate)) {
-      newErrors.expiryDate = 'Formato MM/AA requerido';
-    }
-
-    if (!cardData.cvv.trim()) {
-      newErrors.cvv = 'El CVV es requerido';
-    } else if (!/^\d{3,4}$/.test(cardData.cvv)) {
-      newErrors.cvv = 'El CVV debe tener 3 o 4 dígitos';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => {
-        const newErrors = { ...prev };
-        delete newErrors[name];
-        return newErrors;
-      });
-    }
-
-    if (name in formData) {
-      setFormData(prevData => ({
-        ...prevData,
-        [name]: type === 'checkbox' ? checked : value,
-      }));
-
-      if (name === 'isAnonymous' && checked) {
-        setFormData(prevData => ({
-          ...prevData,
-          nombre_completo: '',
-          cedula: '',
-          correo_electronico: '',
-        }));
-      }
-    } else if (name in cardData) {
-      // Add specific validations for card inputs
-      let newValue = value;
-
-      if (name === 'cardNumber') {
-        // Only allow numbers and spaces
-        newValue = value.replace(/[^\d\s]/g, '').substring(0, 19);
-      } else if (name === 'expiryDate') {
-        // Only allow format MM/YY
-        newValue = value.replace(/[^\d/]/g, '').substring(0, 5);
-      } else if (name === 'cvv') {
-        // Only allow numbers
-        newValue = value.replace(/\D/g, '').substring(0, 4);
-      }
-
-      setCardData(prevData => ({
-        ...prevData,
-        [name]: newValue,
-      }));
-    }
-  };
-
-  const selectDonationAmount = (amount: number) => {
-    setFormData(prev => ({
-      ...prev,
-      cantidad_donar: amount.toString()
-    }));
-    setCustomAmountSelected(false);
-  };
-
-  const handleCustomAmountSelect = () => {
-    setCustomAmountSelected(true);
-  };
-
-  const simulatePaymentProcessing = (): Promise<boolean> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(Math.random() > 0.1); // 90% success rate for simulation
-      }, 1500);
+    setFormData({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
     });
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setFormMessage({ type: null, text: null });
+  const handleAnonymousDonation = () => {
+    setAnonymousDonation(true);
 
-    if (showCard) {
-      if (!validateCardData()) {
-        return;
-      }
-
-      setIsSubmitting(true);
-      try {
-        const paymentSuccess = await simulatePaymentProcessing();
-
-        if (paymentSuccess) {
-          setFormMessage({
-            type: 'success',
-            text: `¡Gracias por tu generosa donación de $${parseFloat(formData.cantidad_donar).toFixed(2)}! Tu apoyo hace la diferencia.`,
-          });
-
-          // Reset form after successful submission
-          setFormData({
-            isAnonymous: false,
-            nombre_completo: '',
-            cedula: '',
-            correo_electronico: '',
-            cantidad_donar: '',
-          });
-
-          setCardData({
-            cardName: '',
-            cardNumber: '',
-            expiryDate: '',
-            cvv: '',
-          });
-
-          setShowCard(false);
-          setCustomAmountSelected(true);
-        } else {
-          setFormMessage({
-            type: 'error',
-            text: 'Lo sentimos, hubo un problema procesando tu pago. Por favor, intenta nuevamente.',
-          });
-        }
-      } catch (error) {
-        setFormMessage({
-          type: 'error',
-          text: 'Ocurrió un error inesperado. Por favor, intenta más tarde.',
-        });
-      } finally {
-        setIsSubmitting(false);
-      }
-    } else {
-      if (!validateForm()) {
-        return;
-      }
-
-      setShowCard(true);
-    }
+    handleDonateClick();
   };
 
-  const handleCancel = () => {
-    setShowCard(false);
-    setErrors({});
+  const handleFormSubmit = (e) => {
+    if (e) e.preventDefault();
+
+    console.log("Processing donation with form data:", formData);
+
+
+    if (formData.customAmount) {
+
+      console.log("Custom amount donation:", formData.customAmount);
+    } else {
+      // Si no hay monto personalizado, usar el monto seleccionado
+      handleDonateClick();
+    }
+
+    // Mostrar mensaje de agradecimiento
+    setShowThankYou(true);
+    // Ocultar el mensaje después de 5 segundos
+    setTimeout(() => {
+      setShowThankYou(false);
+    }, 5000);
   };
 
   return (
-      <section id="donar" className="py-16 bg-[#B19CC3]">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h3 className="text-3xl font-bold mb-4 text-[#59277A]">Realiza tu Donación</h3>
-            <p className="text-lg mb-2 max-w-3xl mx-auto text-gray-700">
-              Cada contribución, grande o pequeña, nos acerca a nuestro objetivo.
+      <div className="flex flex-col lg:flex-row w-full max-w-5xl mx-auto bg-[#785D99] text-white rounded-lg overflow-hidden">
+        {/* Columna Izquierda */}
+        <div className="w-full lg:w-2/3 p-8">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-center mb-4">DONAR</h1>
+            <p className="text-center text-lg mb-6">
+              "Con tu Donación puedes ser parte de este de esta ayuda para
+              crear Prótesis. Si tu corazón te llama a donar más o menos, cada
+              contribución es bienvenida con un profundo agradecimiento"
             </p>
-            <p className="text-lg max-w-3xl mx-auto text-gray-700">
-              Tu apoyo es fundamental para continuar nuestra labor.
+
+            {/* Opciones de donación visibles */}
+
+
+            <button
+                onClick={handleAnonymousDonation}
+                className="w-full bg-orange-600 text-white font-bold py-3 px-6 rounded-md mb-6 transition-all duration-200 hover:bg-orange-700"
+                style={{backgroundColor:"#EA580C"}}
+            >
+              DONAR ANÓNIMAMENTE ${selectedAmount || '--'}
+            </button>
+
+            <p className="text-center mb-4">
+              También puedes dejarnos tus datos, estos serán usados para
+              brindarte información sobre como se usa tu donación.
             </p>
-          </div>
 
-          {/* Updated layout to match width of section below */}
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col lg:flex-row justify-between gap-8">
-              <div className="lg:w-1/2">
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                  <div className="rounded-xl overflow-hidden shadow-md mb-6 "   style={{height:"550px"}}>
-                    <video
-                        controls
-                        className="w-full h-full object-cover"
-                        style={{height:"550px"}}
-                    >
-                      <source src="https://test.tryclicksolutions.com/wp-content/uploads/2024/11/cuento-contigo-59395984-4484compartir-es-una-ayuda-sin-limites-protesis-pacoel_mwnUaka0.mp4" type="video/mp4" />
-                      Tu navegador no soporta videos.
-                    </video>
-                  </div>
+            <div className="space-y-4 flex flex-col gap-3">
+              <input
+                  type="text"
+                  name="fullName"
+                  placeholder="Nombres completos"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-md border text-gray-700"
+                  style={{backgroundColor:"white"}}
+              />
+              <input
+                  type="text"
+                  name="idNumber"
+                  placeholder="Número de cédula"
+                  value={formData.idNumber}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-md border text-gray-700"
+                  style={{backgroundColor:"white"}}
+              />
+              <input
+                  type="email"
+                  name="email"
+                  placeholder="Correo electrónico"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-md border text-gray-700"
+                  style={{backgroundColor:"white"}}
+              />
+              <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Número de teléfono"
+                  value={formData.phone}
+                  onChange={handleInputChange}
+                  className="w-full p-3 rounded-md border text-gray-700"
+                  style={{backgroundColor:"white"}}
+              />
 
-                  <div className="space-y-4 text-[#785D99]">
-                    <p className="text-sm italic text-[#785D99]">
-                      Tu donación puede ser deducible de impuestos. Consulta con tu asesor fiscal.
-                    </p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-5 gap-2 mb-6">
+              {DONATION_OPTIONS.map((option) => (
+                  <button
+                      key={option.amount}
+                      onClick={() => handleDonationClick(option.amount)}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        padding: '0.5rem', // p-2 = 8px = 0.5rem
+                        borderRadius: '0.5rem', // rounded-lg ~ 0.5rem
+                        backgroundColor: selectedAmount === option.amount ? '#EA580C' : '#F3F4F6', // bg-blue-500 : bg-gray-100
+                        color: selectedAmount === option.amount ? '#FFFFFF' : '#1F2937', // text-white : text-gray-800
+                        border: '2px solid',
+                        borderColor: selectedAmount === option.amount ? 'white' : 'transparent', // border-blue-600 : border-transparent
+                        transition: 'all 0.2s ease' // transition-all duration-200
+                      }}
+
+                  >
+                    <DollarSign className="h-4 w-4 mb-1" />
+                    <span className="font-bold">{option.amount}</span>
+                  </button>
+              ))}
+            </div>
+              <div className="flex items-center">
+                <input
+                    type="checkbox"
+                    name="acceptTerms"
+                    id="acceptTerms"
+                    checked={formData.acceptTerms}
+                    onChange={handleInputChange}
+                    className="mr-2"
+                />
+                <label htmlFor="acceptTerms" className="text-sm">
+                  Aceptar términos y condiciones
+                </label>
               </div>
 
-              <div className="lg:w-1/2">
-                <form
-                    id="donation-form"
-                    className="bg-white p-6 sm:p-8 rounded-lg shadow-xl w-full mx-auto"
-                    onSubmit={handleSubmit}
-                    noValidate
-                    aria-labelledby="donation-form-title"
-                >
-                  <h4 id="donation-form-title" className="text-xl font-semibold mb-6 text-gray-800">
-                    {showCard ? 'Detalles de Pago' : 'Información de Donación'}
-                  </h4>
+              <button
+                  onClick={handleFormSubmit}
+                  style={{backgroundColor:"#EA580C"}}
+                  className="w-full bg-orange-600 text-white font-bold py-3 px-6 rounded-md transition-all duration-200 hover:bg-orange-700 flex items-center justify-center gap-2"
+              >
+                <Heart className="h-5 w-5" />
+                <span>DONAR ${selectedAmount || formData.customAmount || '--'}</span>
+              </button>
+            </div>
+          </div>
 
-                  {!showCard ? (
-                      <>
-                        <div className="mb-6">
-                          <label className="flex items-center cursor-pointer gap-2">
-                            <input
-                                type="checkbox"
-                                id="donar_anonimamente"
-                                name="isAnonymous"
-                                checked={formData.isAnonymous}
-                                onChange={handleInputChange}
-                                className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer"
-                            />
-                            <span className="text-gray-600 text-lg">Quiero donar anónimamente</span>
-                          </label>
-                        </div>
+          {showThankYou && (
+              <div className="mt-4 p-3 bg-green-100 border border-green-300 rounded-lg flex items-center text-green-700">
+                <ThumbsUp className="h-5 w-5 mr-2" />
+                <span>¡Gracias por tu donación! Apreciamos tu apoyo.</span>
+              </div>
+          )}
+        </div>
 
-                        <div
-                            className={`space-y-4 transition-opacity duration-300 ease-in-out ${
-                                formData.isAnonymous ? 'opacity-50 pointer-events-none' : 'opacity-100'
-                            }`}
-                        >
-                          <div>
-                            <label htmlFor="nombre_completo" className="block mb-2 font-medium text-gray-700">
-                              Nombre Completo <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="nombre_completo"
-                                name="nombre_completo"
-                                value={formData.nombre_completo}
-                                onChange={handleInputChange}
-                                required={!formData.isAnonymous}
-                                disabled={formData.isAnonymous}
-                                aria-describedby={errors.nombre_completo ? "nombre-error" : undefined}
-                                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 ${
-                                    errors.nombre_completo ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                            />
-                            {errors.nombre_completo && (
-                                <p id="nombre-error" className="mt-1 text-sm text-red-600 flex items-center">
-                                  <AlertCircle size={16} className="mr-1" /> {errors.nombre_completo}
-                                </p>
-                            )}
-                          </div>
-
-                          <div>
-                            <label htmlFor="cedula" className="block mb-2 font-medium text-gray-700">
-                              Cédula <span className="text-gray-500">(Opcional)</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="cedula"
-                                name="cedula"
-                                value={formData.cedula}
-                                onChange={handleInputChange}
-                                disabled={formData.isAnonymous}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100"
-                            />
-                          </div>
-
-                          <div>
-                            <label htmlFor="correo_electronico" className="block mb-2 font-medium text-gray-700">
-                              Correo Electrónico <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="email"
-                                id="correo_electronico"
-                                name="correo_electronico"
-                                value={formData.correo_electronico}
-                                onChange={handleInputChange}
-                                required={!formData.isAnonymous}
-                                disabled={formData.isAnonymous}
-                                aria-describedby={errors.correo_electronico ? "email-error" : undefined}
-                                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 ${
-                                    errors.correo_electronico ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                            />
-                            {errors.correo_electronico && (
-                                <p id="email-error" className="mt-1 text-sm text-red-600 flex items-center">
-                                  <AlertCircle size={16} className="mr-1" /> {errors.correo_electronico}
-                                </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="mt-6 mb-4">
-                          <label className="block mb-3 font-medium text-gray-700">
-                            Cantidad a Donar (USD) <span className="text-red-500">*</span>
-                          </label>
-
-                          <div className="grid grid-cols-2 gap-2 mb-4 sm:grid-cols-4">
-                            {DONATION_AMOUNTS.map((amount) => (
-                                <button
-                                    key={amount}
-                                    type="button"
-                                    onClick={() => selectDonationAmount(amount)}
-                                    className={`px-4 py-2 border rounded-md transition-all ${
-                                        formData.cantidad_donar === amount.toString() && !customAmountSelected
-                                            ? 'bg-[#785D99] text-white border-[#785D99]'
-                                            : 'bg-[#785D99] text-gray-700 border-[#785D99] hover:bg-[#785D99]'
-                                    }`}
-                                >
-                                  ${amount}
-                                </button>
-                            ))}
-                          </div>
-
-                          <div className="relative">
-                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-500">
-                          $
-                        </span>
-                            <input
-                                type="number"
-                                id="cantidad_donar"
-                                name="cantidad_donar"
-                                value={formData.cantidad_donar}
-                                onChange={(e) => {
-                                  handleInputChange(e as React.ChangeEvent<HTMLInputElement>);
-                                  handleCustomAmountSelect();
-                                }}
-                                min="1"
-                                step="any"
-                                required
-                                placeholder="Otra cantidad"
-                                aria-describedby={errors.cantidad_donar ? "amount-error" : undefined}
-                                className={`w-full pl-8 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                                    errors.cantidad_donar ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                            />
-                          </div>
-                          {errors.cantidad_donar && (
-                              <p id="amount-error" className="mt-1 text-sm text-red-600 flex items-center">
-                                <AlertCircle size={16} className="mr-1" /> {errors.cantidad_donar}
-                              </p>
-                          )}
-                        </div>
-                      </>
-                  ) : (
-                      <>
-                        <button
-                            type="button"
-                            onClick={handleCancel}
-                            className="mb-4 flex items-center text-blue-600 hover:text-blue-800 transition-colors"
-                        >
-                          <ChevronLeft size={16} className="mr-1" /> Volver
-                        </button>
-
-                        <div className="mb-4 p-3 bg-blue-50 rounded-md border-2 border-blue-500">
-                          <p className="flex items-center text-sm text-blue-600">
-                            <CreditCard size={16} className="mr-2" />
-                            Realizando donación de <span className="font-bold ml-1">${parseFloat(formData.cantidad_donar).toFixed(2)} USD</span>
-                          </p>
-                        </div>
-
-                        <div className="mb-4">
-                          <label htmlFor="cardName" className="block mb-2 font-medium text-gray-700">
-                            Nombre en la Tarjeta <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                              type="text"
-                              id="cardName"
-                              name="cardName"
-                              value={cardData.cardName}
-                              onChange={handleInputChange}
-                              placeholder="Como aparece en la tarjeta"
-                              required
-                              aria-describedby={errors.cardName ? "cardName-error" : undefined}
-                              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                                  errors.cardName ? 'border-red-500' : 'border-gray-300'
-                              }`}
-                          />
-                          {errors.cardName && (
-                              <p id="cardName-error" className="mt-1 text-sm text-red-600 flex items-center">
-                                <AlertCircle size={16} className="mr-1" /> {errors.cardName}
-                              </p>
-                          )}
-                        </div>
-
-                        <div className="mb-4">
-                          <label htmlFor="cardNumber" className="block mb-2 font-medium text-gray-700">
-                            Número de Tarjeta <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                              type="text"
-                              id="cardNumber"
-                              name="cardNumber"
-                              value={cardData.cardNumber}
-                              onChange={handleInputChange}
-                              placeholder="0000 0000 0000 0000"
-                              required
-                              aria-describedby={errors.cardNumber ? "cardNumber-error" : undefined}
-                              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                                  errors.cardNumber ? 'border-red-500' : 'border-gray-300'
-                              }`}
-                          />
-                          {errors.cardNumber && (
-                              <p id="cardNumber-error" className="mt-1 text-sm text-red-600 flex items-center">
-                                <AlertCircle size={16} className="mr-1" /> {errors.cardNumber}
-                              </p>
-                          )}
-                        </div>
-
-                        <div className="flex mb-4 gap-4">
-                          <div className="w-1/2">
-                            <label htmlFor="expiryDate" className="block mb-2 font-medium text-gray-700">
-                              Fecha Expiración <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="expiryDate"
-                                name="expiryDate"
-                                value={cardData.expiryDate}
-                                onChange={handleInputChange}
-                                placeholder="MM/AA"
-                                required
-                                aria-describedby={errors.expiryDate ? "expiry-error" : undefined}
-                                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                                    errors.expiryDate ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                            />
-                            {errors.expiryDate && (
-                                <p id="expiry-error" className="mt-1 text-sm text-red-600 flex items-center">
-                                  <AlertCircle size={16} className="mr-1" /> {errors.expiryDate}
-                                </p>
-                            )}
-                          </div>
-
-                          <div className="w-1/2">
-                            <label htmlFor="cvv" className="block mb-2 font-medium text-gray-700">
-                              CVV <span className="text-red-500">*</span>
-                            </label>
-                            <input
-                                type="text"
-                                id="cvv"
-                                name="cvv"
-                                value={cardData.cvv}
-                                onChange={handleInputChange}
-                                placeholder="123"
-                                required
-                                aria-describedby={errors.cvv ? "cvv-error" : undefined}
-                                className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                                    errors.cvv ? 'border-red-500' : 'border-gray-300'
-                                }`}
-                            />
-                            {errors.cvv && (
-                                <p id="cvv-error" className="mt-1 text-sm text-red-600 flex items-center">
-                                  <AlertCircle size={16} className="mr-1" /> {errors.cvv}
-                                </p>
-                            )}
-                          </div>
-                        </div>
-
-                        <p className="mb-4 text-sm text-gray-500">
-                          Tus datos de pago están seguros. Utilizamos cifrado para proteger tu información.
-                        </p>
-                      </>
-                  )}
-
-                  <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full font-bold py-3 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed flex justify-center items-center border-2 border-blue-600 bg-white text-blue-600"
-                  >
-                    {isSubmitting ? (
-                        <span className="flex items-center">
-                      <svg className="animate-spin mr-2 h-5 w-5  text-[#785D99]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      Procesando...
-                    </span>
-                    ) : (
-                        showCard ? "Completar Donación" : "Continuar"
-                    )}
-                  </button>
-                </form>
-
-                {formMessage.text && (
-                    <div
-                        className={`mt-6 p-4 rounded-md text-sm w-full flex items-start ${
-                            formMessage.type === 'success'
-                                ? 'bg-green-50 border border-green-200 text-green-800'
-                                : 'bg-red-50 border border-red-200 text-red-800'
-                        }`}
-                        role="alert"
-                    >
-                      {formMessage.type === 'success' ? (
-                          <Check size={20} className="mr-2 flex-shrink-0 mt-0.5" />
-                      ) : (
-                          <AlertCircle size={20} className="mr-2 flex-shrink-0 mt-0.5" />
-                      )}
-                      <span>{formMessage.text}</span>
-                    </div>
-                )}
+        {/* Columna Derecha - Video */}
+        <div className="w-full lg:w-1/3 bg-gray-100 relative">
+          <div className="aspect-video h-full w-full bg-gray-800 flex justify-center items-center">
+            <img
+                src="/api/placeholder/400/320"
+                alt="Video de donación"
+                className="h-full w-full object-cover"
+            />
+            <div className="absolute bottom-0 left-0 w-full bg-black bg-opacity-50 flex justify-between items-center p-2 text-white">
+              <div className="flex items-center">
+                <span>0:00 / 1:25</span>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button className="p-1">
+                  <span className="sr-only">Mute</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 3.75v12.5L4.75 12H1.5V8h3.25L10 3.75z" />
+                  </svg>
+                </button>
+                <button className="p-1">
+                  <span className="sr-only">Fullscreen</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3.75 3.75v4.5h1.5v-3h3v-1.5h-4.5zm0 12.5h4.5v-1.5h-3v-3h-1.5v4.5zm12.5-12.5h-4.5v1.5h3v3h1.5v-4.5zm0 12.5v-4.5h-1.5v3h-3v1.5h4.5z" />
+                  </svg>
+                </button>
+                <button className="p-1">
+                  <span className="sr-only">Options</span>
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 6a2 2 0 100-4 2 2 0 000 4zM10 12a2 2 0 100-4 2 2 0 000 4zM10 18a2 2 0 100-4 2 2 0 000 4z" />
+                  </svg>
+                </button>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
   );
-};
-
-export default DonationForm;
+}
