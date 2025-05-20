@@ -202,7 +202,7 @@ export default function DonationComponent() {
           )}
         </div>
 
-        {/* Columna Derecha - Video */}
+        {/* Columna Derecha - Video
         <div className="w-full lg:w-1/3 bg-gray-100 relative">
           <div className="aspect-video h-full w-full bg-gray-800 flex justify-center items-center">
             <img
@@ -236,7 +236,7 @@ export default function DonationComponent() {
               </div>
             </div>
           </div>
-        </div>
+        </div>*/}
       </div>
   );
 }
