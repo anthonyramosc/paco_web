@@ -1,5 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import {Login} from "./pages/Login.tsx";
+import {AuthProvider} from "./context/AuthContext.tsx";
 
 
 const Layout = lazy(() => import("./components/Principal/Layout"));
@@ -14,6 +16,7 @@ const LoadingFallback = () => (
 
 const App: React.FC = () => {
     return (
+        <AuthProvider>
         <BrowserRouter>
             <Suspense fallback={<LoadingFallback />}>
                 <Routes>
@@ -28,10 +31,13 @@ const App: React.FC = () => {
                         </Layout>
                     } />
 
+                    <Route path="/login" element={<Login />} />
+
                     <Route path="*" element={<Navigate to="/" replace />} />
+
                 </Routes>
             </Suspense>
-        </BrowserRouter>
+        </BrowserRouter> </AuthProvider>
     );
 };
 
