@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import api from "../../../service/api";
 
 export default function ContentForm() {
     const [titulo, setTitulo] = useState("");
@@ -6,14 +7,52 @@ export default function ContentForm() {
     const [texto, setTexto] = useState("");
     const [fullContent, setFullContent] = useState("");
     const [imagen, setImagen] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [message, setMessage] = useState("");
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-    const handleSubmit = () => {
-        console.log("Título:", titulo);
-        console.log("Subtítulo:", subtitulo);
-        console.log("Texto:", texto);
-        console.log("Full content:", fullContent);
-        console.log("Imagen:", imagen);
+    // ID del post que quieres actualizar
+    const postId = "1ff2a202-b6a7-4622-bf97-99f0924bb1d9";
+
+    const handleSubmit = async () => {
+        // Validar que al menos título o contenido tengan contenido
+        if (!titulo.trim() && !texto.trim()) {
+            setMessage("Por favor, ingresa al menos un título o contenido");
+            return;
+        }
+
+        setIsLoading(true);
+        setMessage("");
+
+        try {
+            // Preparar los datos para enviar (solo título y contenido)
+            const updateData: any = {};
+            if (titulo.trim()) updateData.title = titulo.trim();
+            if (texto.trim()) updateData.content = texto.trim();
+
+            const response = await api.patch(`/posts/${postId}`, updateData);
+            
+            setMessage("¡Post actualizado exitosamente!");
+            console.log("Post actualizado:", response.data);
+            
+        } catch (error: any) {
+            console.error("Error:", error);
+            let errorMessage = 'Error al actualizar el post';
+            
+            if (error.response?.data?.message) {
+                if (Array.isArray(error.response.data.message)) {
+                    errorMessage = error.response.data.message.join(', ');
+                } else {
+                    errorMessage = error.response.data.message;
+                }
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            setMessage(`Error: ${errorMessage}`);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,13 +67,25 @@ export default function ContentForm() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="w-[1300px] h-[758px] bg-white rounded-lg shadow-md flex flex-col justify-between items-center px-8 py-6">
-                <div className="flex gap-8 w-full">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+            <div className="w-full max-w-7xl bg-white rounded-lg shadow-md flex flex-col items-center p-4 md:p-8">
+                
+                {/* Mensaje de estado */}
+                {message && (
+                    <div className={`w-full max-w-md mb-4 p-3 rounded-md text-center ${
+                        message.includes('Error') 
+                            ? 'bg-red-100 text-red-700 border border-red-300' 
+                            : 'bg-green-100 text-green-700 border border-green-300'
+                    }`}>
+                        {message}
+                    </div>
+                )}
+
+                <div className="flex flex-col lg:flex-row gap-8 w-full">
                     {/* Imagen / Uploader */}
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 w-full lg:w-auto flex justify-center">
                         <div
-                            className="w-[562px] h-[635px] bg-gray-200 rounded-md flex items-center justify-center cursor-pointer overflow-hidden"
+                            className="w-full max-w-md lg:w-[562px] h-64 sm:h-80 lg:h-[635px] bg-gray-200 rounded-md flex items-center justify-center cursor-pointer overflow-hidden"
                             onClick={() => fileInputRef.current?.click()}
                         >
                             {imagen ? (
@@ -69,17 +120,18 @@ export default function ContentForm() {
                                 onChange={handleImageChange}
                                 ref={fileInputRef}
                                 className="hidden"
+                                disabled={isLoading}
                             />
                         </div>
                     </div>
 
                     {/* Formulario */}
-                    <div className="flex-1 border border-gray-200 rounded-lg p-5 space-y-4">
+                    <div className="flex-1 border border-gray-200 rounded-lg p-4 md:p-5 space-y-4 min-w-0">
                         {/* Campo Título */}
                         <div>
                             <label
                                 htmlFor="titulo"
-                                className="block font-medium text-gray-700 mb-2 text-[24px]"
+                                className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
                             >
                                 Título
                             </label>
@@ -89,7 +141,8 @@ export default function ContentForm() {
                                 value={titulo}
                                 onChange={(e) => setTitulo(e.target.value)}
                                 placeholder="Título"
-                                className="w-[620px] h-[44px] min-w-[240px] px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="w-full h-11 px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                disabled={isLoading}
                             />
                         </div>
 
@@ -97,7 +150,7 @@ export default function ContentForm() {
                         <div>
                             <label
                                 htmlFor="subtitulo"
-                                className="block font-medium text-gray-700 mb-2 text-[24px]"
+                                className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
                             >
                                 Subtítulo
                             </label>
@@ -107,7 +160,8 @@ export default function ContentForm() {
                                 value={subtitulo}
                                 onChange={(e) => setSubtitulo(e.target.value)}
                                 placeholder="Subtítulo"
-                                className="w-[620px] h-[44px] min-w-[240px] px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="w-full h-11 px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                disabled={isLoading}
                             />
                         </div>
 
@@ -115,7 +169,7 @@ export default function ContentForm() {
                         <div>
                             <label
                                 htmlFor="texto"
-                                className="block font-medium text-gray-700 mb-2 text-[24px]"
+                                className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
                             >
                                 Texto
                             </label>
@@ -124,7 +178,8 @@ export default function ContentForm() {
                                 value={texto}
                                 onChange={(e) => setTexto(e.target.value)}
                                 placeholder="Texto"
-                                className="w-[620px] h-[135px] px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="w-full h-32 md:h-36 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                disabled={isLoading}
                             />
                         </div>
 
@@ -132,7 +187,7 @@ export default function ContentForm() {
                         <div>
                             <label
                                 htmlFor="fullContent"
-                                className="block font-medium text-gray-700 mb-2 text-[24px]"
+                                className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
                             >
                                 Full content
                             </label>
@@ -141,19 +196,25 @@ export default function ContentForm() {
                                 value={fullContent}
                                 onChange={(e) => setFullContent(e.target.value)}
                                 placeholder="Full content"
-                                className="w-[620px] h-[135px] px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                className="w-full h-32 md:h-36 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                                disabled={isLoading}
                             />
                         </div>
                     </div>
                 </div>
 
                 {/* Botón Aceptar */}
-                <div className="flex justify-center mt-6">
+                <div className="flex justify-center mt-6 w-full">
                     <button
                         onClick={handleSubmit}
-                        className="w-[520px] h-[56px] text-[32px] text-white font-medium rounded-md bg-[#AF52DE] hover:bg-[#9e3cd4] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#AF52DE] focus:ring-offset-2"
+                        disabled={isLoading}
+                        className={`w-full max-w-md md:max-w-lg h-12 md:h-14 text-xl md:text-2xl lg:text-3xl text-white font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#AF52DE] focus:ring-offset-2 ${
+                            isLoading 
+                                ? 'bg-gray-400 cursor-not-allowed' 
+                                : 'bg-[#AF52DE] hover:bg-[#9e3cd4]'
+                        }`}
                     >
-                        Aceptar
+                        {isLoading ? 'Actualizando...' : 'Actualizar Post'}
                     </button>
                 </div>
             </div>

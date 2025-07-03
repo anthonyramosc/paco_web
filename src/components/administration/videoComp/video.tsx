@@ -1,64 +1,62 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const Videoadm: React.FC = () => {
-    const [nombre, setNombre] = useState("");
-    const [codigo, setCodigo] = useState("");
+export default function Videoadm() {
+  const [nombre, setNombre] = useState("");
+  const [codigo, setCodigo] = useState("");
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Nombre:", nombre);
-        console.log("Código:", codigo);
-    };
+  const handleSubmit = () => {
+    console.log("Nombre:", nombre);
+    console.log("Código:", codigo);
+  };
 
-    return (
-        <div className="w-[1300px] h-[487px] mx-auto mt-10 border rounded-lg p-6 flex flex-col items-center gap-6 shadow-md bg-white">
-            <div className="w-[1240px] h-[89px] flex items-center justify-center">
-                <h1 className="text-[32px] font-semibold text-gray-800">Videos</h1>
-            </div>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-6xl bg-white rounded-lg shadow-md flex flex-col justify-center items-center p-4 md:p-8">
 
-            <form
-                onSubmit={handleSubmit}
-                className="w-[1240px] h-[205px] flex flex-col justify-between"
-            >
-                <div className="flex flex-col gap-2">
-                    <label htmlFor="nombre" className="text-[24px] font-medium text-gray-700">
-                        Nombre
-                    </label>
-                    <input
-                        id="nombre"
-                        type="text"
-                        placeholder="Nombre"
-                        value={nombre}
-                        onChange={(e) => setNombre(e.target.value)}
-                        className="w-full min-w-[240px] h-[44px] border border-gray-300 rounded px-4 text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-                    />
-                </div>
-
-                <div className="flex flex-col gap-2 mt-4">
-                    <label htmlFor="URL" className="text-[24px] font-medium text-gray-700">
-                        URL
-                    </label>
-                    <input
-                        id="URL"
-                        type="text"
-                        placeholder="URL"
-                        value={codigo}
-                        onChange={(e) => setCodigo(e.target.value)}
-                        className="w-full min-w-[240px] h-[44px] border border-gray-300 rounded px-4 text-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-                    />
-                </div>
-
-                <div className="flex justify-center mt-6">
-                    <button
-                        type="submit"
-                        className="w-[520px] h-[56px] text-[32px] text-white text-[20px] bg-[#AF52DE] hover:bg-purple-600 rounded transition-all"
-                    >
-                        Aceptar
-                    </button>
-                </div>
-            </form>
+        {/* Bloque Nombre */}
+        <div className="flex flex-col justify-start w-full mb-6">
+          <label
+            htmlFor="nombre"
+            className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
+          >
+            Nombre
+          </label>
+          <input
+            type="text"
+            id="nombre"
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            placeholder="Nombre"
+            className="w-full h-11 px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+          />
         </div>
-    );
-};
 
-export default Videoadm;
+        {/* Bloque URL */}
+        <div className="flex flex-col justify-start w-full mb-6">
+          <label
+            htmlFor="url"
+            className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
+          >
+            URL
+          </label>
+          <input
+            type="text"
+            id="url"
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value)}
+            placeholder="URL del video"
+            className="w-full h-11 px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+          />
+        </div>
+
+        {/* Botón Aceptar */}
+        <button
+          onClick={handleSubmit}
+          className="w-full max-w-md md:max-w-lg h-12 md:h-14 text-xl md:text-2xl lg:text-3xl text-white font-medium rounded-md bg-[#AF52DE] hover:bg-[#9e3cd4] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#AF52DE] focus:ring-offset-2"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+  );
+}
