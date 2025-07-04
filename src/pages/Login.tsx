@@ -41,7 +41,7 @@ export const Login: FC = () => {
             if (response.success) {
                 const token = Cookies.get("accessToken"); //localStorage.getItem('accessToken');
                 if (token) {
-                    navigate("/users", { replace: true });
+                    navigate("/administration", { replace: true });
                 } else {
                     setError("Login failed. No token found.");
                 }
@@ -83,7 +83,7 @@ export const Login: FC = () => {
                             layout="vertical"
                         >
                             <Form.Item
-                                name="Email"
+                                name="email"
                                 label="Email"
                                 rules={[
                                     { required: true, message: "E-mail required" },

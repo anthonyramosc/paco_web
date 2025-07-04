@@ -39,68 +39,7 @@ const apiService = {
         await api.delete(`${endpoint}/${id}`);
     },
 
-    addUser: async <T>(
-        endpoint: string,
-        userId: string,
-        roomId: string
-    ): Promise<T> => {
-        const { data: userData } = await api.post<T>(`${endpoint}`, {
-            userId,
-            roomId,
-        });
-        return userData;
-    },
-
-    addUserRoom: async <T>(
-        endpoint: string,
-        userIds: string[],
-        roomId: string
-    ): Promise<T> => {
-        const { data: userDataRoom } = await api.post<T>(
-            `${endpoint.replace(":roomId", roomId)}`,
-            { userIds }
-        );
-        return userDataRoom;
-    },
-    addUserToTopic: async <T>(
-        endpoint: string,
-        userIds: string[],
-        topicId: string
-    ): Promise<T> => {
-        const { data } = await api.post<T>(`${endpoint}`, { userIds, topicId });
-        return data;
-    },
-
-    addUsersToTopic: async <T>(
-        endpoint: string,
-        userTopicMany: { userId: string; topicId: string }[]
-    ): Promise<T[]> => {
-        const { data: topicData } = await api.post<T[]>(
-            `${endpoint}`,
-            userTopicMany
-        );
-        return topicData;
-    },
-
-    addUsers: async <T>(
-        endpoint: string,
-        userId: string,
-        topicId: string
-    ): Promise<T> => {
-        const { data: topicData } = await api.post<T>(`${endpoint}`, {
-            userId,
-            topicId,
-        });
-        return topicData;
-    },
-
-    removeUser: async <T>(
-        endpoint: string,
-        userId: string,
-        roomId: string
-    ): Promise<void> => {
-        await api.delete<T>(`${endpoint}/${userId}/${roomId}`);
-    },
+ 
 };
 
 export default apiService;

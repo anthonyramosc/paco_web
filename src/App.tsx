@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import {Login} from "./pages/Login.tsx";
 import {AuthProvider} from "./context/AuthContext.tsx";
+import Administration from "./components/administration/administration.tsx";
 
 
 const Layout = lazy(() => import("./components/Principal/Layout"));
@@ -30,8 +31,8 @@ const App: React.FC = () => {
                             <Dashboard />
                         </Layout>
                     } />
-
                     <Route path="/login" element={<Login />} />
+                    <Route path="/administration" element={<Administration />} />
 
                     <Route path="*" element={<Navigate to="/" replace />} />
 
