@@ -1,11 +1,6 @@
 import api from "./api.ts";
-import axios from "axios";
 
 const apiService = {
-    getAllPython: async <T>(endpoint: string): Promise<T[]> => {
-        const response = await axios.get<T[]>(`http://ctem.ec:8002/${endpoint}`);
-        return response.data;
-    },
 
     getAll: async <T>(endpoint: string): Promise<T> => {
         const response = await api.get<T>(endpoint);
@@ -39,7 +34,34 @@ const apiService = {
         await api.delete(`${endpoint}/${id}`);
     },
 
- 
+    // Métodos específicos para upload de imágenes
+    uploadImage: async (file: File): Promise<any> => {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await api.post('/upload/image', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    },
+
+    uploadPostImage: async (postId: string, file: File): Promise<any> => {
+        const formData = new FormData();
+        formData.append('image', file);
+
+        const response = await api.post(`/upload/post-images/${postId}`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    },
+
+    deleteImage: async (filename: string): Promise<void> => {
+        await api.delete(`/upload/image/${filename}`);
+    },
 };
 
 export default apiService;

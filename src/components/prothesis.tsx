@@ -1,72 +1,89 @@
 import { useState, useEffect } from 'react';
-import img1 from '../assets/img/paco1.jpg'
-import img3 from '../assets/img/paco12.jpg'
-import img4 from '../assets/img/paco5.jpg'
-import img5 from '../assets/img/paco6.jpg'
-import img7 from '../assets/img/paco7.jpg'
-import img8 from '../assets/img/paco8.jpg'
-import img9 from '../assets/img/paco9.jpg'
+import { usePosts } from '../hooks/usePost';
+import img1 from '../assets/img/paco1.jpg';
+import img3 from '../assets/img/paco12.jpg';
+import img4 from '../assets/img/paco5.jpg';
+import img5 from '../assets/img/paco6.jpg';
+import img7 from '../assets/img/paco7.jpg';
+import img8 from '../assets/img/paco8.jpg';
+import img9 from '../assets/img/paco9.jpg';
 
 const NewsSection = () => {
     const [activeNewsFilter, setActiveNewsFilter] = useState('TESTIMONIOS');
     const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
     const [visibleNewsCount, setVisibleNewsCount] = useState(3);
-    const [expandedArticle, setExpandedArticle] = useState(null);
+    const [expandedArticle, setExpandedArticle] = useState<number | null>(null);
 
+    // Usamos el hook usePosts
+    const { posts, loading, error } = usePosts();
 
-    const newsItems = [
+    // Mock data solo si no hay posts cargados
+    const mockNewsItems = [
         {
-            id: 2,
+            id: "2",
             title: "Pedaleando con propósito: la libertad no tiene límites",
             content: "Salir a recorrer el mundo en bicicleta es una experiencia liberadora, y con una prótesis adecuada como las que ofrece PacoElMorlaco, es totalmente posible sin limitaciones.",
             fullContent: "Salir a recorrer el mundo en bicicleta es una experiencia liberadora, y con una prótesis adecuada como las que ofrece PacoElMorlaco, es totalmente posible sin limitaciones. Nuestros usuarios comparten cómo han vuelto a disfrutar del ciclismo gracias a nuestras prótesis especialmente diseñadas para actividades deportivas, permitiéndoles acceder a rutas y experiencias que parecían imposibles después de una amputación. La tecnología adaptativa está transformando vidas, un pedaleo a la vez.",
             date: "22 de febrero de 2024",
             readTime: "4 min",
             tags: ["TESTIMONIOS", "EXPERIENCIAS"],
-            image: img9
+            imageUrl: img9
         },
         {
-            id: 3,
+            id: "3",
             title: "Un nuevo impulso: la prótesis que acompaña cada kilómetro",
             content: "La prótesis de PacoElMorlaco no solo apoya el movimiento, también sostiene una actitud firme de no renunciar al placer de rodar libremente. Diseñada para resistir exigencias deportivas.",
             fullContent: "La prótesis de PacoElMorlaco no solo apoya el movimiento, también sostiene una actitud firme de no renunciar al placer de rodar libremente. Diseñada para resistir exigencias deportivas, cada componente ha sido probado en condiciones extremas para garantizar durabilidad y confianza. El disfrute al aire libre no tiene por qué detenerse. La prótesis se convierte en aliada para continuar pedaleando, para levantar la bicicleta con orgullo, y para celebrar la vida sin restricciones. Un símbolo de resiliencia, autonomía y amor por el deporte.",
             date: "18 de febrero de 2024",
             readTime: "6 min",
             tags: ["TESTIMONIOS", "CONSERVACIÓN"],
-            image: img7
+            imageUrl: img7
         },
         {
-            id: 4,
+            id: "4",
             title: "Tecnología con propósito: historias que inspiran",
             content: "Las prótesis de PacoElMorlaco no son solo artefactos mecánicos, son parte del viaje de personas que han decidido no rendirse. Cada ajuste responde a necesidades específicas.",
             fullContent: "Las prótesis de PacoElMorlaco no son solo artefactos mecánicos, son parte del viaje de personas que han decidido no rendirse. Cada ajuste responde a necesidades específicas, cada material es seleccionado por su función y durabilidad. Desde la movilidad hasta las actividades más simples, cada uso es una victoria. Nuestros usuarios han compartido cómo actividades que parecían imposibles ahora forman parte de su rutina diaria, transformando la adversidad en oportunidad gracias a nuestra tecnología adaptativa.",
             date: "10 de febrero de 2024",
             readTime: "3 min",
             tags: ["EVENTOS", "EXPERIENCIAS"],
-            image: img1
+            imageUrl: img1
         },
         {
-            id: 5,
+            id: "5",
             title: "Fuerza y superación: una nueva forma de vivir al máximo",
             content: "Gracias al uso de prótesis de brazo de PacoElMorlaco, nuestros usuarios han transformado los límites en oportunidades. Desde levantar una bicicleta en la playa hasta actividades cotidianas.",
             fullContent: "Gracias al uso de prótesis de brazo de PacoElMorlaco, nuestros usuarios han transformado los límites en oportunidades. Desde levantar una bicicleta en la playa hasta disfrutar de actividades cotidianas como beber agua, demuestran que la tecnología y la determinación humana pueden cambiar vidas. Las prótesis no solo reemplazan, sino que empoderan. Con materiales ligeros pero resistentes, diseños ergonómicos y mecanismos de ajuste precisos, cada prótesis está hecha a medida para maximizar la funcionalidad y comodidad del usuario.",
             date: "5 de febrero de 2024",
             readTime: "5 min",
             tags: ["TENDENCIAS", "CONSERVACIÓN"],
-            image: img4
+            imageUrl: img4
         },
         {
-            id: 6,
+            id: "6",
             title: "Vivir sin barreras con PacoElMorlaco",
             content: "El esfuerzo, la adaptabilidad y prótesis bien diseñadas pueden transformar lo imposible en cotidiano. PacoElMorlaco dedica cada creación a devolver independencia.",
             fullContent: "El esfuerzo, la adaptabilidad y prótesis bien diseñadas pueden transformar lo imposible en cotidiano. PacoElMorlaco dedica cada creación a devolver independencia y confianza. Nuestras prótesis permiten a los usuarios retomar actividades que creían perdidas, desde deportes extremos hasta tareas diarias. La combinación de tecnología de punta, materiales de alta calidad y un diseño centrado en el usuario ha posicionado a nuestras soluciones como referentes en el campo de las prótesis adaptativas para deportistas y personas activas.",
             date: "1 de febrero de 2024",
             readTime: "4 min",
             tags: ["TENDENCIAS", "EXPERIENCIAS"],
-            image: img5
+            imageUrl: img5
         }
     ];
 
+    // Combinamos posts reales con mock data si no hay posts
+    const newsItems = posts.length > 0
+        ? posts.map(post => ({
+            id: post.id,
+            title: post.title,
+            content: post.content,
+            fullContent: post.fullContent || post.content,
+            date: post.date,
+            readTime: post.readTime,
+            tags: post.tags,
+            imageUrl: post.imageUrl || img1 // Imagen por defecto si no hay URL
+        }))
+        : mockNewsItems;
 
     const filters = ["TENDENCIAS", "EVENTOS", "TESTIMONIOS", "CONSERVACIÓN", "EXPERIENCIAS"];
 
@@ -117,20 +134,38 @@ const NewsSection = () => {
 
     const visibleNews = getVisibleNews();
 
-    const toggleExpandArticle = (id) => {
+    const toggleExpandArticle = (id: number) => {
         setExpandedArticle(expandedArticle === id ? null : id);
     };
+
+    if (loading) {
+        return (
+            <div className="bg-white py-8">
+                <div className="container mx-auto px-4 md:px-6 flex justify-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#785D99]"></div>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="bg-white py-8">
+                <div className="container mx-auto px-4 md:px-6 text-center text-red-500">
+                    Error al cargar las noticias: {error}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="bg-white py-8">
             <div className="container mx-auto px-4 md:px-6 flex flex-col">
-
                 <div className="flex flex-col mb-6 w-full md:w-6/7 px-2 md:px-22">
                     <h2 className="text-xl md:text-2xl font-bold text-[#785D99]">
                         Superando Limites
                     </h2>
                     <div className="w-full h-1 bg-purple-500 mb-4 md:mb-6" style={{backgroundColor:"#785D99"}}></div>
-
 
                     <div className="mb-6 md:mb-8">
                         <div className="flex items-center mb-3 md:mb-4">
@@ -139,7 +174,6 @@ const NewsSection = () => {
                             </svg>
                             <span className="text-sm md:text-base text-[#785D99]">Filtrar por:</span>
                         </div>
-
 
                         <div className="flex flex-wrap gap-2">
                             {filters.map((filter) => (
@@ -163,12 +197,12 @@ const NewsSection = () => {
                                     className="text-xs md:text-sm"
                                     onMouseEnter={(e) => {
                                         if (activeNewsFilter !== filter) {
-                                            e.target.style.backgroundColor = '#f3f4f6';
+                                            e.currentTarget.style.backgroundColor = '#f3f4f6';
                                         }
                                     }}
                                     onMouseLeave={(e) => {
                                         if (activeNewsFilter !== filter) {
-                                            e.target.style.backgroundColor = '#ffffff';
+                                            e.currentTarget.style.backgroundColor = '#ffffff';
                                         }
                                     }}
                                 >
@@ -179,17 +213,15 @@ const NewsSection = () => {
                     </div>
                 </div>
 
-
                 <div className="flex justify-center items-center">
                     {filteredNews.length > 0 ? (
                         <div className="w-full md:w-6/7 flex flex-col justify-center items-center">
-
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
                                 {visibleNews.map((newsItem) => (
                                     <div key={newsItem.id} className="bg-white rounded-lg overflow-hidden shadow border border-gray-200">
                                         <div className="relative">
                                             <img
-                                                src={newsItem.image}
+                                                src={newsItem.imageUrl}
                                                 alt={newsItem.title}
                                                 className="w-full h-48 md:h-80 object-cover"
                                             />
@@ -203,9 +235,8 @@ const NewsSection = () => {
                                         <div className="p-3 md:p-4">
                                             <h3 className="text-base md:text-lg font-bold mb-2">{newsItem.title}</h3>
                                             <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4">
-                                                {expandedArticle === newsItem.id ? newsItem.fullContent : newsItem.content}
+                                                {expandedArticle === parseInt(newsItem.id) ? newsItem.fullContent : newsItem.content}
                                             </p>
-
 
                                             <div className="flex items-center text-[#785D99] text-xs md:text-sm">
                                                 <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -215,7 +246,6 @@ const NewsSection = () => {
                                                 <span className="mx-2">•</span>
                                                 <span>{newsItem.readTime}</span>
                                             </div>
-
 
                                             <div className="flex justify-between items-center mt-3">
                                                 <button
@@ -237,13 +267,13 @@ const NewsSection = () => {
                                                 </button>
 
                                                 <button
-                                                    className="bg-[] text-white px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm flex items-center"
+                                                    className="text-white px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm flex items-center"
                                                     style={{backgroundColor:"#785D99", borderRadius:"9999px"}}
-                                                    onClick={() => toggleExpandArticle(newsItem.id)}
+                                                    onClick={() => toggleExpandArticle(parseInt(newsItem.id))}
                                                 >
-                                                    {expandedArticle === newsItem.id ? 'Colapsar' : 'Seguir leyendo'}
+                                                    {expandedArticle === parseInt(newsItem.id) ? 'Colapsar' : 'Seguir leyendo'}
                                                     <svg
-                                                        className={`w-3 h-3 md:w-4 md:h-4 ml-1 transform ${expandedArticle === newsItem.id ? 'rotate-90' : ''}`}
+                                                        className={`w-3 h-3 md:w-4 md:h-4 ml-1 transform ${expandedArticle === parseInt(newsItem.id) ? 'rotate-90' : ''}`}
                                                         fill="none"
                                                         stroke="currentColor"
                                                         viewBox="0 0 24 24"
@@ -269,8 +299,6 @@ const NewsSection = () => {
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
                                         </svg>
                                     </button>
-
-
 
                                     <div className="flex items-center space-x-1 md:space-x-2">
                                         {Array.from({ length: Math.ceil(filteredNews.length / visibleNewsCount) }).map((_, index) => {
