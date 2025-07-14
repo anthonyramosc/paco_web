@@ -30,12 +30,12 @@ export const AuthProvider: FC<{ children: ReactNode }> = ({children}) => {
             Cookie.set('accessToken', accessToken, { expires: accessExpirationDate });
             Cookie.set('refreshToken', refreshToken, { expires: refreshExpirationDate });
             Cookie.set('userId', userId, { expires: refreshExpirationDate});
-            Cookie.set('roleName', roleName[0].roleName, { expires: refreshExpirationDate });
+            Cookie.set('roleName', roleName, { expires: refreshExpirationDate });
 
             setIsAuthenticated(true);
             setUserId(userId);
             setAccessToken(accessToken);
-            setRole(roleName[0].roleName);
+            setRole(roleName);
 
             if (Cookie.get('roleName') === 'admin') {
                 notificationService.warning('Sudo mode', 'You are logged in as sudo, please be careful');

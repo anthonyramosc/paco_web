@@ -1,486 +1,420 @@
-import { useState, useRef } from "react";
-import { usePosts } from "../../../hooks/usePost";
+import { useState, useEffect } from "react";
+import apiService from "../../../service/apiService";
+import { postsApi } from "../../../constants/EndpointsRoutes";
+import type { CreatePostDto, Post, UpdatePostDto } from "../../../interfaces/Post.ts";
+import Cookie from "js-cookie";
 
-export default function ContentForm() {
-    const [titulo, setTitulo] = useState("");
-    const [texto, setTexto] = useState("");
-    const [imagen, setImagen] = useState<string | null>(null);
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+export default function Content() {
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>("");
     const [message, setMessage] = useState("");
-    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [posts, setPosts] = useState<Post[]>([]);
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const authorId = Cookie.get('userId');
 
-    // ID del post a actualizar - puedes hacerlo dinámico según necesites
-    const postId = "1ff2a202-b6a7-4622-bf97-99f0924bb1d9";
+    // ID específico que necesitas para actualizar
+    const specificId = "9c1a2583-bd91-4cd1-bfe0-fc0e0188f1af";
 
-    // Usar el hook de posts
-    const {
-        updatePost,
-        uploadPostImage,
-        updating,
-        uploadingImage,
-        error,
-        clearError
-    } = usePosts();
+    // Cargar posts al montar el componente
+    useEffect(() => {
+        fetchPosts();
+    }, []);
 
-    const handleSubmit = async () => {
-        // Validar que al menos título, contenido o imagen tengan contenido
-        if (!titulo.trim() && !texto.trim() && !selectedFile) {
-            setMessage("Por favor, ingresa al menos un título, contenido o imagen");
-            return;
-        }
-
-        clearError();
-        setMessage("");
-
+    // Función para obtener todos los posts
+    const fetchPosts = async () => {
+        setLoading(true);
         try {
-            let hasTextChanges = false;
-            let hasImageChanges = false;
-
-            // 1. PRIMERA PETICIÓN: Actualizar texto (título y contenido) si hay cambios
-            if (titulo.trim() || texto.trim()) {
-                setMessage("Actualizando texto del post...");
-
-                const textData: any = {};
-                if (titulo.trim()) textData.title = titulo.trim();
-                if (texto.trim()) textData.content = texto.trim();
-
-                const updatedPost = await updatePost(postId, textData);
-
-                if (updatedPost) {
-                    hasTextChanges = true;
-                    setMessage("Texto actualizado exitosamente");
-                } else {
-                    setMessage("Error al actualizar el texto del post");
-                    return;
-                }
-            }
-
-            // 2. SEGUNDA PETICIÓN: Subir imagen si hay una seleccionada
-            if (selectedFile) {
-                setMessage(hasTextChanges ? "Texto actualizado. Subiendo imagen..." : "Subiendo imagen...");
-
-                const imageUrl = await uploadPostImage(postId, selectedFile);
-
-                if (imageUrl) {
-                    hasImageChanges = true;
-                    setMessage(hasTextChanges ? "Post e imagen actualizados exitosamente" : "Imagen actualizada exitosamente");
-                } else {
-                    setMessage(hasTextChanges ? "Texto actualizado, pero error al subir imagen" : "Error al subir la imagen");
-                    return;
-                }
-            }
-
-            // 3. MENSAJE FINAL DE ÉXITO
-            if (hasTextChanges && hasImageChanges) {
-                setMessage("¡Post actualizado completamente!");
-            } else if (hasTextChanges) {
-                setMessage("¡Texto del post actualizado exitosamente!");
-            } else if (hasImageChanges) {
-                setMessage("¡Imagen del post actualizada exitosamente!");
-            }
-
-            // Limpiar el formulario después de 3 segundos
-            setTimeout(() => {
-                setTitulo("");
-                setTexto("");
-                setSelectedFile(null);
-                setImagen(null);
-                setMessage("");
-                if (fileInputRef.current) {
-                    fileInputRef.current.value = '';
-                }
-            }, 3000);
-
-        } catch (err: any) {
-            console.error("Error:", err);
-            setMessage(`Error: ${err.message || 'Error al actualizar el post'}`);
+            const response = await apiService.getAll<Post[]>(postsApi);
+            setPosts(response);
+        } catch (error: any) {
+            setMessage(`Error al cargar posts: ${error.message}`);
+            console.error("Error fetching posts:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Manejar selección de archivo
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            console.log('Archivo seleccionado:', {
-                name: file.name,
-                size: file.size,
-                type: file.type,
-            });
-
             // Validar tipo de archivo
             if (!file.type.startsWith('image/')) {
-                setMessage("Por favor, selecciona un archivo de imagen válido");
+                setMessage("Por favor selecciona un archivo de imagen válido");
                 return;
             }
 
             // Validar tamaño (máximo 5MB)
             if (file.size > 5 * 1024 * 1024) {
-                setMessage("La imagen es demasiado grande. Máximo 5MB");
+                setMessage("El archivo debe ser menor a 5MB");
                 return;
             }
 
-            setSelectedFile(file);
+            setImageFile(file);
 
             // Crear preview
             const reader = new FileReader();
-            reader.onload = () => {
-                setImagen(reader.result as string);
+            reader.onload = (e) => {
+                setImagePreview(e.target?.result as string);
             };
             reader.readAsDataURL(file);
-
-            // Limpiar mensaje de error si existía
-            setMessage("");
-            clearError();
         }
     };
 
-    const removeImage = () => {
-        setImagen(null);
-        setSelectedFile(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
+    // Validar UUID
+    const isValidUUID = (str: string): boolean => {
+        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        return uuidRegex.test(str);
     };
 
-    // Función para probar la conectividad del servidor
-    const testConnection = async () => {
+    // Función para crear post (primera petición)
+    const createPostWithoutImage = async (postData: Omit<CreatePostDto, 'imageUrl'>) => {
+        // Crear post sin imagen primero
+        const postDataWithPlaceholder: CreatePostDto = {
+            ...postData,
+            imageUrl: "https://picsum.photos/400/300?random=1" // URL placeholder que funciona
+        };
+
+        const result = await apiService.create<CreatePostDto>(postsApi, postDataWithPlaceholder);
+        return result;
+    };
+
+    // Función para actualizar post (primera petición)
+    const updatePostWithoutImage = async (id: string, postData: Omit<CreatePostDto, 'imageUrl'>) => {
+        // Si está editando y no hay imagen nueva, mantener la existente
+        let imageUrl = selectedPost?.imageUrl || "https://picsum.photos/400/300?random=1";
+
+        const updateData: CreatePostDto = {
+            ...postData,
+            imageUrl
+        };
+
+        const result = await apiService.update<CreatePostDto>(postsApi, id, updateData);
+        return result;
+    };
+
+    // Función para subir imagen (segunda petición)
+    const uploadImageToPost = async (postId: string, file: File) => {
         try {
-            setMessage('Probando conexión con el servidor...');
-
-            // Crear un archivo dummy muy pequeño para probar
-            const canvas = document.createElement('canvas');
-            canvas.width = 1;
-            canvas.height = 1;
-            const ctx = canvas.getContext('2d');
-            if (ctx) {
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(0, 0, 1, 1);
-            }
-
-            canvas.toBlob(async (blob) => {
-                if (blob) {
-                    const testFile = new File([blob], 'test.png', { type: 'image/png' });
-
-                    try {
-                        const result = await uploadPostImage(postId, testFile);
-                        if (result) {
-                            setMessage('✅ Conexión exitosa con el servidor');
-                        } else {
-                            setMessage('❌ Error en la conexión');
-                        }
-                    } catch (error: any) {
-                        setMessage('❌ Error en la conexión: ' + error.message);
-                    }
-                }
-            }, 'image/png');
-
+            console.log("Subiendo imagen para post:", postId);
+            const uploadResponse = await apiService.uploadPostImage(postId, file);
+            console.log("Respuesta de upload:", uploadResponse);
+            return uploadResponse;
         } catch (error) {
-            console.error('Error en test de conexión:', error);
-            setMessage('❌ Error en test de conexión');
+            console.error("Error al subir imagen:", error);
+            throw error;
         }
     };
 
-    // Función para actualizar solo el texto
-    const handleUpdateTextOnly = async () => {
-        if (!titulo.trim() && !texto.trim()) {
-            setMessage("Por favor, ingresa al menos un título o contenido");
+    // Manejar envío del formulario
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Validaciones
+        if (!title.trim()) {
+            setMessage("El título es requerido");
             return;
         }
 
-        clearError();
-        setMessage("Actualizando texto del post...");
-
-        try {
-            const textData: any = {};
-            if (titulo.trim()) textData.title = titulo.trim();
-            if (texto.trim()) textData.content = texto.trim();
-
-            const updatedPost = await updatePost(postId, textData);
-
-            if (updatedPost) {
-                setMessage("¡Texto del post actualizado exitosamente!");
-
-                // Limpiar solo los campos de texto después de 3 segundos
-                setTimeout(() => {
-                    setTitulo("");
-                    setTexto("");
-                    setMessage("");
-                }, 3000);
-            } else {
-                setMessage("Error al actualizar el texto del post");
-            }
-        } catch (err: any) {
-            console.error("Error:", err);
-            setMessage(`Error: ${err.message || 'Error al actualizar el texto'}`);
-        }
-    };
-
-    // Función para actualizar solo la imagen
-    const handleUpdateImageOnly = async () => {
-        if (!selectedFile) {
-            setMessage("Por favor, selecciona una imagen");
+        if (!content.trim()) {
+            setMessage("El contenido es requerido");
             return;
         }
 
-        clearError();
-        setMessage("Subiendo imagen...");
+        if (!authorId) {
+            setMessage("El ID del autor es requerido");
+            return;
+        }
+
+        if (!isValidUUID(authorId)) {
+            setMessage("El ID del autor debe ser un UUID válido");
+            return;
+        }
+
+        setLoading(true);
+        setMessage("");
 
         try {
-            const imageUrl = await uploadPostImage(postId, selectedFile);
+            const postData = {
+                title: title.trim(),
+                content: content.trim(),
+                authorId: authorId,
+            };
 
-            if (imageUrl) {
-                setMessage("¡Imagen actualizada exitosamente!");
+            let createdOrUpdatedPost;
 
-                // Limpiar solo la imagen después de 3 segundos
-                setTimeout(() => {
-                    setSelectedFile(null);
-                    setImagen(null);
-                    setMessage("");
-                    if (fileInputRef.current) {
-                        fileInputRef.current.value = '';
-                    }
-                }, 3000);
+            if (isEditing && specificId) {
+                // ACTUALIZAR: Primera petición - actualizar post
+                setMessage("Actualizando post...");
+                createdOrUpdatedPost = await updatePostWithoutImage(specificId, postData);
             } else {
-                setMessage("Error al subir la imagen");
+                // CREAR: Primera petición - crear post
+                setMessage("Creando post...");
+                createdOrUpdatedPost = await createPostWithoutImage(postData);
             }
-        } catch (err: any) {
-            console.error("Error:", err);
-            setMessage(`Error: ${err.message || 'Error al subir la imagen'}`);
+
+            // Verificar que tenemos el post creado/actualizado
+            if (!createdOrUpdatedPost) {
+                throw new Error("No se pudo crear/actualizar el post");
+            }
+
+            // Obtener el ID del post (para crear es el ID del post creado, para actualizar es el specificId)
+            const postId = isEditing ? specificId : createdOrUpdatedPost.id;
+
+            if (!postId) {
+                throw new Error("No se pudo obtener el ID del post");
+            }
+
+            // Segunda petición - subir imagen si existe
+            if (imageFile) {
+                setMessage("Subiendo imagen...");
+                try {
+                    await uploadImageToPost(postId, imageFile);
+                    setMessage(isEditing ? "Post actualizado exitosamente con imagen" : "Post creado exitosamente con imagen");
+                } catch (imageError) {
+                    console.error("Error al subir imagen:", imageError);
+                    setMessage(isEditing ? "Post actualizado, pero hubo un error al subir la imagen" : "Post creado, pero hubo un error al subir la imagen");
+                }
+            } else {
+                setMessage(isEditing ? "Post actualizado exitosamente" : "Post creado exitosamente");
+            }
+
+            resetForm();
+
+            // Recargar lista de posts
+            await fetchPosts();
+
+        } catch (error: any) {
+            console.error("Error processing post:", error);
+            setMessage(`Error: ${error.message || "Error al procesar el post"}`);
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Mostrar errores del hook
-    const displayMessage = message || error;
-    const isLoading = updating || uploadingImage;
+    // Resetear formulario
+    const resetForm = () => {
+        setTitle("");
+        setContent("");
+        setImageFile(null);
+        setImagePreview("");
+        setIsEditing(false);
+        setSelectedPost(null);
+    };
+
+    // Cancelar edición
+    const handleCancelEdit = () => {
+        resetForm();
+        setMessage("");
+    };
+
+    // Editar post
+    const handleEditPost = async (id: string) => {
+        try {
+            const post = await apiService.getById<Post>(postsApi, id);
+            if (post) {
+                setSelectedPost(post);
+                setTitle(post.title);
+                setContent(post.content);
+                setImagePreview(post.imageUrl || "");
+                setIsEditing(true);
+            }
+        } catch (error: any) {
+            setMessage(`Error al cargar el post: ${error.message}`);
+        }
+    };
+
+    // Eliminar post
+    const handleDeletePost = async (id: string) => {
+        if (window.confirm("¿Estás seguro de que quieres eliminar este post?")) {
+            try {
+                await apiService.delete(postsApi, id);
+                setMessage("Post eliminado exitosamente");
+                await fetchPosts();
+            } catch (error: any) {
+                setMessage(`Error al eliminar el post: ${error.message}`);
+            }
+        }
+    };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-blue-50 p-4">
-            <div className="w-full max-w-7xl bg-white rounded-xl shadow-xl flex flex-col items-center p-6 md:p-8">
+        <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50 p-4">
+            <div className="w-full max-w-6xl bg-white rounded-lg shadow-md flex flex-col justify-center items-center p-4 md:p-8 mb-6">
+                <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                    {isEditing ? "Editar Post" : "Crear Nuevo Post"}
+                </h1>
 
-                {/* Header */}
-                <div className="text-center mb-6">
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
-                        Actualizar Post
-                    </h1>
-                    <p className="text-gray-600">
-                        Edita el contenido, título o imagen de tu post
-                    </p>
-                </div>
+                <form onSubmit={handleSubmit} className="w-full max-w-2xl">
+                    {/* Campo título */}
+                    <div className="flex flex-col justify-start w-full mb-6">
+                        <label
+                            htmlFor="title"
+                            className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
+                        >
+                            Título <span className="text-sm text-red-500 font-normal">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="title"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Ingresa el título del post"
+                            className="w-full h-11 px-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            disabled={loading}
+                            maxLength={200}
+                            required
+                        />
+                    </div>
 
-                {/* Mensaje de estado */}
-                {displayMessage && (
-                    <div className={`w-full max-w-md mb-6 p-4 rounded-lg text-center font-medium ${
-                        displayMessage.includes('Error') || displayMessage.includes('❌')
-                            ? 'bg-red-100 text-red-700 border-l-4 border-red-500'
-                            : displayMessage.includes('✅') || displayMessage.includes('exitosamente')
-                                ? 'bg-green-100 text-green-700 border-l-4 border-green-500'
-                                : 'bg-blue-100 text-blue-700 border-l-4 border-blue-500'
-                    }`}>
-                        {displayMessage}
+                    {/* Campo contenido */}
+                    <div className="flex flex-col justify-start w-full mb-6">
+                        <label
+                            htmlFor="content"
+                            className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
+                        >
+                            Contenido <span className="text-sm text-red-500 font-normal">*</span>
+                        </label>
+                        <textarea
+                            id="content"
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder="Escribe el contenido del post"
+                            className="w-full h-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 resize-vertical"
+                            disabled={loading}
+                            maxLength={2000}
+                            required
+                        />
+                    </div>
+
+                    {/* Campo imagen */}
+                    <div className="flex flex-col justify-start w-full mb-6">
+                        <label
+                            htmlFor="image"
+                            className="block font-medium text-gray-700 mb-2 text-lg md:text-xl lg:text-2xl"
+                        >
+                            Imagen <span className="text-sm text-gray-500 font-normal">(opcional)</span>
+                        </label>
+                        <input
+                            type="file"
+                            id="image"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            className="w-full h-11 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                            disabled={loading}
+                        />
+                        {imagePreview && (
+                            <div className="mt-3">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="max-w-full h-48 object-cover rounded-md border border-gray-300"
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Mensaje de estado */}
+                    {message && (
+                        <div
+                            className={`w-full mb-4 p-3 rounded-md text-center ${
+                                message.includes("Error") || message.includes("error")
+                                    ? "bg-red-100 text-red-700 border border-red-300"
+                                    : "bg-green-100 text-green-700 border border-green-300"
+                            }`}
+                        >
+                            {message}
+                        </div>
+                    )}
+
+                    {/* Información del ID cuando está editando */}
+                    {isEditing && (
+                        <div className="w-full mb-4 p-2 text-xs text-gray-500 text-center">
+                            <br />
+                            Editando ID: {specificId}
+                        </div>
+                    )}
+
+                    {/* Botones */}
+                    <div className="flex justify-center gap-4">
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full max-w-md h-12 md:h-14 text-xl md:text-2xl lg:text-3xl text-white font-medium rounded-md bg-[#AF52DE] hover:bg-[#9e3cd4] transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[#AF52DE] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? "Procesando..." : (isEditing ? "Actualizar" : "Crear")}
+                        </button>
+
+                        {isEditing && (
+                            <button
+                                type="button"
+                                onClick={handleCancelEdit}
+                                className="w-full max-w-md h-12 md:h-14 text-xl md:text-2xl lg:text-3xl text-gray-700 font-medium rounded-md bg-gray-200 hover:bg-gray-300 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+                            >
+                                Cancelar
+                            </button>
+                        )}
+                    </div>
+                </form>
+            </div>
+
+            {/* Lista de Posts */}
+            <div className="w-full max-w-6xl bg-white rounded-lg shadow-md p-4 md:p-8">
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Posts Existentes</h2>
+
+                {loading && posts.length === 0 && (
+                    <div className="text-center py-4">
+                        <p className="text-gray-500">Cargando posts...</p>
                     </div>
                 )}
 
-                {/* Botones de debug y acciones individuales */}
-                <div className="flex flex-wrap justify-center gap-4 mb-6">
-                    <button
-                        onClick={testConnection}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors duration-200 font-medium"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Probando...' : 'Probar Conexión'}
-                    </button>
-
-                    <button
-                        onClick={handleUpdateTextOnly}
-                        className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 transition-colors duration-200 font-medium"
-                        disabled={isLoading || (!titulo.trim() && !texto.trim())}
-                    >
-                        {updating ? 'Actualizando...' : 'Solo Texto'}
-                    </button>
-
-                    <button
-                        onClick={handleUpdateImageOnly}
-                        className="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 disabled:bg-gray-400 transition-colors duration-200 font-medium"
-                        disabled={isLoading || !selectedFile}
-                    >
-                        {uploadingImage ? 'Subiendo...' : 'Solo Imagen'}
-                    </button>
-                </div>
-
-                <div className="flex flex-col lg:flex-row gap-8 w-full">
-                    {/* Imagen / Uploader */}
-                    <div className="flex-shrink-0 w-full lg:w-auto flex justify-center">
-                        <div className="w-full max-w-md lg:w-[562px] h-64 sm:h-80 lg:h-[635px] bg-gray-100 rounded-xl flex items-center justify-center cursor-pointer overflow-hidden relative border-2 border-dashed border-gray-300 hover:border-purple-400 transition-colors duration-200">
-                            {imagen ? (
-                                <div className="relative w-full h-full">
-                                    <img
-                                        src={imagen}
-                                        alt="Preview"
-                                        className="object-cover w-full h-full rounded-xl"
-                                    />
-                                    {/* Botón para remover imagen */}
-                                    <button
-                                        onClick={removeImage}
-                                        disabled={isLoading}
-                                        className="absolute top-3 right-3 bg-red-500 text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-red-600 transition-colors shadow-lg"
-                                    >
-                                        ×
-                                    </button>
-                                    {/* Overlay para cambiar imagen */}
-                                    <div
-                                        className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-xl"
-                                        onClick={() => fileInputRef.current?.click()}
-                                    >
-                                        <p className="text-white text-lg font-medium">Cambiar imagen</p>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div
-                                    className="text-gray-500 text-center cursor-pointer p-8"
-                                    onClick={() => fileInputRef.current?.click()}
-                                >
-                                    <div className="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center">
-                                        <svg
-                                            className="w-8 h-8 text-gray-400"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                            />
-                                        </svg>
-                                    </div>
-                                    <p className="text-lg font-medium text-gray-600 mb-2">
-                                        Subir imagen
-                                    </p>
-                                    <p className="text-sm text-gray-400">
-                                        Arrastra una imagen aquí o haz clic para seleccionar
-                                        <br />
-                                        <span className="text-xs">Máximo 5MB • PNG, JPG, JPEG</span>
-                                    </p>
-                                </div>
-                            )}
-
-                            {/* Indicador de carga de imagen */}
-                            {uploadingImage && (
-                                <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center rounded-xl">
-                                    <div className="text-white text-center">
-                                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-white mx-auto mb-3"></div>
-                                        <p className="text-lg font-medium">Subiendo imagen...</p>
-                                    </div>
-                                </div>
-                            )}
-
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                ref={fileInputRef}
-                                className="hidden"
-                                disabled={isLoading}
-                            />
-                        </div>
+                {posts.length === 0 && !loading && (
+                    <div className="text-center py-4">
+                        <p className="text-gray-500">No hay posts disponibles</p>
                     </div>
+                )}
 
-                    {/* Formulario */}
-                    <div className="flex-1 border border-gray-200 rounded-xl p-6 space-y-6 min-w-0 bg-gray-50">
-                        {/* Campo Título */}
-                        <div>
-                            <label
-                                htmlFor="titulo"
-                                className="block font-semibold text-gray-700 mb-3 text-lg md:text-xl"
-                            >
-                                Título
-                            </label>
-                            <input
-                                type="text"
-                                id="titulo"
-                                value={titulo}
-                                onChange={(e) => setTitulo(e.target.value)}
-                                placeholder="Escribe el título del post..."
-                                className="w-full h-12 px-4 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200"
-                                disabled={isLoading}
-                            />
-                        </div>
-
-                        {/* Campo Texto */}
-                        <div>
-                            <label
-                                htmlFor="texto"
-                                className="block font-semibold text-gray-700 mb-3 text-lg md:text-xl"
-                            >
-                                Contenido
-                            </label>
-                            <textarea
-                                id="texto"
-                                value={texto}
-                                onChange={(e) => setTexto(e.target.value)}
-                                placeholder="Escribe el contenido del post..."
-                                className="w-full h-40 px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors duration-200"
-                                disabled={isLoading}
-                            />
-                        </div>
-
-                        {/* Información sobre la imagen seleccionada */}
-                        {selectedFile && (
-                            <div className="bg-blue-50 border border-blue-200 p-4 rounded-lg">
-                                <div className="flex items-center space-x-2 mb-2">
-                                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <p className="text-sm font-medium text-blue-700">
-                                        Imagen seleccionada: {selectedFile.name}
-                                    </p>
-                                </div>
-                                <div className="text-xs text-blue-600 space-y-1">
-                                    <p>Tamaño: {(selectedFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                                    <p>Tipo: {selectedFile.type}</p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Información del post */}
-                        <div className="bg-gray-100 border border-gray-200 p-4 rounded-lg">
-                            <div className="flex items-center space-x-2 mb-2">
-                                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                                <p className="text-sm font-medium text-gray-700">
-                                    Información del Post
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {posts.map((post) => (
+                        <div key={post.id} className="border border-gray-200 rounded-lg p-4">
+                            <div className="mb-3">
+                                {post.imageUrl && (
+                                    <img
+                                        src={post.imageUrl}
+                                        alt={post.title}
+                                        className="w-full h-48 object-cover rounded-md mb-3"
+                                        onError={(e) => {
+                                            (e.target as HTMLImageElement).src = "https://picsum.photos/400/300?random=2";
+                                        }}
+                                    />
+                                )}
+                                <h3 className="font-medium text-gray-800 truncate mb-2">
+                                    {post.title}
+                                </h3>
+                                <p className="text-sm text-gray-600 line-clamp-3 mb-2">
+                                    {post.content}
                                 </p>
                             </div>
-                            <div className="text-xs text-gray-500 space-y-1">
-                                <p><strong>Post ID:</strong> {postId}</p>
-                                <p>Este formulario actualiza el post existente</p>
-                                <p className="text-green-600"><strong>Estrategia:</strong> Peticiones separadas para texto e imagen</p>
+
+                            <div className="flex gap-2">
+                                <button
+                                    onClick={() => handleEditPost(post.id)}
+                                    className="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                                >
+                                    Editar
+                                </button>
+                                <button
+                                    onClick={() => handleDeletePost(post.id)}
+                                    className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                                >
+                                    Eliminar
+                                </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Botón Actualizar Todo */}
-                <div className="flex justify-center mt-8 w-full">
-                    <button
-                        onClick={handleSubmit}
-                        disabled={isLoading || (!titulo.trim() && !texto.trim() && !selectedFile)}
-                        className={`w-full max-w-md h-14 text-xl font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-purple-300 shadow-lg ${
-                            isLoading || (!titulo.trim() && !texto.trim() && !selectedFile)
-                                ? 'bg-gray-400 cursor-not-allowed text-gray-600'
-                                : 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white transform hover:scale-105'
-                        }`}
-                    >
-                        {isLoading ? (
-                            <div className="flex items-center justify-center space-x-2">
-                                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                <span>Procesando...</span>
-                            </div>
-                        ) : (
-                            'Actualizar Post Completo'
-                        )}
-                    </button>
+                    ))}
                 </div>
             </div>
         </div>

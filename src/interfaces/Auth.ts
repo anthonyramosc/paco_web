@@ -15,7 +15,7 @@ export interface AuthResponse {
     email: string;
     password: string;
     userId: UUID;
-    roleName: RoleName[]
+    roleName: string;
     accessToken: string;
     refreshToken: string;
 }
