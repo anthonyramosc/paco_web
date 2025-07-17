@@ -1,97 +1,80 @@
-import { useState, useEffect } from 'react';
-import img1 from '../assets/img/paco1.jpg'
-import img3 from '../assets/img/paco12.jpg'
-import img4 from '../assets/img/paco5.jpg'
-import img5 from '../assets/img/paco6.jpg'
-import img7 from '../assets/img/paco7.jpg'
-import img8 from '../assets/img/paco8.jpg'
-import img9 from '../assets/img/paco9.jpg'
+import { useState, useEffect, useCallback } from 'react';
+import { usePosts } from '../hooks/usePost';
+import type { Post } from '../interfaces/Post';
 
 const NewsSection = () => {
-    const [activeNewsFilter, setActiveNewsFilter] = useState('TESTIMONIOS');
     const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
     const [visibleNewsCount, setVisibleNewsCount] = useState(3);
-    const [expandedArticle, setExpandedArticle] = useState(null);
+    const [expandedArticle, setExpandedArticle] = useState<string | null>(null);
+    const [isMobile, setIsMobile] = useState(false);
 
+    // Usar el hook personalizado
+    const { posts, loading, error, getPosts } = usePosts();
 
-    const newsItems = [
-        {
-            id: 2,
-            title: "Pedaleando con propósito: la libertad no tiene límites",
-            content: "Salir a recorrer el mundo en bicicleta es una experiencia liberadora, y con una prótesis adecuada como las que ofrece PacoElMorlaco, es totalmente posible sin limitaciones.",
-            fullContent: "Salir a recorrer el mundo en bicicleta es una experiencia liberadora, y con una prótesis adecuada como las que ofrece PacoElMorlaco, es totalmente posible sin limitaciones. Nuestros usuarios comparten cómo han vuelto a disfrutar del ciclismo gracias a nuestras prótesis especialmente diseñadas para actividades deportivas, permitiéndoles acceder a rutas y experiencias que parecían imposibles después de una amputación. La tecnología adaptativa está transformando vidas, un pedaleo a la vez.",
-            date: "22 de febrero de 2024",
-            readTime: "4 min",
-            tags: ["TESTIMONIOS", "EXPERIENCIAS"],
-            image: img9
-        },
-        {
-            id: 3,
-            title: "Un nuevo impulso: la prótesis que acompaña cada kilómetro",
-            content: "La prótesis de PacoElMorlaco no solo apoya el movimiento, también sostiene una actitud firme de no renunciar al placer de rodar libremente. Diseñada para resistir exigencias deportivas.",
-            fullContent: "La prótesis de PacoElMorlaco no solo apoya el movimiento, también sostiene una actitud firme de no renunciar al placer de rodar libremente. Diseñada para resistir exigencias deportivas, cada componente ha sido probado en condiciones extremas para garantizar durabilidad y confianza. El disfrute al aire libre no tiene por qué detenerse. La prótesis se convierte en aliada para continuar pedaleando, para levantar la bicicleta con orgullo, y para celebrar la vida sin restricciones. Un símbolo de resiliencia, autonomía y amor por el deporte.",
-            date: "18 de febrero de 2024",
-            readTime: "6 min",
-            tags: ["TESTIMONIOS", "CONSERVACIÓN"],
-            image: img7
-        },
-        {
-            id: 4,
-            title: "Tecnología con propósito: historias que inspiran",
-            content: "Las prótesis de PacoElMorlaco no son solo artefactos mecánicos, son parte del viaje de personas que han decidido no rendirse. Cada ajuste responde a necesidades específicas.",
-            fullContent: "Las prótesis de PacoElMorlaco no son solo artefactos mecánicos, son parte del viaje de personas que han decidido no rendirse. Cada ajuste responde a necesidades específicas, cada material es seleccionado por su función y durabilidad. Desde la movilidad hasta las actividades más simples, cada uso es una victoria. Nuestros usuarios han compartido cómo actividades que parecían imposibles ahora forman parte de su rutina diaria, transformando la adversidad en oportunidad gracias a nuestra tecnología adaptativa.",
-            date: "10 de febrero de 2024",
-            readTime: "3 min",
-            tags: ["EVENTOS", "EXPERIENCIAS"],
-            image: img1
-        },
-        {
-            id: 5,
-            title: "Fuerza y superación: una nueva forma de vivir al máximo",
-            content: "Gracias al uso de prótesis de brazo de PacoElMorlaco, nuestros usuarios han transformado los límites en oportunidades. Desde levantar una bicicleta en la playa hasta actividades cotidianas.",
-            fullContent: "Gracias al uso de prótesis de brazo de PacoElMorlaco, nuestros usuarios han transformado los límites en oportunidades. Desde levantar una bicicleta en la playa hasta disfrutar de actividades cotidianas como beber agua, demuestran que la tecnología y la determinación humana pueden cambiar vidas. Las prótesis no solo reemplazan, sino que empoderan. Con materiales ligeros pero resistentes, diseños ergonómicos y mecanismos de ajuste precisos, cada prótesis está hecha a medida para maximizar la funcionalidad y comodidad del usuario.",
-            date: "5 de febrero de 2024",
-            readTime: "5 min",
-            tags: ["TENDENCIAS", "CONSERVACIÓN"],
-            image: img4
-        },
-        {
-            id: 6,
-            title: "Vivir sin barreras con PacoElMorlaco",
-            content: "El esfuerzo, la adaptabilidad y prótesis bien diseñadas pueden transformar lo imposible en cotidiano. PacoElMorlaco dedica cada creación a devolver independencia.",
-            fullContent: "El esfuerzo, la adaptabilidad y prótesis bien diseñadas pueden transformar lo imposible en cotidiano. PacoElMorlaco dedica cada creación a devolver independencia y confianza. Nuestras prótesis permiten a los usuarios retomar actividades que creían perdidas, desde deportes extremos hasta tareas diarias. La combinación de tecnología de punta, materiales de alta calidad y un diseño centrado en el usuario ha posicionado a nuestras soluciones como referentes en el campo de las prótesis adaptativas para deportistas y personas activas.",
-            date: "1 de febrero de 2024",
-            readTime: "4 min",
-            tags: ["TENDENCIAS", "EXPERIENCIAS"],
-            image: img5
+    // Transformar los posts de la API al formato esperado por el componente
+    const transformPostsToNewsItems = useCallback((apiPosts: Post[]) => {
+        return apiPosts.map((post, index) => ({
+            id: post.id,
+            title: post.title,
+            content: post.content.substring(0, 150) + (post.content.length > 150 ? '...' : ''),
+            fullContent: post.content,
+            date: post.createdAt ? new Date(post.createdAt).toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) : new Date().toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }),
+            readTime: `${Math.ceil(post.content.split(' ').length / 200)} min`,
+            image: post.imageUrl || `https://picsum.photos/400/300?random=${index + 1}`
+        }));
+    }, []);
+
+    const newsItems = transformPostsToNewsItems(posts);
+
+    // Función para determinar si es móvil
+    const checkIsMobile = useCallback(() => {
+        return window.innerWidth < 768;
+    }, []);
+
+    // Función para calcular el número de elementos visibles
+    const calculateVisibleCount = useCallback(() => {
+        const mobile = checkIsMobile();
+        setIsMobile(mobile);
+
+        if (mobile) {
+            return 1;
+        } else {
+            // En escritorio, mostrar 2 elementos si hay al menos 2
+            return Math.min(2, newsItems.length);
         }
-    ];
+    }, [newsItems.length, checkIsMobile]);
 
-
-    const filters = ["TENDENCIAS", "EVENTOS", "TESTIMONIOS", "CONSERVACIÓN", "EXPERIENCIAS"];
-
-    const filteredNews = activeNewsFilter
-        ? newsItems.filter(item => item.tags.includes(activeNewsFilter))
-        : newsItems;
-
+    // Cargar posts al montar el componente
     useEffect(() => {
-        setCurrentNewsIndex(0);
+        getPosts();
+    }, [getPosts]);
 
+    // Manejar cambios de tamaño de pantalla
+    useEffect(() => {
         const handleResize = () => {
-            const isMobile = window.innerWidth < 768;
-            setVisibleNewsCount(isMobile ? 1 : Math.min(2, filteredNews.length));
+            const newVisibleCount = calculateVisibleCount();
+            setVisibleNewsCount(newVisibleCount);
         };
 
+        // Ejecutar al montar y en cada cambio de tamaño
         handleResize();
         window.addEventListener('resize', handleResize);
 
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, [activeNewsFilter, filteredNews.length]);
+    }, [calculateVisibleCount]);
 
     const nextNews = () => {
-        if (currentNewsIndex < filteredNews.length - 1) {
+        if (currentNewsIndex < newsItems.length - visibleNewsCount) {
             setCurrentNewsIndex(currentNewsIndex + 1);
         } else {
             setCurrentNewsIndex(0);
@@ -102,89 +85,75 @@ const NewsSection = () => {
         if (currentNewsIndex > 0) {
             setCurrentNewsIndex(currentNewsIndex - 1);
         } else {
-            setCurrentNewsIndex(filteredNews.length - 1);
+            setCurrentNewsIndex(Math.max(0, newsItems.length - visibleNewsCount));
         }
     };
 
     const getVisibleNews = () => {
+        if (newsItems.length === 0) return [];
+
         const result = [];
-        for (let i = 0; i < visibleNewsCount; i++) {
-            const index = (currentNewsIndex + i) % filteredNews.length;
-            result.push(filteredNews[index]);
+        const startIndex = Math.min(currentNewsIndex, Math.max(0, newsItems.length - visibleNewsCount));
+
+        for (let i = 0; i < visibleNewsCount && i < newsItems.length; i++) {
+            const index = (startIndex + i) % newsItems.length;
+            if (newsItems[index]) {
+                result.push(newsItems[index]);
+            }
         }
         return result;
     };
 
     const visibleNews = getVisibleNews();
 
-    const toggleExpandArticle = (id) => {
+    const toggleExpandArticle = (id: string) => {
         setExpandedArticle(expandedArticle === id ? null : id);
     };
+
+    // Función para refrescar los posts
+    const handleRefresh = async () => {
+        await getPosts();
+    };
+
+    // Verificar si debemos mostrar controles de navegación
+    const shouldShowNavigation = newsItems.length > visibleNewsCount;
 
     return (
         <div className="bg-white py-8">
             <div className="container mx-auto px-4 md:px-6 flex flex-col">
 
                 <div className="flex flex-col mb-6 w-full md:w-6/7 px-2 md:px-22">
-                    <h2 className="text-xl md:text-2xl font-bold text-[#785D99]">
-                        Superando Limites
-                    </h2>
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xl md:text-2xl font-bold text-[#785D99]">
+                            Superando Límites
+                        </h2>
+                        <button
+                            onClick={handleRefresh}
+                            disabled={loading}
+                            className="px-3 py-1 text-sm bg-[#785D99] text-white rounded hover:bg-[#59277A] transition-colors disabled:opacity-50"
+                        >
+                            {loading ? 'Cargando...' : 'Actualizar'}
+                        </button>
+                    </div>
                     <div className="w-full h-1 bg-purple-500 mb-4 md:mb-6" style={{backgroundColor:"#785D99"}}></div>
 
-
-                    <div className="mb-6 md:mb-8">
-                        <div className="flex items-center mb-3 md:mb-4">
-                            <svg className="w-4 h-4 md:w-5 md:h-5 text-[#785D99] mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
-                            </svg>
-                            <span className="text-sm md:text-base text-[#785D99]">Filtrar por:</span>
+                    {/* Mostrar error si existe */}
+                    {error && (
+                        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                            <p className="text-sm">{error}</p>
                         </div>
-
-
-                        <div className="flex flex-wrap gap-2">
-                            {filters.map((filter) => (
-                                <button
-                                    key={filter}
-                                    onClick={() => setActiveNewsFilter(filter)}
-                                    style={{
-                                        paddingTop: '0.25rem',
-                                        paddingBottom: '0.25rem',
-                                        paddingLeft: '0.75rem',
-                                        paddingRight: '0.75rem',
-                                        borderRadius: '9999px',
-                                        fontSize: '0.75rem',
-                                        backgroundColor: activeNewsFilter === filter ? '#59277A' : '#ffffff',
-                                        color: activeNewsFilter === filter ? '#ffffff' : '#374151',
-                                        fontWeight: activeNewsFilter === filter ? 500 : 'normal',
-                                        border: activeNewsFilter === filter ? 'none' : '1px solid #e5e7eb',
-                                        cursor: 'pointer',
-                                        transition: 'background-color 0.2s ease'
-                                    }}
-                                    className="text-xs md:text-sm"
-                                    onMouseEnter={(e) => {
-                                        if (activeNewsFilter !== filter) {
-                                            e.target.style.backgroundColor = '#f3f4f6';
-                                        }
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        if (activeNewsFilter !== filter) {
-                                            e.target.style.backgroundColor = '#ffffff';
-                                        }
-                                    }}
-                                >
-                                    {filter}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                    )}
                 </div>
 
-
                 <div className="flex justify-center items-center">
-                    {filteredNews.length > 0 ? (
+                    {loading && posts.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-12">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#785D99]"></div>
+                            <p className="mt-4 text-gray-500">Cargando posts...</p>
+                        </div>
+                    ) : newsItems.length > 0 ? (
                         <div className="w-full md:w-6/7 flex flex-col justify-center items-center">
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 w-full">
+                            <div className={`grid gap-4 md:gap-8 w-full ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
                                 {visibleNews.map((newsItem) => (
                                     <div key={newsItem.id} className="bg-white rounded-lg overflow-hidden shadow border border-gray-200">
                                         <div className="relative">
@@ -192,12 +161,10 @@ const NewsSection = () => {
                                                 src={newsItem.image}
                                                 alt={newsItem.title}
                                                 className="w-full h-48 md:h-80 object-cover"
+                                                onError={(e) => {
+                                                    (e.target as HTMLImageElement).src = `https://picsum.photos/400/300?random=${Math.floor(Math.random() * 1000)}`;
+                                                }}
                                             />
-                                            <div className="absolute top-2 left-2">
-                                                <span className="bg-[#785D99] text-white text-xs px-2 py-1 md:px-3 md:py-1 rounded-full uppercase font-medium">
-                                                    {newsItem.tags[0]}
-                                                </span>
-                                            </div>
                                         </div>
 
                                         <div className="p-3 md:p-4">
@@ -205,7 +172,6 @@ const NewsSection = () => {
                                             <p className="text-gray-600 text-xs md:text-sm mb-3 md:mb-4">
                                                 {expandedArticle === newsItem.id ? newsItem.fullContent : newsItem.content}
                                             </p>
-
 
                                             <div className="flex items-center text-[#785D99] text-xs md:text-sm">
                                                 <svg className="w-3 h-3 md:w-4 md:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -215,7 +181,6 @@ const NewsSection = () => {
                                                 <span className="mx-2">•</span>
                                                 <span>{newsItem.readTime}</span>
                                             </div>
-
 
                                             <div className="flex justify-between items-center mt-3">
                                                 <button
@@ -237,13 +202,13 @@ const NewsSection = () => {
                                                 </button>
 
                                                 <button
-                                                    className="bg-[] text-white px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm flex items-center"
-                                                    style={{backgroundColor:"#785D99", borderRadius:"9999px"}}
+                                                    className="text-white px-3 py-1 md:px-4 md:py-1 rounded-full text-xs md:text-sm flex items-center"
+                                                    style={{backgroundColor:"#785D99"}}
                                                     onClick={() => toggleExpandArticle(newsItem.id)}
                                                 >
                                                     {expandedArticle === newsItem.id ? 'Colapsar' : 'Seguir leyendo'}
                                                     <svg
-                                                        className={`w-3 h-3 md:w-4 md:h-4 ml-1 transform ${expandedArticle === newsItem.id ? 'rotate-90' : ''}`}
+                                                        className={`w-3 h-3 md:w-4 md:h-4 ml-1 transform transition-transform ${expandedArticle === newsItem.id ? 'rotate-90' : ''}`}
                                                         fill="none"
                                                         stroke="currentColor"
                                                         viewBox="0 0 24 24"
@@ -258,11 +223,11 @@ const NewsSection = () => {
                                 ))}
                             </div>
 
-                            {filteredNews.length > (window.innerWidth < 768 ? 1 : 2) && (
+                            {shouldShowNavigation && (
                                 <div className="flex justify-center mt-4 md:mt-6 space-x-3 md:space-x-4">
                                     <button
                                         onClick={prevNews}
-                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 md:p-2 rounded-full"
+                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 md:p-2 rounded-full transition-colors"
                                         aria-label="Anterior"
                                     >
                                         <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -270,11 +235,11 @@ const NewsSection = () => {
                                         </svg>
                                     </button>
 
-
-
                                     <div className="flex items-center space-x-1 md:space-x-2">
-                                        {Array.from({ length: Math.ceil(filteredNews.length / visibleNewsCount) }).map((_, index) => {
-                                            const isActive = Math.floor(currentNewsIndex / visibleNewsCount) === index;
+                                        {Array.from({ length: Math.max(1, Math.ceil(newsItems.length / Math.max(1, visibleNewsCount))) }).map((_, index) => {
+                                            const totalPages = Math.ceil(newsItems.length / Math.max(1, visibleNewsCount));
+                                            const currentPage = Math.floor(currentNewsIndex / Math.max(1, visibleNewsCount));
+                                            const isActive = currentPage === index;
                                             return (
                                                 <div
                                                     key={index}
@@ -288,7 +253,7 @@ const NewsSection = () => {
 
                                     <button
                                         onClick={nextNews}
-                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 md:p-2 rounded-full"
+                                        className="bg-gray-200 hover:bg-gray-300 text-gray-700 p-1 md:p-2 rounded-full transition-colors"
                                         aria-label="Siguiente"
                                     >
                                         <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -303,13 +268,7 @@ const NewsSection = () => {
                             <svg className="w-12 h-12 md:w-16 md:h-16 text-red-400 mx-auto mb-3 md:mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
-                            <p className="text-gray-500 text-base md:text-lg">No hay noticias disponibles con el filtro seleccionado.</p>
-                            <button
-                                onClick={() => setActiveNewsFilter(null)}
-                                className="mt-3 md:mt-4 text-red-600 font-medium hover:text-red-700 border-b-2 border-red-600 pb-1 text-sm md:text-base"
-                            >
-                                Ver todas las noticias
-                            </button>
+                            <p className="text-gray-500 text-base md:text-lg">No hay posts disponibles.</p>
                         </div>
                     )}
                 </div>
