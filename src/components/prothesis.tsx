@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
 import { usePosts } from '../hooks/usePost';
-import type { Post } from '../interfaces/Post';
 
 const NewsSection = () => {
     const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
@@ -12,12 +11,13 @@ const NewsSection = () => {
     const { posts, loading, error, getPosts } = usePosts();
 
     // Transformar los posts de la API al formato esperado por el componente
-    const transformPostsToNewsItems = useCallback((apiPosts: Post[]) => {
-        return apiPosts.map((post, index) => ({
+    const transformPostsToNewsItems = useCallback((apiPosts: typeof posts) => {
+    return apiPosts.map((post, index) => {
+        return {
             id: post.id,
-            title: post.title,
-            content: post.content.substring(0, 150) + (post.content.length > 150 ? '...' : ''),
-            fullContent: post.content,
+            title: post.title || 'Sin título',
+            content: (post.content || '').substring(0, 150) + ((post.content || '').length > 150 ? '...' : ''),
+            fullContent: post.content || '',
             date: post.createdAt ? new Date(post.createdAt).toLocaleDateString('es-ES', {
                 year: 'numeric',
                 month: 'long',
@@ -27,10 +27,11 @@ const NewsSection = () => {
                 month: 'long',
                 day: 'numeric'
             }),
-            readTime: `${Math.ceil(post.content.split(' ').length / 200)} min`,
+            readTime: `${Math.ceil((post.content || '').split(' ').length / 200)} min`,
             image: post.imageUrl || `https://picsum.photos/400/300?random=${index + 1}`
-        }));
-    }, []);
+        };
+    });
+}, []);
 
     const newsItems = transformPostsToNewsItems(posts);
 

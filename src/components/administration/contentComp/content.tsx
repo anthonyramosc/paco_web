@@ -180,7 +180,7 @@ export default function Content() {
                 };
 
                 result = await createPost(createData);
-                postId = result.id;
+                postId = (result as Post).id;
 
                 console.log("Post creado exitosamente:", result);
             }
