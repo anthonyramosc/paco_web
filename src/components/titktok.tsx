@@ -361,23 +361,23 @@ export default function TikTokSlider() {
                     onTouchStart={handleTouchStart}
                     onTouchEnd={handleTouchEnd}
                 >
-                    {/* Botones de navegación */}
-                    <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full flex justify-between px-2 z-10 pointer-events-none">
+                    {/* Botones de navegación estilo TikTok */}
+                    <div className="absolute top-1/2 -translate-y-1/2 left-0 w-full flex justify-between px-2 z-20 pointer-events-none">
                         <button
                             onClick={handlePrevious}
                             disabled={videos.length <= visibleVideos}
-                            className="bg-[#785D99] shadow-lg rounded-full p-2 sm:p-3 hover:bg-[#6a4d89] transition-colors pointer-events-auto transform hover:-translate-x-1 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-12 h-12 sm:w-14 sm:h-14 bg-[#785D99] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-auto hover:scale-105 hover:bg-[#6a4d89] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             aria-label="Previous videos"
                         >
-                            <ChevronLeft className="text-white" size={20} />
+                            <ChevronLeft className="text-white" size={24} />
                         </button>
                         <button
                             onClick={handleNext}
                             disabled={videos.length <= visibleVideos}
-                            className="bg-[#785D99] shadow-lg rounded-full p-2 sm:p-3 hover:bg-[#6a4d89] transition-colors pointer-events-auto transform hover:translate-x-1 transition-transform duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-12 h-12 sm:w-14 sm:h-14 bg-[#785D99] rounded-full flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 pointer-events-auto hover:scale-105 hover:bg-[#6a4d89] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             aria-label="Next videos"
                         >
-                            <ChevronRight className="text-white" size={20} />
+                            <ChevronRight className="text-white" size={24} />
                         </button>
                     </div>
 
